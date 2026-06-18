@@ -1,5 +1,14 @@
 import { cn, formatPercentage, formatMarketCap } from "@/lib/utils";
-import Image from "next/image";
+
+function coinIdToSymbol(id: string): string {
+  return id
+    .replace(/-/g, " ")
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 4);
+}
 
 interface CategoryCardProps {
   category: {
@@ -33,26 +42,17 @@ export function CategoryCard({ category }: CategoryCardProps) {
       </p>
 
       {category.top_3_coins.length > 0 && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <span className="text-xs text-muted-foreground">Top:</span>
-          <div className="flex -space-x-2">
-            {category.top_3_coins.map((coin, i) => (
-              <div
-                key={i}
-                className="relative h-6 w-6 rounded-full border-2 border-card bg-muted overflow-hidden"
-                title={coin}
-              >
-                <Image
-                  src={`https://assets.coingecko.com/coins/images/1/small/${coin}.png`}
-                  alt={coin}
-                  fill
-                  unoptimized
-                  className="object-contain"
-                  sizes="24px"
-                />
-              </div>
-            ))}
-          </div>
+          {category.top_3_coins.map((coin, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center justify-center rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+              title={coin}
+            >
+              {coinIdToSymbol(coin)}
+            </span>
+          ))}
         </div>
       )}
     </article>
