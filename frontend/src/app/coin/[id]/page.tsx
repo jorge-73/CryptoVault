@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Star, DollarSign, BarChart3, Globe, Activity, Layers } from "lucide-react";
 import { api } from "@/lib/api";
-import { cn, formatPrice, formatPercentage, formatMarketCap } from "@/lib/utils";
+import { cn, formatPrice, formatMarketCap } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { StatCard } from "@/components/ui/stat-card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { PriceChart } from "@/components/crypto/price-chart";
 import { useAuth } from "@/providers/auth-provider";
 import { toast } from "sonner";
@@ -78,10 +81,20 @@ export default function CoinDetailPage() {
   if (loading) {
     return (
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
-        <div className="animate-pulse space-y-4">
-          <div className="h-6 w-24 rounded bg-muted" />
-          <div className="h-64 rounded-xl bg-muted" />
+        <Skeleton className="h-5 w-24 mb-8" />
+        <div className="flex items-center gap-4 mb-8">
+          <Skeleton className="h-14 w-14 rounded-full" />
+          <div className="space-y-2 flex-1">
+            <Skeleton className="h-7 w-48" />
+            <Skeleton className="h-8 w-36" />
+          </div>
         </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 rounded-xl" />
+          ))}
+        </div>
+        <Skeleton className="h-72 rounded-xl" />
       </div>
     );
   }
@@ -91,7 +104,7 @@ export default function CoinDetailPage() {
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Volver al dashboard
@@ -103,7 +116,10 @@ export default function CoinDetailPage() {
     );
   }
 
-  const isPositive = coin.price_change_percentage_24h >= 0;
+  const volumeToCapRatio = coin.total_volume / coin.market_cap;
+  const supplyFormatted = coin.circulating_supply
+    ? coin.circulating_supply.toLocaleString("en-US", { maximumFractionDigits: 0 })
+    : "—";
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
@@ -115,39 +131,35 @@ export default function CoinDetailPage() {
         Volver al dashboard
       </Link>
 
-      <div className="flex items-center gap-4 mb-8">
-        <div className="relative h-14 w-14 flex-shrink-0">
+      <div className="flex items-center gap-5 mb-8">
+        <div className="relative h-16 w-16 flex-shrink-0">
           <Image
             src={coin.image}
             alt={`Logo de ${coin.name}`}
             fill
             unoptimized
             className="rounded-full object-contain"
-            sizes="56px"
+            sizes="64px"
           />
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl sm:text-3xl font-bold truncate">
               {coin.name}
             </h1>
-            <span className="text-lg text-muted-foreground uppercase">
+            <span className="text-base sm:text-lg text-muted-foreground uppercase tracking-wide">
               {coin.symbol}
             </span>
+            <span className="hidden sm:inline text-xs text-muted-foreground">
+              Rank #{coin.market_cap_rank ?? "—"}
+            </span>
           </div>
-          <div className="flex items-center gap-3 mt-1">
-            <span className="text-3xl font-bold">
+          <div className="flex items-center gap-3 mt-1.5">
+            <span className="text-3xl sm:text-4xl font-bold tabular-nums">
               {formatPrice(coin.current_price)}
             </span>
-            <span
-              className={cn(
-                "text-lg font-medium",
-                isPositive ? "text-green" : "text-red"
-              )}
-            >
-              {formatPercentage(coin.price_change_percentage_24h)}
-            </span>
+            <Badge value={coin.price_change_percentage_24h} className="text-sm px-2 py-0.5" />
           </div>
         </div>
 
@@ -155,7 +167,7 @@ export default function CoinDetailPage() {
           <button
             onClick={toggleFavorite}
             className={cn(
-              "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border transition-colors",
+              "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border transition-colors hover:scale-105 active:scale-95",
               isFavorite
                 ? "border-yellow-500/30 text-yellow-500 hover:bg-yellow-500/10"
                 : "border-border text-muted-foreground hover:text-yellow-500 hover:border-yellow-500/30"
@@ -171,20 +183,36 @@ export default function CoinDetailPage() {
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3 mb-8">
-        <div className="rounded-xl border bg-card p-4">
-          <p className="text-sm text-muted-foreground">Capitalización</p>
-          <p className="font-semibold mt-1">{formatMarketCap(coin.market_cap)}</p>
-        </div>
-        <div className="rounded-xl border bg-card p-4">
-          <p className="text-sm text-muted-foreground">Volumen 24h</p>
-          <p className="font-semibold mt-1">{formatMarketCap(coin.total_volume)}</p>
-        </div>
-        <div className="rounded-xl border bg-card p-4">
-          <p className="text-sm text-muted-foreground">Ranking</p>
-          <p className="font-semibold mt-1">
-            #{coin.market_cap_rank ?? "—"}
-          </p>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        <StatCard
+          label="Capitalización"
+          value={formatMarketCap(coin.market_cap)}
+          icon={<DollarSign className="h-4 w-4" />}
+        />
+        <StatCard
+          label="Volumen 24h"
+          value={formatMarketCap(coin.total_volume)}
+          icon={<Activity className="h-4 w-4" />}
+        />
+        <StatCard
+          label="Ranking"
+          value={`#${coin.market_cap_rank ?? "—"}`}
+          icon={<BarChart3 className="h-4 w-4" />}
+        />
+        <StatCard
+          label="Suministro"
+          value={supplyFormatted}
+          icon={<Layers className="h-4 w-4" />}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        <div className="col-span-2 sm:col-span-4 flex items-center gap-4 rounded-xl border bg-card px-4 py-3 text-sm">
+          <span className="text-muted-foreground">Volumen / Capitalización:</span>
+          <span className="font-medium tabular-nums">{volumeToCapRatio.toFixed(4)}</span>
+          <span className="text-muted-foreground ml-auto">
+            Suministro circulante: <span className="font-medium">{supplyFormatted}</span>
+          </span>
         </div>
       </div>
 
@@ -194,3 +222,4 @@ export default function CoinDetailPage() {
     </div>
   );
 }
+
