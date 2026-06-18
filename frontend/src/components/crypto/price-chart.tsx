@@ -1,0 +1,155 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { api } from "@/lib/api";
+import { formatPrice } from "@/lib/utils";
+
+interface PriceChartProps {
+  coinId: string;
+  coinName: string;
+}
+
+const DAYS_OPTIONS = [
+  { label: "7d", value: 7 },
+  { label: "30d", value: 30 },
+  { label: "90d", value: 90 },
+] as const;
+
+export function PriceChart({ coinId, coinName }: PriceChartProps) {
+  const [days, setDays] = useState(7);
+  const [data, setData] = useState<{ timestamp: number; price: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    api.crypto
+      .getChart(coinId, "usd", days)
+      .then((res) => setData(res.prices))
+      .catch(() => setError("Error al cargar el gráfico"))
+      .finally(() => setLoading(false));
+  }, [coinId, days]);
+
+  const isPositive = useMemo(() => {
+    if (data.length < 2) return true;
+    return data[data.length - 1].price >= data[0].price;
+  }, [data]);
+
+  const chartData = useMemo(
+    () =>
+      data.map((p) => ({
+        date: new Date(p.timestamp).toLocaleDateString(),
+        price: p.price,
+      })),
+    [data]
+  );
+
+  const formatXAxis = (value: string) => {
+    if (days <= 7) {
+      const d = new Date(value);
+      return d.toLocaleDateString("es", { weekday: "short" });
+    }
+    return value;
+  };
+
+  if (loading) {
+    return (
+      <div className="h-64 animate-pulse rounded-xl bg-muted" />
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-xl border border-red/20 bg-red/5 p-4 text-red text-sm">
+        {error}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">
+          Precio de {coinName}
+        </h2>
+        <div className="flex gap-1">
+          {DAYS_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => setDays(opt.value)}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                days === opt.value
+                  ? "bg-accent text-accent-foreground"
+                  : "text-muted-foreground hover:bg-accent/50"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData}>
+            <defs>
+              <linearGradient id={`gradient-${coinId}`} x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor={isPositive ? "#16a34a" : "#dc2626"}
+                  stopOpacity={0.3}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={isPositive ? "#16a34a" : "#dc2626"}
+                  stopOpacity={0}
+                />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 12 }}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={formatXAxis}
+              interval="preserveStartEnd"
+            />
+            <YAxis
+              tick={{ fontSize: 12 }}
+              tickLine={false}
+              axisLine={false}
+              domain={["auto", "auto"]}
+              tickFormatter={(v: number) => formatPrice(v)}
+              width={80}
+            />
+            <Tooltip
+              formatter={(value: any) => [formatPrice(value), "Precio"]}
+              labelFormatter={(label: any) => `Fecha: ${label}`}
+              contentStyle={{
+                borderRadius: "12px",
+                border: "1px solid hsl(var(--border))",
+                background: "hsl(var(--card))",
+              }}
+            />
+            <Area
+              type="monotone"
+              dataKey="price"
+              stroke={isPositive ? "#16a34a" : "#dc2626"}
+              strokeWidth={2}
+              fill={`url(#gradient-${coinId})`}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
