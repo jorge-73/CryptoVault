@@ -71,20 +71,20 @@ export const authController = {
 
   async me(req: Request, res: Response, next: NextFunction) {
     try {
-      const { prisma } = await import('../config/prisma.js');
-      const userId = (req as any).user.userId;
-
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { id: true, email: true, name: true, createdAt: true },
-      });
-
-      if (!user) {
-        res.status(404).json({ error: 'User not found' });
+      const authReq = req as any;
+      if (!authReq.user?.userId) {
+        res.json({ user: null });
         return;
       }
 
-      res.json({ user });
+      const { prisma } = await import('../config/prisma.js');
+
+      const user = await prisma.user.findUnique({
+        where: { id: authReq.user.userId },
+        select: { id: true, email: true, name: true, createdAt: true },
+      });
+
+      res.json({ user: user || null });
     } catch (err) {
       next(err);
     }
