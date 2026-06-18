@@ -7,17 +7,6 @@ export const authController = {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password, name } = req.body;
-
-      if (!email || !password) {
-        res.status(400).json({ error: 'Email and password are required' });
-        return;
-      }
-
-      if (password.length < 6) {
-        res.status(400).json({ error: 'Password must be at least 6 characters' });
-        return;
-      }
-
       const user = await authService.register(email, password, name);
       const token = signToken({ userId: user.id, email: user.email });
 
@@ -37,12 +26,6 @@ export const authController = {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
-
-      if (!email || !password) {
-        res.status(400).json({ error: 'Email and password are required' });
-        return;
-      }
-
       const user = await authService.login(email, password);
       const token = signToken({ userId: user.id, email: user.email });
 

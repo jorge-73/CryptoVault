@@ -2,7 +2,6 @@ import { Response, NextFunction } from 'express';
 import { AuthRequest } from '../middlewares/auth.js';
 import { favoritesService } from '../services/favorites.js';
 import { coingeckoService } from '../services/coingecko.js';
-import { AppError } from '../middlewares/errorHandler.js';
 
 export const favoritesController = {
   async getAll(req: AuthRequest, res: Response, next: NextFunction) {
@@ -33,10 +32,6 @@ export const favoritesController = {
     try {
       const userId = req.user!.userId;
       const { cryptoId } = req.body;
-
-      if (!cryptoId) {
-        throw new AppError('cryptoId is required', 400);
-      }
 
       await favoritesService.addFavorite(userId, cryptoId);
       res.status(201).json({ message: 'Added to favorites' });
