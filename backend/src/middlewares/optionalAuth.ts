@@ -1,9 +1,9 @@
 import { Response, NextFunction } from 'express';
-import { verifyToken, JwtPayload } from '../utils/jwt.js';
+import { verifyAccessToken, JwtPayload } from '../utils/jwt.js';
 import { AuthRequest } from './auth.js';
 
 export function optionalAuth(req: AuthRequest, _res: Response, next: NextFunction): void {
-  const token = req.cookies?.token;
+  const token = req.cookies?.access_token;
 
   if (!token) {
     next();
@@ -11,7 +11,7 @@ export function optionalAuth(req: AuthRequest, _res: Response, next: NextFunctio
   }
 
   try {
-    const payload = verifyToken(token);
+    const payload = verifyAccessToken(token);
     req.user = payload;
   } catch {
     // Token invalid — just continue without user

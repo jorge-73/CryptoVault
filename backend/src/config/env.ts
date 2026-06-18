@@ -5,6 +5,7 @@ export const env = {
   PORT: Number(process.env.PORT) || 4000,
   DATABASE_URL: process.env.DATABASE_URL!,
   JWT_SECRET: process.env.JWT_SECRET!,
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || process.env.JWT_SECRET!,
   COINGECKO_API_URL: process.env.COINGECKO_API_URL || 'https://api.coingecko.com/api/v3',
   CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:3000',
   NODE_ENV: process.env.NODE_ENV || 'development',

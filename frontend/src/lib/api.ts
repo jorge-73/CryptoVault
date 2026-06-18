@@ -18,6 +18,29 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     ...options,
   });
 
+  if (res.status === 401 && !endpoint.includes("/auth/refresh") && !endpoint.includes("/auth/me")) {
+    const refreshRes = await fetch(`${API_BASE}/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (refreshRes.ok) {
+      const retryRes = await fetch(url, {
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        ...options,
+      });
+
+      if (retryRes.ok) {
+        return retryRes.json();
+      }
+
+      const retryBody = await retryRes.json().catch(() => ({ error: "Request failed" }));
+      throw new ApiError(retryBody.error || "Request failed", retryRes.status);
+    }
+  }
+
   if (!res.ok) {
     const body = await res.json().catch(() => ({ error: "Request failed" }));
     throw new ApiError(body.error || "Request failed", res.status);
@@ -39,6 +62,10 @@ export const api = {
         body: JSON.stringify(data),
       }),
     logout: () => request<{ message: string }>("/auth/logout", { method: "POST" }),
+    refresh: () =>
+      request<{ user: { id: string; email: string; name: string | null } }>("/auth/refresh", {
+        method: "POST",
+      }),
     me: () => request<{ user: { id: string; email: string; name: string | null } }>("/auth/me"),
   },
   crypto: {
