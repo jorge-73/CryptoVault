@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: crypto_app_e2e
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/crypto_app_e2e
+      JWT_SECRET: e2e-test-jwt-secret
+      REFRESH_TOKEN_SECRET: e2e-test-refresh-secret
+      CORS_ORIGIN: http://localhost:3001
+      NODE_ENV: development
+    ports:
+      - "4001:4000"
+    command: >
+      sh -c "npx prisma migrate deploy && node dist/index.js"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:4001/api
+    depends_on:
+      - backend
+    ports:
+      - "3001:3000"

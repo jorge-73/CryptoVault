@@ -1,0 +1,164 @@
+export const mockMarkets = [
+  {
+    id: 'bitcoin', symbol: 'btc', name: 'Bitcoin',
+    image: 'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+    current_price: 67500, market_cap: 1_330_000_000_000, market_cap_rank: 1,
+    price_change_percentage_24h: 2.45, total_volume: 45_000_000_000, circulating_supply: 19_700_000,
+  },
+  {
+    id: 'ethereum', symbol: 'eth', name: 'Ethereum',
+    image: 'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png',
+    current_price: 3450, market_cap: 415_000_000_000, market_cap_rank: 2,
+    price_change_percentage_24h: -1.23, total_volume: 22_000_000_000, circulating_supply: 120_200_000,
+  },
+  {
+    id: 'solana', symbol: 'sol', name: 'Solana',
+    image: 'https://coin-images.coingecko.com/coins/images/4128/large/solana.png',
+    current_price: 148, market_cap: 68_000_000_000, market_cap_rank: 5,
+    price_change_percentage_24h: 5.67, total_volume: 4_500_000_000, circulating_supply: 460_000_000,
+  },
+  {
+    id: 'cardano', symbol: 'ada', name: 'Cardano',
+    image: 'https://coin-images.coingecko.com/coins/images/975/large/cardano.png',
+    current_price: 0.45, market_cap: 16_000_000_000, market_cap_rank: 9,
+    price_change_percentage_24h: -0.89, total_volume: 800_000_000, circulating_supply: 35_000_000_000,
+  },
+  {
+    id: 'ripple', symbol: 'xrp', name: 'XRP',
+    image: 'https://coin-images.coingecko.com/coins/images/44/large/xrp.png',
+    current_price: 0.62, market_cap: 34_000_000_000, market_cap_rank: 7,
+    price_change_percentage_24h: 1.12, total_volume: 2_100_000_000, circulating_supply: 54_000_000_000,
+  },
+  {
+    id: 'polkadot', symbol: 'dot', name: 'Polkadot',
+    image: 'https://coin-images.coingecko.com/coins/images/12171/large/polkadot.png',
+    current_price: 7.25, market_cap: 10_500_000_000, market_cap_rank: 13,
+    price_change_percentage_24h: 3.4, total_volume: 650_000_000, circulating_supply: 1_450_000_000,
+  },
+  {
+    id: 'avalanche', symbol: 'avax', name: 'Avalanche',
+    image: 'https://coin-images.coingecko.com/coins/images/12559/large/avalanche.png',
+    current_price: 35.80, market_cap: 14_000_000_000, market_cap_rank: 11,
+    price_change_percentage_24h: -2.1, total_volume: 900_000_000, circulating_supply: 392_000_000,
+  },
+  {
+    id: 'chainlink', symbol: 'link', name: 'Chainlink',
+    image: null,
+    current_price: 14.50, market_cap: 8_500_000_000, market_cap_rank: 15,
+    price_change_percentage_24h: 0.75, total_volume: 520_000_000, circulating_supply: 587_000_000,
+  },
+  {
+    id: 'polygon', symbol: 'matic', name: 'Polygon',
+    image: null,
+    current_price: 0.72, market_cap: 6_700_000_000, market_cap_rank: 18,
+    price_change_percentage_24h: -3.5, total_volume: 410_000_000, circulating_supply: 9_300_000_000,
+  },
+  {
+    id: 'dogecoin', symbol: 'doge', name: 'Dogecoin',
+    image: 'https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png',
+    current_price: 0.12, market_cap: 17_200_000_000, market_cap_rank: 8,
+    price_change_percentage_24h: 8.2, total_volume: 3_100_000_000, circulating_supply: 143_000_000_000,
+  },
+];
+
+export const mockCategories = [
+  {
+    id: 'defi', name: 'DeFi',
+    market_cap: 45_000_000_000, market_cap_change_24h: 2.3,
+    top_3_coins: ['uniswap', 'aave', 'maker'],
+  },
+  {
+    id: 'meme', name: 'Meme',
+    market_cap: 25_000_000_000, market_cap_change_24h: 5.1,
+    top_3_coins: ['dogecoin', 'shiba-inu', 'pepe'],
+  },
+  {
+    id: 'layer-1', name: 'Layer 1',
+    market_cap: 800_000_000_000, market_cap_change_24h: 1.2,
+    top_3_coins: ['bitcoin', 'ethereum', 'solana'],
+  },
+  {
+    id: 'layer-2', name: 'Layer 2',
+    market_cap: 30_000_000_000, market_cap_change_24h: -0.8,
+    top_3_coins: ['polygon', 'optimism', 'arbitrum'],
+  },
+  {
+    id: 'gaming', name: 'Gaming',
+    market_cap: 12_000_000_000, market_cap_change_24h: -3.2,
+    top_3_coins: ['axie-infinity', 'sandbox', 'decentraland'],
+  },
+  {
+    id: 'ai', name: 'AI',
+    market_cap: 8_000_000_000, market_cap_change_24h: 10.5,
+    top_3_coins: ['fetch-ai', 'render-token', 'bittensor'],
+  },
+];
+
+export function generateChartPrices(count = 100, basePrice = 67000): { timestamp: number; price: number }[] {
+  const now = Date.now();
+  const interval = (7 * 24 * 60 * 60 * 1000) / count;
+  const prices: { timestamp: number; price: number }[] = [];
+  let price = basePrice;
+  for (let i = 0; i < count; i++) {
+    price += (Math.random() - 0.48) * price * 0.02;
+    prices.push({ timestamp: now - (count - i) * interval, price: Math.round(price * 100) / 100 });
+  }
+  return prices;
+}
+
+export const mockPricesByIds = [
+  { id: 'uniswap', image: 'https://coin-images.coingecko.com/coins/images/12504/large/uniswap.png', symbol: 'uni', name: 'Uniswap' },
+  { id: 'aave', image: 'https://coin-images.coingecko.com/coins/images/12645/large/aave.png', symbol: 'aave', name: 'Aave' },
+  { id: 'maker', image: 'https://coin-images.coingecko.com/coins/images/1364/large/maker.png', symbol: 'mkr', name: 'Maker' },
+  { id: 'dogecoin', image: 'https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png', symbol: 'doge', name: 'Dogecoin' },
+  { id: 'shiba-inu', image: null, symbol: 'shib', name: 'Shiba Inu' },
+  { id: 'pepe', image: null, symbol: 'pepe', name: 'Pepe' },
+  { id: 'bitcoin', image: 'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png', symbol: 'btc', name: 'Bitcoin' },
+  { id: 'ethereum', image: 'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png', symbol: 'eth', name: 'Ethereum' },
+  { id: 'solana', image: 'https://coin-images.coingecko.com/coins/images/4128/large/solana.png', symbol: 'sol', name: 'Solana' },
+  { id: 'polygon', image: null, symbol: 'matic', name: 'Polygon' },
+  { id: 'optimism', image: null, symbol: 'op', name: 'Optimism' },
+  { id: 'arbitrum', image: null, symbol: 'arb', name: 'Arbitrum' },
+  { id: 'axie-infinity', image: null, symbol: 'axs', name: 'Axie Infinity' },
+  { id: 'sandbox', image: null, symbol: 'sand', name: 'The Sandbox' },
+  { id: 'decentraland', image: null, symbol: 'mana', name: 'Decentraland' },
+  { id: 'fetch-ai', image: null, symbol: 'fet', name: 'Fetch.ai' },
+  { id: 'render-token', image: null, symbol: 'render', name: 'Render Token' },
+  { id: 'bittensor', image: null, symbol: 'tao', name: 'Bittensor' },
+];
+
+export function setupCryptoMocks(page: any) {
+  const mockChart = generateChartPrices(100, 67500);
+
+  page.route('**/api/crypto/markets**', async (route: any) => {
+    const url = new URL(route.request().url());
+    const ids = url.searchParams.get('ids');
+    if (ids) {
+      const coinIds = ids.split(',');
+      const filtered = mockPricesByIds.filter((c) => coinIds.includes(c.id));
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(filtered) });
+      return;
+    }
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockMarkets) });
+  });
+
+  page.route('**/api/crypto/categories', async (route: any) => {
+    const enriched = mockCategories.map((cat) => ({
+      ...cat,
+      top_3_coins: cat.top_3_coins.map((id) => {
+        const coin = mockPricesByIds.find((c) => c.id === id);
+        const topCoin = mockMarkets.find((m) => m.id === id);
+        return { id, image: coin?.image ?? topCoin?.image ?? null };
+      }),
+    }));
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(enriched) });
+  });
+
+  page.route('**/api/crypto/chart/**', async (route: any) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ coinId: 'bitcoin', currency: 'usd', days: 7, prices: mockChart }),
+    });
+  });
+}
