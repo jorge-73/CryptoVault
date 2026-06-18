@@ -1,5 +1,6 @@
-import { cn, formatPercentage, formatMarketCap } from "@/lib/utils";
+import { formatMarketCap } from "@/lib/utils";
 import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 interface TopCoin {
   id: string;
@@ -17,24 +18,15 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
-  const isPositive = category.market_cap_change_24h != null && category.market_cap_change_24h >= 0;
-
   return (
-    <article className="rounded-xl border bg-card p-5 transition-all hover:shadow-md hover:border-accent/30">
+    <article className="rounded-xl border bg-card p-5 transition-all hover:shadow-lg hover:border-accent/30 hover:-translate-y-0.5">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-semibold text-lg">{category.name}</h3>
-        <span
-          className={cn(
-            "text-sm font-medium px-2 py-0.5 rounded-full",
-            isPositive ? "bg-green/10 text-green" : "bg-red/10 text-red"
-          )}
-        >
-          {formatPercentage(category.market_cap_change_24h)}
-        </span>
+        <Badge value={category.market_cap_change_24h} />
       </div>
 
-      <p className="text-sm text-muted-foreground mb-3">
-        Capitalización: {formatMarketCap(category.market_cap)}
+      <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">
+        Cap. {formatMarketCap(category.market_cap)}
       </p>
 
       {category.top_3_coins.length > 0 && (
@@ -44,7 +36,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
             {category.top_3_coins.map((coin, i) => (
               <div
                 key={coin.id}
-                className="relative h-6 w-6 rounded-full border-2 border-card bg-muted overflow-hidden"
+                className="relative h-7 w-7 rounded-full border-2 border-card bg-muted overflow-hidden"
                 title={coin.id}
               >
                 {coin.image ? (
@@ -54,10 +46,10 @@ export function CategoryCard({ category }: CategoryCardProps) {
                     fill
                     unoptimized
                     className="object-contain"
-                    sizes="24px"
+                    sizes="28px"
                   />
                 ) : (
-                  <span className="flex h-full w-full items-center justify-center text-[8px] font-bold uppercase text-muted-foreground">
+                  <span className="flex h-full w-full items-center justify-center text-[9px] font-bold uppercase text-muted-foreground">
                     {coin.id[0]}
                   </span>
                 )}
