@@ -1,0 +1,32 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
+import { env } from './config/env.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import authRoutes from './routes/auth.js';
+import cryptoRoutes from './routes/crypto.js';
+import favoritesRoutes from './routes/favorites.js';
+
+const app = express();
+
+app.use(helmet());
+app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(cookieParser());
+app.use(express.json());
+
+app.use('/api/auth', authRoutes);
+app.use('/api/crypto', cryptoRoutes);
+app.use('/api/favorites', favoritesRoutes);
+
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.use(errorHandler);
+
+app.listen(env.PORT, () => {
+  console.log(`Server running on http://localhost:${env.PORT}`);
+});
+
+export default app;
