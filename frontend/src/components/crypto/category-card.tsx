@@ -46,6 +46,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
                   src={`https://assets.coingecko.com/coins/images/1/small/${coin}.png`}
                   alt={coin}
                   fill
+                  unoptimized
                   className="object-contain"
                   sizes="24px"
                 />

@@ -32,6 +32,7 @@ export function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardPro
           src={coin.image}
           alt={`Logo de ${coin.name}`}
           fill
+          unoptimized
           className="rounded-full object-contain"
           sizes="40px"
         />
