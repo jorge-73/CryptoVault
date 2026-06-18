@@ -1,0 +1,59 @@
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+
+class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
+async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const url = `${API_BASE}${endpoint}`;
+
+  const res = await fetch(url, {
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ error: "Request failed" }));
+    throw new ApiError(body.error || "Request failed", res.status);
+  }
+
+  return res.json();
+}
+
+export const api = {
+  auth: {
+    register: (data: { email: string; password: string; name?: string }) =>
+      request<{ user: { id: string; email: string; name: string | null } }>("/auth/register", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    login: (data: { email: string; password: string }) =>
+      request<{ user: { id: string; email: string; name: string | null } }>("/auth/login", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    logout: () => request<{ message: string }>("/auth/logout", { method: "POST" }),
+    me: () => request<{ user: { id: string; email: string; name: string | null } }>("/auth/me"),
+  },
+  crypto: {
+    getMarkets: (currency = "usd", perPage = 50) =>
+      request<any[]>(`/crypto/markets?currency=${currency}&per_page=${perPage}`),
+    getCategories: () => request<any[]>("/crypto/categories"),
+  },
+  favorites: {
+    getAll: () => request<any[]>("/favorites"),
+    add: (cryptoId: string) =>
+      request<{ message: string }>("/favorites", {
+        method: "POST",
+        body: JSON.stringify({ cryptoId }),
+      }),
+    remove: (cryptoId: string) =>
+      request<{ message: string }>(`/favorites/${cryptoId}`, { method: "DELETE" }),
+  },
+};
