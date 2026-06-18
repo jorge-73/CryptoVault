@@ -1,13 +1,9 @@
 import { cn, formatPercentage, formatMarketCap } from "@/lib/utils";
+import Image from "next/image";
 
-function coinIdToSymbol(id: string): string {
-  return id
-    .replace(/-/g, " ")
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 4);
+interface TopCoin {
+  id: string;
+  image: string | null;
 }
 
 interface CategoryCardProps {
@@ -16,7 +12,7 @@ interface CategoryCardProps {
     name: string;
     market_cap: number | null;
     market_cap_change_24h: number | null;
-    top_3_coins: string[];
+    top_3_coins: TopCoin[];
   };
 }
 
@@ -42,17 +38,32 @@ export function CategoryCard({ category }: CategoryCardProps) {
       </p>
 
       {category.top_3_coins.length > 0 && (
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">Top:</span>
-          {category.top_3_coins.map((coin, i) => (
-            <span
-              key={i}
-              className="inline-flex items-center justify-center rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
-              title={coin}
-            >
-              {coinIdToSymbol(coin)}
-            </span>
-          ))}
+          <div className="flex -space-x-1.5">
+            {category.top_3_coins.map((coin, i) => (
+              <div
+                key={coin.id}
+                className="relative h-6 w-6 rounded-full border-2 border-card bg-muted overflow-hidden"
+                title={coin.id}
+              >
+                {coin.image ? (
+                  <Image
+                    src={coin.image}
+                    alt={coin.id}
+                    fill
+                    unoptimized
+                    className="object-contain"
+                    sizes="24px"
+                  />
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center text-[8px] font-bold uppercase text-muted-foreground">
+                    {coin.id[0]}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </article>

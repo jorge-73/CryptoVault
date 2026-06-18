@@ -5,12 +5,17 @@ import { api } from "@/lib/api";
 import { CategoryCard } from "@/components/crypto/category-card";
 import { toast } from "sonner";
 
+interface TopCoin {
+  id: string;
+  image: string | null;
+}
+
 interface Category {
   id: string;
   name: string;
   market_cap: number;
   market_cap_change_24h: number;
-  top_3_coins: string[];
+  top_3_coins: TopCoin[];
 }
 
 export default function CategoriesPage() {

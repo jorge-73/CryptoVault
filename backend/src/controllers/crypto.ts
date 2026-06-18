@@ -17,8 +17,26 @@ export const cryptoController = {
 
   async getCategories(_req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await coingeckoService.getCategories();
-      res.json(data);
+      const categories = await coingeckoService.getCategories();
+
+      const allCoinIds = [...new Set(categories.flatMap((c) => c.top_3_coins))];
+
+      if (allCoinIds.length > 0) {
+        const coinData = await coingeckoService.getPricesByIds(allCoinIds);
+        const imageMap = new Map(coinData.map((c) => [c.id, c.image]));
+
+        const enriched = categories.map((cat) => ({
+          ...cat,
+          top_3_coins: cat.top_3_coins.map((id) => ({
+            id,
+            image: imageMap.get(id) || null,
+          })),
+        }));
+
+        res.json(enriched);
+      } else {
+        res.json(categories);
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch categories from CoinGecko';
       next(new AppError(message, 502));
