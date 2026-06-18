@@ -19,10 +19,10 @@ export interface CoinMarket {
   symbol: string;
   name: string;
   image: string;
-  current_price: number;
+  current_price: number | null;
   market_cap: number;
   market_cap_rank: number | null;
-  price_change_percentage_24h: number;
+  price_change_percentage_24h: number | null;
   total_volume: number;
   circulating_supply: number;
 }

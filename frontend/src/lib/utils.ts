@@ -5,14 +5,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(price: number): string {
+export function formatPrice(price: number | null | undefined): string {
+  if (price == null) return "—";
   if (price >= 1) {
     return price.toLocaleString("en-US", { style: "currency", currency: "USD" });
   }
   return price.toLocaleString("en-US", { style: "currency", currency: "USD", minimumSignificantDigits: 4 });
 }
 
-export function formatPercentage(value: number): string {
+export function formatPercentage(value: number | null | undefined): string {
+  if (value == null) return "N/A";
   const sign = value >= 0 ? "+" : "";
   return `${sign}${value.toFixed(2)}%`;
 }

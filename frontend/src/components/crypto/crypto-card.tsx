@@ -8,10 +8,10 @@ interface CryptoCardProps {
     name: string;
     symbol: string;
     image: string;
-    current_price: number;
+    current_price: number | null;
     market_cap: number;
     market_cap_rank: number | null;
-    price_change_percentage_24h: number;
+    price_change_percentage_24h: number | null;
     total_volume: number;
   };
   isFavorite?: boolean;
@@ -19,7 +19,7 @@ interface CryptoCardProps {
 }
 
 export function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardProps) {
-  const isPositive = coin.price_change_percentage_24h >= 0;
+  const isPositive = coin.price_change_percentage_24h != null && coin.price_change_percentage_24h >= 0;
 
   return (
     <article className="group flex items-center gap-4 rounded-xl border bg-card p-4 transition-all hover:shadow-md hover:border-accent/30">
