@@ -16,7 +16,15 @@ export const authService = {
       select: { id: true, email: true, name: true, createdAt: true },
     });
 
-    return user;
+    const payload: JwtPayload = { userId: user.id, email: user.email };
+    const refreshToken = signRefreshToken(payload);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken },
+    });
+
+    return { ...user, refreshToken };
   },
 
   async login(email: string, password: string) {
@@ -30,13 +38,16 @@ export const authService = {
       throw new AppError('Invalid email or password', 401);
     }
 
-    const payload: JwtPayload = { userId: user.id, email: user.email };
-    const refreshToken = signRefreshToken(payload);
+    let refreshToken = user.refreshToken;
+    if (!refreshToken) {
+      const payload: JwtPayload = { userId: user.id, email: user.email };
+      refreshToken = signRefreshToken(payload);
 
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { refreshToken },
-    });
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { refreshToken },
+      });
+    }
 
     return { id: user.id, email: user.email, name: user.name, refreshToken };
   },

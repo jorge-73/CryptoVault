@@ -21,16 +21,14 @@ export const authController = {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password, name } = req.body;
-      const user = await authService.register(email, password, name);
+      const result = await authService.register(email, password, name);
 
-      const payload = { userId: user.id, email: user.email };
-      const accessToken = signAccessToken(payload);
-      const { refreshToken } = await authService.login(email, password);
+      const accessToken = signAccessToken({ userId: result.id, email: result.email });
 
       res.cookie('access_token', accessToken, ACCESS_COOKIE_OPTIONS);
-      res.cookie('refresh_token', refreshToken, REFRESH_COOKIE_OPTIONS);
+      res.cookie('refresh_token', result.refreshToken, REFRESH_COOKIE_OPTIONS);
 
-      res.status(201).json({ user });
+      res.status(201).json({ user: { id: result.id, email: result.email, name: result.name } });
     } catch (err) {
       next(err);
     }
