@@ -5,14 +5,14 @@ interface CategoryCardProps {
   category: {
     id: string;
     name: string;
-    market_cap: number;
-    market_cap_change_24h: number;
+    market_cap: number | null;
+    market_cap_change_24h: number | null;
     top_3_coins: string[];
   };
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
-  const isPositive = category.market_cap_change_24h >= 0;
+  const isPositive = category.market_cap_change_24h != null && category.market_cap_change_24h >= 0;
 
   return (
     <article className="rounded-xl border bg-card p-5 transition-all hover:shadow-md hover:border-accent/30">

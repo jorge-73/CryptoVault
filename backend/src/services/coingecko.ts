@@ -30,8 +30,8 @@ export interface CoinMarket {
 export interface CoinCategory {
   id: string;
   name: string;
-  market_cap: number;
-  market_cap_change_24h: number;
+  market_cap: number | null;
+  market_cap_change_24h: number | null;
   top_3_coins: string[];
 }
 
