@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { CryptoCard } from "@/components/crypto/crypto-card";
 import { CryptoListSkeleton } from "@/components/crypto/crypto-list-skeleton";
+import { MarketOverview } from "@/components/crypto/market-overview";
+import { ErrorState } from "@/components/ui/error-state";
 import { useAuth } from "@/providers/auth-provider";
 import { toast } from "sonner";
 
@@ -26,13 +28,17 @@ export default function DashboardPage() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const { user } = useAuth();
 
-  useEffect(() => {
+  const fetchCoins = () => {
+    setLoading(true);
+    setError(null);
     api.crypto
       .getMarkets()
       .then(setCoins)
       .catch(() => setError("Error al cargar las criptomonedas"))
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => { fetchCoins(); }, []);
 
   useEffect(() => {
     if (user) {
@@ -66,25 +72,25 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
-            Precios de criptomonedas en tiempo real
-          </p>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Precios de criptomonedas en tiempo real
+        </p>
       </div>
 
+      <MarketOverview />
+
       {error && (
-        <div className="rounded-xl border border-red/20 bg-red/5 p-4 text-red text-sm">
-          {error}
+        <div className="mb-6">
+          <ErrorState message={error} onRetry={fetchCoins} />
         </div>
       )}
 
       {loading ? (
         <CryptoListSkeleton count={10} />
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {coins.map((coin) => (
             <CryptoCard
               key={coin.id}

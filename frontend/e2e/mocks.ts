@@ -148,8 +148,20 @@ function userResponse() {
   return { user: { id: MOCK_USER_ID, email: MOCK_USER_EMAIL, name: MOCK_USER_NAME } };
 }
 
+export const mockGlobalData = {
+  total_market_cap: 2_400_000_000_000,
+  total_volume_24h: 85_000_000_000,
+  btc_dominance: 54.2,
+  market_cap_change_24h: 2.35,
+  active_cryptocurrencies: 12345,
+};
+
 export function setupCryptoMocks(page: any) {
   const mockChart = generateChartPrices(100, 67500);
+
+  page.route('**/api/crypto/global', async (route: any) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockGlobalData) });
+  });
 
   page.route('**/api/crypto/markets**', async (route: any) => {
     const url = new URL(route.request().url());

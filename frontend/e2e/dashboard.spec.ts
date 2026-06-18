@@ -7,8 +7,8 @@ test.describe('Dashboard', () => {
 
     await page.goto('/');
 
-    const skeleton = page.locator('.animate-pulse').first();
-    await expect(skeleton).toBeVisible({ timeout: 3000 });
+    const skeletons = page.locator('.animate-pulse');
+    await expect(skeletons.first()).toBeVisible({ timeout: 3000 });
 
     const bitcoinCard = page.locator('a[href="/coin/bitcoin"]');
     await expect(bitcoinCard).toBeVisible({ timeout: 10000 });
@@ -16,7 +16,7 @@ test.describe('Dashboard', () => {
     await expect(bitcoinCard).toContainText('$67,500.00');
     await expect(bitcoinCard).toContainText('+2.45%');
 
-    await expect(skeleton).not.toBeVisible();
+    await expect(skeletons).toHaveCount(0);
   });
 
   test('should render all 10 coin cards', async ({ page }) => {
