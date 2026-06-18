@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { CryptoCard } from "@/components/crypto/crypto-card";
 import { CryptoListSkeleton } from "@/components/crypto/crypto-list-skeleton";
+import { AnimatedMount } from "@/components/ui";
 import { useAuth } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -62,42 +63,44 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold">Mis Favoritos</h1>
-        <p className="text-muted-foreground mt-1">
-          {favorites.length > 0
-            ? `${favorites.length} criptomoneda(s) guardada(s)`
-            : "Aún no tienes favoritos"}
-        </p>
-      </div>
-
-      {favorites.length === 0 ? (
-        <div className="rounded-xl border bg-card p-12 text-center">
-          <Star className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <h2 className="text-lg font-semibold mb-2">Sin favoritos</h2>
-          <p className="text-muted-foreground mb-6">
-            Añade criptomonedas a tu lista desde el dashboard
+    <AnimatedMount>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold">Mis Favoritos</h1>
+          <p className="text-muted-foreground mt-1">
+            {favorites.length > 0
+              ? `${favorites.length} criptomoneda(s) guardada(s)`
+              : "Aún no tienes favoritos"}
           </p>
-          <button
-            onClick={() => router.push("/")}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors"
-          >
-            Explorar mercado
-          </button>
         </div>
-      ) : (
-        <div className="space-y-3">
-          {favorites.map((coin) => (
-            <CryptoCard
-              key={coin.id}
-              coin={coin}
-              isFavorite
-              onToggleFavorite={removeFavorite}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+
+        {favorites.length === 0 ? (
+          <div className="rounded-xl border bg-card p-12 text-center">
+            <Star className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <h2 className="text-lg font-semibold mb-2">Sin favoritos</h2>
+            <p className="text-muted-foreground mb-6">
+              Añade criptomonedas a tu lista desde el dashboard
+            </p>
+            <button
+              onClick={() => router.push("/")}
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors"
+            >
+              Explorar mercado
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {favorites.map((coin) => (
+              <CryptoCard
+                key={coin.id}
+                coin={coin}
+                isFavorite
+                onToggleFavorite={removeFavorite}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </AnimatedMount>
   );
 }
