@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { mockMarkets, setupCryptoMocks } from './mocks';
+import { mockMarkets, setupCryptoMocks, setupAuthMocks, authConfig } from './mocks';
 
 test.describe('Dashboard', () => {
   test('should show skeleton then render coin cards', async ({ page }) => {
@@ -7,13 +7,13 @@ test.describe('Dashboard', () => {
 
     await page.goto('/');
 
-    const skeleton = page.locator('.animate-pulse');
+    const skeleton = page.locator('.animate-pulse').first();
     await expect(skeleton).toBeVisible({ timeout: 3000 });
 
-    const bitcoinCard = page.locator('article', { hasText: 'Bitcoin' });
+    const bitcoinCard = page.locator('a[href="/coin/bitcoin"]');
     await expect(bitcoinCard).toBeVisible({ timeout: 10000 });
-    await expect(bitcoinCard).toContainText('BTC');
-    await expect(bitcoinCard).toContainText('$67,500');
+    await expect(bitcoinCard).toContainText('btc');
+    await expect(bitcoinCard).toContainText('$67,500.00');
     await expect(bitcoinCard).toContainText('+2.45%');
 
     await expect(skeleton).not.toBeVisible();
@@ -24,7 +24,7 @@ test.describe('Dashboard', () => {
 
     await page.goto('/');
 
-    const cards = page.locator('article');
+    const cards = page.locator('a[href^="/coin/"]');
     await expect(cards).toHaveCount(mockMarkets.length, { timeout: 10000 });
   });
 
@@ -42,7 +42,9 @@ test.describe('Dashboard', () => {
   });
 
   test('should not show favorite button when not logged in', async ({ page }) => {
+    authConfig.authenticated = false;
     setupCryptoMocks(page);
+    setupAuthMocks(page);
 
     await page.goto('/');
 

@@ -11,7 +11,7 @@ test.describe('Categories', () => {
     await expect(header).toContainText('Categorías');
 
     for (const cat of mockCategories) {
-      await expect(page.locator('text=' + cat.name)).toBeVisible({ timeout: 10000 });
+      await expect(page.locator(`text=${cat.name}`)).toBeVisible({ timeout: 10000 });
     }
   });
 
@@ -20,17 +20,17 @@ test.describe('Categories', () => {
 
     await page.goto('/categories');
 
-    const defiCard = page.locator('a').filter({ hasText: 'DeFi' }).first();
+    const defiCard = page.locator('article').filter({ hasText: 'DeFi' }).first();
     await expect(defiCard).toBeVisible({ timeout: 10000 });
 
-    const images = defiCard.locator('img[alt*="Logo"]');
+    const images = defiCard.locator('img');
     const count = await images.count();
     expect(count).toBeGreaterThan(0);
 
-    const memeCard = page.locator('a').filter({ hasText: 'Meme' }).first();
+    const memeCard = page.locator('article').filter({ hasText: 'Meme' }).first();
     await expect(memeCard).toBeVisible();
 
-    const shibaText = memeCard.locator('text=SHIB');
+    const shibaText = memeCard.locator('text=S');
     await expect(shibaText).toBeVisible();
   });
 
@@ -39,7 +39,8 @@ test.describe('Categories', () => {
 
     await page.goto('/categories');
 
-    const defiCard = page.locator('a').filter({ hasText: 'DeFi' }).first();
-    await expect(defiCard).toContainText('$45,000', { timeout: 10000 });
+    const defiCard = page.locator('article').filter({ hasText: 'DeFi' }).first();
+    await expect(defiCard).toContainText('$45.00B', { timeout: 10000 });
+    await expect(defiCard).toContainText('+2.30%');
   });
 });

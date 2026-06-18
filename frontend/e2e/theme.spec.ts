@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { setupAuthMocks } from './mocks';
 
 test.describe('Theme', () => {
   test('should toggle between light and dark mode', async ({ page }) => {
+    setupAuthMocks(page);
+
     await page.goto('/');
 
     const html = page.locator('html');
@@ -28,6 +31,8 @@ test.describe('Theme', () => {
   });
 
   test('should persist theme across page reload', async ({ page }) => {
+    setupAuthMocks(page);
+
     await page.goto('/');
 
     const html = page.locator('html');

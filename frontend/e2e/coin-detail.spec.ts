@@ -8,8 +8,8 @@ test.describe('Coin Detail', () => {
     await page.goto('/coin/bitcoin');
 
     await expect(page.locator('h1')).toContainText('Bitcoin', { timeout: 10000 });
-    await expect(page.locator('text=$67,500')).toBeVisible();
-    await expect(page.locator('text=+2.45%')).toBeVisible();
+    await expect(page.locator('text=$67,500').first()).toBeVisible();
+    await expect(page.locator('text=+2.45%').first()).toBeVisible();
     await expect(page.locator('text=#1')).toBeVisible();
   });
 

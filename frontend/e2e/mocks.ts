@@ -1,3 +1,20 @@
+export const MOCK_USER_ID = 'e2e-mock-user-id';
+export const MOCK_USER_EMAIL = 'e2e@test.com';
+export const MOCK_USER_NAME = 'Test User';
+
+const FAKE_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlMmUtbW9jay11c2VyLWlkIiwiZW1haWwiOiJlMmVAdGVzdC5jb20iLCJpYXQiOjE1MTYyMzkwMjJ9.test';
+const AUTH_COOKIES = [
+  `access_token=${FAKE_TOKEN}; HttpOnly; Path=/; Max-Age=900`,
+  `refresh_token=${FAKE_TOKEN}; HttpOnly; Path=/; Max-Age=604800`,
+];
+const CLEAR_COOKIES = [
+  'access_token=; HttpOnly; Path=/; Max-Age=0',
+  'refresh_token=; HttpOnly; Path=/; Max-Age=0',
+];
+
+export const authConfig = { authenticated: true };
+export const mockFavorites: string[] = [];
+
 export const mockMarkets = [
   {
     id: 'bitcoin', symbol: 'btc', name: 'Bitcoin',
@@ -94,7 +111,7 @@ export const mockCategories = [
   },
 ];
 
-export function generateChartPrices(count = 100, basePrice = 67000): { timestamp: number; price: number }[] {
+export function generateChartPrices(count = 100, basePrice = 67000) {
   const now = Date.now();
   const interval = (7 * 24 * 60 * 60 * 1000) / count;
   const prices: { timestamp: number; price: number }[] = [];
@@ -126,6 +143,10 @@ export const mockPricesByIds = [
   { id: 'render-token', image: null, symbol: 'render', name: 'Render Token' },
   { id: 'bittensor', image: null, symbol: 'tao', name: 'Bittensor' },
 ];
+
+function userResponse() {
+  return { user: { id: MOCK_USER_ID, email: MOCK_USER_EMAIL, name: MOCK_USER_NAME } };
+}
 
 export function setupCryptoMocks(page: any) {
   const mockChart = generateChartPrices(100, 67500);
@@ -161,4 +182,95 @@ export function setupCryptoMocks(page: any) {
       body: JSON.stringify({ coinId: 'bitcoin', currency: 'usd', days: 7, prices: mockChart }),
     });
   });
+}
+
+export function setupAuthMocks(page: any) {
+  page.route('**/api/auth/register', async (route: any) => {
+    const body = JSON.parse(route.request().postData() || '{}');
+    if (body.email && !body.email.includes('@')) {
+      return route.fulfill({ status: 400, contentType: 'application/json', body: JSON.stringify({ error: 'Invalid email format' }) });
+    }
+    await route.fulfill({
+      status: 201,
+      contentType: 'application/json',
+      headers: { 'set-cookie': AUTH_COOKIES as any },
+      body: JSON.stringify(userResponse()),
+    });
+  });
+
+  page.route('**/api/auth/login', async (route: any) => {
+    const body = JSON.parse(route.request().postData() || '{}');
+    if (body.password === 'wrongpassword') {
+      return route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ error: 'Invalid credentials' }) });
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: { 'set-cookie': AUTH_COOKIES as any },
+      body: JSON.stringify(userResponse()),
+    });
+  });
+
+  page.route('**/api/auth/logout', async (route: any) => {
+    authConfig.authenticated = false;
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      headers: { 'set-cookie': CLEAR_COOKIES as any },
+      body: JSON.stringify({ message: 'Logged out successfully' }),
+    });
+  });
+
+  page.route('**/api/auth/me', async (route: any) => {
+    if (authConfig.authenticated) {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(userResponse()) });
+    } else {
+      await route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ error: 'Unauthorized' }) });
+    }
+  });
+
+  page.route('**/api/auth/refresh', async (route: any) => {
+    if (authConfig.authenticated) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        headers: { 'set-cookie': AUTH_COOKIES as any },
+        body: JSON.stringify(userResponse()),
+      });
+    } else {
+      await route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ error: 'Unauthorized' }) });
+    }
+  });
+}
+
+export function setupFavoritesMocks(page: any) {
+  page.route('**/api/favorites', async (route: any) => {
+    if (route.request().method() === 'GET') {
+      const favData = mockFavorites.map((id) => {
+        const coin = mockMarkets.find((m) => m.id === id);
+        return coin ? { id: coin.id, name: coin.name, symbol: coin.symbol, image: coin.image, current_price: coin.current_price, price_change_percentage_24h: coin.price_change_percentage_24h } : null;
+      }).filter(Boolean);
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(favData) });
+    } else if (route.request().method() === 'POST') {
+      const body = JSON.parse(route.request().postData() || '{}');
+      if (body.coinId && !mockFavorites.includes(body.coinId)) {
+        mockFavorites.push(body.coinId);
+      }
+      await route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify({ message: 'Añadido a favoritos' }) });
+    }
+  });
+
+  page.route('**/api/favorites/*', async (route: any) => {
+    const urlParts = route.request().url().split('/');
+    const coinId = urlParts[urlParts.length - 1];
+    const idx = mockFavorites.indexOf(coinId);
+    if (idx > -1) mockFavorites.splice(idx, 1);
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ message: 'Eliminado de favoritos' }) });
+  });
+}
+
+export function setupAllMocks(page: any) {
+  setupCryptoMocks(page);
+  setupAuthMocks(page);
+  setupFavoritesMocks(page);
 }
