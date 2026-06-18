@@ -1,6 +1,10 @@
 import { env } from '../config/env.js';
+import { getCache, setCache } from './cache.js';
 
 const BASE = env.COINGECKO_API_URL;
+
+const MARKETS_TTL = 60_000;
+const CATEGORIES_TTL = 300_000;
 
 async function fetchFromCoinGecko<T>(endpoint: string): Promise<T> {
   const response = await fetch(`${BASE}${endpoint}`, {
@@ -12,6 +16,16 @@ async function fetchFromCoinGecko<T>(endpoint: string): Promise<T> {
   }
 
   return response.json();
+}
+
+function cachedFetch<T>(endpoint: string, ttl: number): Promise<T> {
+  const cached = getCache<T>(endpoint);
+  if (cached) return Promise.resolve(cached);
+
+  return fetchFromCoinGecko<T>(endpoint).then((data) => {
+    setCache(endpoint, data, ttl);
+    return data;
+  });
 }
 
 export interface CoinMarket {
@@ -37,18 +51,16 @@ export interface CoinCategory {
 
 export const coingeckoService = {
   async getMarkets(currency: string = 'usd', perPage: number = 50): Promise<CoinMarket[]> {
-    return fetchFromCoinGecko<CoinMarket[]>(
-      `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false`
-    );
+    const endpoint = `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false`;
+    return cachedFetch<CoinMarket[]>(endpoint, MARKETS_TTL);
   },
 
   async getCategories(): Promise<CoinCategory[]> {
-    return fetchFromCoinGecko<CoinCategory[]>('/coins/categories');
+    return cachedFetch<CoinCategory[]>('/coins/categories', CATEGORIES_TTL);
   },
 
   async getPricesByIds(ids: string[], currency: string = 'usd'): Promise<CoinMarket[]> {
-    return fetchFromCoinGecko<CoinMarket[]>(
-      `/coins/markets?vs_currency=${currency}&ids=${ids.join(',')}&order=market_cap_desc&per_page=${ids.length}&page=1&sparkline=false`
-    );
+    const endpoint = `/coins/markets?vs_currency=${currency}&ids=${ids.join(',')}&order=market_cap_desc&per_page=${ids.length}&page=1&sparkline=false`;
+    return cachedFetch<CoinMarket[]>(endpoint, MARKETS_TTL);
   },
 };
