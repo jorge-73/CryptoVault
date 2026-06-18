@@ -49,6 +49,20 @@ export interface CoinCategory {
   top_3_coins: string[];
 }
 
+export interface ChartDataPoint {
+  timestamp: number;
+  price: number;
+}
+
+export interface CoinChartData {
+  coinId: string;
+  currency: string;
+  days: number;
+  prices: ChartDataPoint[];
+}
+
+const CHART_TTL = 300_000;
+
 export const coingeckoService = {
   async getMarkets(currency: string = 'usd', perPage: number = 50): Promise<CoinMarket[]> {
     const endpoint = `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false`;
@@ -62,5 +76,17 @@ export const coingeckoService = {
   async getPricesByIds(ids: string[], currency: string = 'usd'): Promise<CoinMarket[]> {
     const endpoint = `/coins/markets?vs_currency=${currency}&ids=${ids.join(',')}&order=market_cap_desc&per_page=${ids.length}&page=1&sparkline=false`;
     return cachedFetch<CoinMarket[]>(endpoint, MARKETS_TTL);
+  },
+
+  async getChart(coinId: string, currency: string = 'usd', days: number = 7): Promise<CoinChartData> {
+    const endpoint = `/coins/${coinId}/market_chart?vs_currency=${currency}&days=${days}`;
+    const raw = await cachedFetch<{ prices: [number, number][] }>(endpoint, CHART_TTL);
+
+    const prices: ChartDataPoint[] = raw.prices.map(([timestamp, price]) => ({
+      timestamp,
+      price,
+    }));
+
+    return { coinId, currency, days, prices };
   },
 };

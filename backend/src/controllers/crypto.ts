@@ -45,4 +45,18 @@ export const cryptoController = {
       next(new AppError(message, 502));
     }
   },
+
+  async getChart(req: Request<{ coinId: string }>, res: Response, next: NextFunction) {
+    try {
+      const { coinId } = req.params;
+      const currency = (req.query.currency as string) || 'usd';
+      const days = Number(req.query.days) || 7;
+
+      const data = await coingeckoService.getChart(coinId, currency, days);
+      res.json(data);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch chart data from CoinGecko';
+      next(new AppError(message, 502));
+    }
+  },
 };

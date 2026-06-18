@@ -2,16 +2,12 @@ import { describe, it, expect } from 'vitest';
 import request from 'supertest';
 import app from '../app.js';
 
-async function registerAndLogin() {
-  await request(app)
+async function registerAndGetCookies() {
+  const res = await request(app)
     .post('/api/auth/register')
     .send({ email: 'fav@test.com', password: 'password123' });
 
-  const loginRes = await request(app)
-    .post('/api/auth/login')
-    .send({ email: 'fav@test.com', password: 'password123' });
-
-  const raw = loginRes.headers['set-cookie'];
+  const raw = res.headers['set-cookie'];
   const cookies = (Array.isArray(raw) ? raw : [raw])
     .map((c: string) => c.split(';')[0])
     .join('; ');
@@ -25,7 +21,7 @@ describe('GET /api/favorites', () => {
   });
 
   it('should return empty array when no favorites', async () => {
-    const cookies = await registerAndLogin();
+    const cookies = await registerAndGetCookies();
 
     const res = await request(app)
       .get('/api/favorites')
@@ -38,7 +34,7 @@ describe('GET /api/favorites', () => {
 
 describe('POST /api/favorites', () => {
   it('should add a favorite', async () => {
-    const cookies = await registerAndLogin();
+    const cookies = await registerAndGetCookies();
 
     const res = await request(app)
       .post('/api/favorites')
@@ -50,7 +46,7 @@ describe('POST /api/favorites', () => {
   });
 
   it('should reject missing cryptoId', async () => {
-    const cookies = await registerAndLogin();
+    const cookies = await registerAndGetCookies();
 
     const res = await request(app)
       .post('/api/favorites')

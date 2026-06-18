@@ -6,5 +6,6 @@ export default defineConfig({
     environment: 'node',
     setupFiles: ['./src/__tests__/setup.ts'],
     pool: 'forks',
+    fileParallelism: false,
   },
 });

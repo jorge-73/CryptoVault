@@ -2,15 +2,19 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import request from 'supertest';
 import app from '../app.js';
 
+const mockGetMarkets = vi.hoisted(() => vi.fn());
+const mockGetCategories = vi.hoisted(() => vi.fn());
+const mockGetPricesByIds = vi.hoisted(() => vi.fn());
+const mockGetChart = vi.hoisted(() => vi.fn());
+
 vi.mock('../services/coingecko.js', () => ({
   coingeckoService: {
-    getMarkets: vi.fn(),
-    getCategories: vi.fn(),
-    getPricesByIds: vi.fn(),
+    getMarkets: mockGetMarkets,
+    getCategories: mockGetCategories,
+    getPricesByIds: mockGetPricesByIds,
+    getChart: mockGetChart,
   },
 }));
-
-const { coingeckoService } = await import('../services/coingecko.js');
 
 const mockMarkets = [
   {
@@ -69,7 +73,7 @@ beforeEach(() => {
 
 describe('GET /api/crypto/markets', () => {
   it('should return market data', async () => {
-    vi.mocked(coingeckoService.getMarkets).mockResolvedValue(mockMarkets);
+    mockGetMarkets.mockResolvedValue(mockMarkets);
 
     const res = await request(app).get('/api/crypto/markets');
 
@@ -77,11 +81,11 @@ describe('GET /api/crypto/markets', () => {
     expect(res.body).toHaveLength(2);
     expect(res.body[0].id).toBe('bitcoin');
     expect(res.body[0].current_price).toBe(50000);
-    expect(coingeckoService.getMarkets).toHaveBeenCalledWith('usd', 50);
+    expect(mockGetMarkets).toHaveBeenCalledWith('usd', 50);
   });
 
   it('should respect currency and per_page params', async () => {
-    vi.mocked(coingeckoService.getMarkets).mockResolvedValue([mockMarkets[0]]);
+    mockGetMarkets.mockResolvedValue([mockMarkets[0]]);
 
     const res = await request(app)
       .get('/api/crypto/markets')
@@ -89,11 +93,11 @@ describe('GET /api/crypto/markets', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(1);
-    expect(coingeckoService.getMarkets).toHaveBeenCalledWith('eur', 1);
+    expect(mockGetMarkets).toHaveBeenCalledWith('eur', 1);
   });
 
   it('should return 502 on CoinGecko error', async () => {
-    vi.mocked(coingeckoService.getMarkets).mockRejectedValue(new Error('API error'));
+    mockGetMarkets.mockRejectedValue(new Error('API error'));
 
     const res = await request(app).get('/api/crypto/markets');
 
@@ -104,8 +108,8 @@ describe('GET /api/crypto/markets', () => {
 
 describe('GET /api/crypto/categories', () => {
   it('should return categories with enriched coin images', async () => {
-    vi.mocked(coingeckoService.getCategories).mockResolvedValue(mockCategories);
-    vi.mocked(coingeckoService.getPricesByIds).mockResolvedValue(
+    mockGetCategories.mockResolvedValue(mockCategories);
+    mockGetPricesByIds.mockResolvedValue(
       mockPrices as any,
     );
 
@@ -125,8 +129,8 @@ describe('GET /api/crypto/categories', () => {
   });
 
   it('should return categories with null images when enrichment fails', async () => {
-    vi.mocked(coingeckoService.getCategories).mockResolvedValue(mockCategories);
-    vi.mocked(coingeckoService.getPricesByIds).mockRejectedValue(
+    mockGetCategories.mockResolvedValue(mockCategories);
+    mockGetPricesByIds.mockRejectedValue(
       new Error('Enrichment failed'),
     );
 
@@ -142,7 +146,7 @@ describe('GET /api/crypto/categories', () => {
   });
 
   it('should return 502 on CoinGecko error', async () => {
-    vi.mocked(coingeckoService.getCategories).mockRejectedValue(
+    mockGetCategories.mockRejectedValue(
       new Error('Categories API error'),
     );
 
@@ -153,11 +157,69 @@ describe('GET /api/crypto/categories', () => {
   });
 
   it('should handle empty categories gracefully', async () => {
-    vi.mocked(coingeckoService.getCategories).mockResolvedValue([]);
+    mockGetCategories.mockResolvedValue([]);
 
     const res = await request(app).get('/api/crypto/categories');
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual([]);
+  });
+});
+
+describe('GET /api/crypto/chart/:coinId', () => {
+  const mockChartResponse = {
+    prices: [
+      [1700000000000, 42000],
+      [1700086400000, 43000],
+      [1700172800000, 41500],
+    ],
+  };
+
+  it('should return chart data for a coin', async () => {
+    mockGetChart.mockResolvedValue({
+      coinId: 'bitcoin',
+      currency: 'usd',
+      days: 7,
+      prices: mockChartResponse.prices.map(([ts, price]) => ({
+        timestamp: ts,
+        price,
+      })),
+    });
+
+    const res = await request(app).get('/api/crypto/chart/bitcoin');
+
+    expect(res.status).toBe(200);
+    expect(res.body.coinId).toBe('bitcoin');
+    expect(res.body.prices).toHaveLength(3);
+    expect(res.body.prices[0]).toHaveProperty('timestamp');
+    expect(res.body.prices[0]).toHaveProperty('price');
+  });
+
+  it('should respect currency and days params', async () => {
+    mockGetChart.mockResolvedValue({
+      coinId: 'ethereum',
+      currency: 'eur',
+      days: 30,
+      prices: [],
+    });
+
+    const res = await request(app)
+      .get('/api/crypto/chart/ethereum')
+      .query({ currency: 'eur', days: '30' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.currency).toBe('eur');
+    expect(res.body.days).toBe(30);
+  });
+
+  it('should return 502 on CoinGecko error', async () => {
+    mockGetChart.mockRejectedValue(
+      new Error('Chart API error'),
+    );
+
+    const res = await request(app).get('/api/crypto/chart/unknown');
+
+    expect(res.status).toBe(502);
+    expect(res.body.error).toBe('Chart API error');
   });
 });
