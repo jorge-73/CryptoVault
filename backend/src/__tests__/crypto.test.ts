@@ -6,6 +6,7 @@ const mockGetMarkets = vi.hoisted(() => vi.fn());
 const mockGetCategories = vi.hoisted(() => vi.fn());
 const mockGetPricesByIds = vi.hoisted(() => vi.fn());
 const mockGetChart = vi.hoisted(() => vi.fn());
+const mockGetGlobal = vi.hoisted(() => vi.fn());
 
 vi.mock('../services/coingecko.js', () => ({
   coingeckoService: {
@@ -13,6 +14,7 @@ vi.mock('../services/coingecko.js', () => ({
     getCategories: mockGetCategories,
     getPricesByIds: mockGetPricesByIds,
     getChart: mockGetChart,
+    getGlobal: mockGetGlobal,
   },
 }));
 
@@ -163,6 +165,39 @@ describe('GET /api/crypto/categories', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toEqual([]);
+  });
+});
+
+describe('GET /api/crypto/global', () => {
+  const mockGlobal = {
+    total_market_cap: 2_400_000_000_000,
+    total_volume_24h: 85_000_000_000,
+    btc_dominance: 54.2,
+    market_cap_change_24h: 2.3,
+    active_cryptocurrencies: 12000,
+  };
+
+  it('should return global market data', async () => {
+    mockGetGlobal.mockResolvedValue(mockGlobal);
+
+    const res = await request(app).get('/api/crypto/global');
+
+    expect(res.status).toBe(200);
+    expect(res.body.total_market_cap).toBe(2_400_000_000_000);
+    expect(res.body.total_volume_24h).toBe(85_000_000_000);
+    expect(res.body.btc_dominance).toBe(54.2);
+    expect(res.body.market_cap_change_24h).toBe(2.3);
+    expect(res.body.active_cryptocurrencies).toBe(12000);
+    expect(mockGetGlobal).toHaveBeenCalledOnce();
+  });
+
+  it('should return 502 on CoinGecko error', async () => {
+    mockGetGlobal.mockRejectedValue(new Error('Global API error'));
+
+    const res = await request(app).get('/api/crypto/global');
+
+    expect(res.status).toBe(502);
+    expect(res.body.error).toBe('Global API error');
   });
 });
 

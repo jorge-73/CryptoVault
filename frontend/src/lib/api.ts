@@ -72,6 +72,14 @@ export const api = {
     getMarkets: (currency = "usd", perPage = 50) =>
       request<any[]>(`/crypto/markets?currency=${currency}&per_page=${perPage}`),
     getCategories: () => request<any[]>("/crypto/categories"),
+    getGlobal: () =>
+      request<{
+        total_market_cap: number;
+        total_volume_24h: number;
+        btc_dominance: number;
+        market_cap_change_24h: number;
+        active_cryptocurrencies: number;
+      }>("/crypto/global"),
     getChart: (coinId: string, currency = "usd", days = 7) =>
       request<{ coinId: string; currency: string; days: number; prices: { timestamp: number; price: number }[] }>(
         `/crypto/chart/${coinId}?currency=${currency}&days=${days}`

@@ -63,6 +63,16 @@ export interface CoinChartData {
 
 const CHART_TTL = 300_000;
 
+export interface GlobalData {
+  total_market_cap: number;
+  total_volume_24h: number;
+  btc_dominance: number;
+  market_cap_change_24h: number;
+  active_cryptocurrencies: number;
+}
+
+const GLOBAL_TTL = 120_000;
+
 export const coingeckoService = {
   async getMarkets(currency: string = 'usd', perPage: number = 50): Promise<CoinMarket[]> {
     const endpoint = `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false`;
@@ -88,5 +98,25 @@ export const coingeckoService = {
     }));
 
     return { coinId, currency, days, prices };
+  },
+
+  async getGlobal(): Promise<GlobalData> {
+    const raw = await cachedFetch<{
+      data: {
+        total_market_cap: { usd: number };
+        total_volume: { usd: number };
+        market_cap_percentage: { btc: number };
+        market_cap_change_percentage_24h_usd: number;
+        active_cryptocurrencies: number;
+      };
+    }>('/global', GLOBAL_TTL);
+
+    return {
+      total_market_cap: raw.data.total_market_cap.usd,
+      total_volume_24h: raw.data.total_volume.usd,
+      btc_dominance: raw.data.market_cap_percentage.btc,
+      market_cap_change_24h: raw.data.market_cap_change_percentage_24h_usd,
+      active_cryptocurrencies: raw.data.active_cryptocurrencies,
+    };
   },
 };
