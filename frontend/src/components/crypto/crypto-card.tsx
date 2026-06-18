@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
-import { cn, formatPrice, formatPercentage, formatMarketCap } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { cn, formatPrice, formatMarketCap } from "@/lib/utils";
 
 interface CryptoCardProps {
   coin: {
@@ -20,52 +21,8 @@ interface CryptoCardProps {
 }
 
 export function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardProps) {
-  const isPositive = coin.price_change_percentage_24h != null && coin.price_change_percentage_24h >= 0;
-
   return (
-    <div className="group flex items-center gap-4 rounded-xl border bg-card p-4 transition-all hover:shadow-md hover:border-accent/30">
-      <Link
-        href={`/coin/${coin.id}`}
-        className="flex items-center gap-4 flex-1 min-w-0"
-      >
-        <div className="flex-shrink-0 text-sm text-muted-foreground w-6 text-right">
-          {coin.market_cap_rank}
-        </div>
-
-        <div className="relative h-10 w-10 flex-shrink-0">
-          <Image
-            src={coin.image}
-            alt={`Logo de ${coin.name}`}
-            fill
-            unoptimized
-            className="rounded-full object-contain"
-            sizes="40px"
-          />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold truncate">{coin.name}</h3>
-            <span className="text-sm text-muted-foreground uppercase">{coin.symbol}</span>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Cap. {formatMarketCap(coin.market_cap)}
-          </p>
-        </div>
-
-        <div className="text-right flex-shrink-0">
-          <p className="font-semibold">{formatPrice(coin.current_price)}</p>
-          <p
-            className={cn(
-              "text-sm font-medium",
-              isPositive ? "text-green" : "text-red"
-            )}
-          >
-            {formatPercentage(coin.price_change_percentage_24h)}
-          </p>
-        </div>
-      </Link>
-
+    <div className="group relative rounded-xl border bg-card p-4 transition-all hover:shadow-lg hover:border-accent/30 hover:-translate-y-0.5">
       {onToggleFavorite && (
         <button
           onClick={(e) => {
@@ -73,16 +30,62 @@ export function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardPro
             onToggleFavorite(coin.id);
           }}
           className={cn(
-            "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg transition-colors",
+            "absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-md transition-colors z-10",
             isFavorite
               ? "text-yellow-500 hover:text-yellow-600"
-              : "text-muted-foreground hover:text-yellow-500"
+              : "text-muted-foreground/40 hover:text-yellow-500"
           )}
           aria-label={isFavorite ? `Quitar ${coin.name} de favoritos` : `Añadir ${coin.name} a favoritos`}
         >
-          <Star className={cn("h-5 w-5", isFavorite && "fill-current")} />
+          <Star className={cn("h-4 w-4", isFavorite && "fill-current")} />
         </button>
       )}
+
+      <Link
+        href={`/coin/${coin.id}`}
+        className="flex flex-col gap-3"
+      >
+        <div className="flex items-center gap-3">
+          <div className="relative h-9 w-9 flex-shrink-0">
+            <Image
+              src={coin.image}
+              alt={`Logo de ${coin.name}`}
+              fill
+              unoptimized
+              className="rounded-full object-contain"
+              sizes="36px"
+            />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs text-muted-foreground tabular-nums">
+                #{coin.market_cap_rank ?? "—"}
+              </span>
+              <h3 className="font-semibold truncate text-sm">{coin.name}</h3>
+            </div>
+            <span className="text-xs text-muted-foreground uppercase tracking-wide">
+              {coin.symbol}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="text-lg font-bold tabular-nums">
+              {formatPrice(coin.current_price)}
+            </p>
+            <Badge value={coin.price_change_percentage_24h} className="mt-0.5" />
+          </div>
+
+          <div className="text-right">
+            <p className="text-[11px] text-muted-foreground">Cap.</p>
+            <p className="text-xs font-medium tabular-nums">
+              {formatMarketCap(coin.market_cap)}
+            </p>
+          </div>
+        </div>
+      </Link>
     </div>
   );
 }
