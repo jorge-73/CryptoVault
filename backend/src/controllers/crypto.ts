@@ -20,23 +20,26 @@ export const cryptoController = {
       const categories = await coingeckoService.getCategories();
 
       const allCoinIds = [...new Set(categories.flatMap((c) => c.top_3_coins))];
+      let imageMap = new Map<string, string | null>();
 
       if (allCoinIds.length > 0) {
-        const coinData = await coingeckoService.getPricesByIds(allCoinIds);
-        const imageMap = new Map(coinData.map((c) => [c.id, c.image]));
-
-        const enriched = categories.map((cat) => ({
-          ...cat,
-          top_3_coins: cat.top_3_coins.map((id) => ({
-            id,
-            image: imageMap.get(id) || null,
-          })),
-        }));
-
-        res.json(enriched);
-      } else {
-        res.json(categories);
+        try {
+          const coinData = await coingeckoService.getPricesByIds(allCoinIds);
+          imageMap = new Map(coinData.map((c) => [c.id, c.image]));
+        } catch {
+          // Enrichment failed — images will be null, categories still work
+        }
       }
+
+      const result = categories.map((cat) => ({
+        ...cat,
+        top_3_coins: cat.top_3_coins.map((id) => ({
+          id,
+          image: imageMap.get(id) ?? null,
+        })),
+      }));
+
+      res.json(result);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch categories from CoinGecko';
       next(new AppError(message, 502));
