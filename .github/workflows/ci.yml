@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+
+  lint-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+
+  test-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm test
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  status-check:
+    if: always()
+    needs: [lint-backend, lint-frontend, test-backend, build-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "lint-backend: ${{ needs.lint-backend.result }}"
+          echo "lint-frontend: ${{ needs.lint-frontend.result }}"
+          echo "test-backend: ${{ needs.test-backend.result }}"
+          echo "build-frontend: ${{ needs.build-frontend.result }}"
+          if [ "${{ needs.lint-backend.result }}" = "success" ] && \
+             [ "${{ needs.lint-frontend.result }}" = "success" ] && \
+             [ "${{ needs.test-backend.result }}" = "success" ] && \
+             [ "${{ needs.build-frontend.result }}" = "success" ]; then
+            echo "All checks passed"
+            exit 0
+          else
+            echo "Some checks failed"
+            exit 1
+          fi
