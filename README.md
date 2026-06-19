@@ -32,18 +32,20 @@ crypto-app/
 │   └── prisma/
 │       └── schema.prisma    # User + Favorite
 ├── frontend/
-│   ├── e2e/                 # Playwright tests (8 specs, 33 tests)
+│   ├── e2e/                 # Playwright tests (9 specs, 39 tests)
 │   │   ├── auth.spec.ts
 │   │   ├── dashboard.spec.ts
 │   │   ├── categories.spec.ts
 │   │   ├── category-detail.spec.ts
 │   │   ├── favorites.spec.ts
 │   │   ├── coin-detail.spec.ts
+│   │   ├── market.spec.ts
 │   │   ├── search.spec.ts
 │   │   ├── theme.spec.ts
 │   │   └── mocks.ts         # mock data + setup functions
 │   ├── src/
 │   │   ├── app/
+│   │   │   ├── market/      # Mercado con tabla profesional (sort, search, top filter)
 │   │   │   ├── categories/
 │   │   │   │   ├── [id]/    # Detalle de sector (client component)
 │   │   │   │   └── page.tsx # Listado premium con sort/filter
@@ -51,7 +53,7 @@ crypto-app/
 │   │   │   ├── auth/        # login, register
 │   │   │   └── profile/     # Favoritos
 │   │   ├── components/
-│   │   │   ├── crypto/      # CryptoCard, MarketOverview, CategoryCard, PriceChart,
+│   │   │   ├── crypto/      # CryptoCard, MarketOverview, MarketTable, CategoryCard, PriceChart,
 │   │   │   │                # SearchBar, SectorOverview, TrendingSectors,
 │   │   │   │                # MarketIntelligence, CategoryCoinTable, CategoryDetailHeader
 │   │   │   ├── layout/      # Header, ThemeToggle
@@ -171,6 +173,38 @@ GET /api/crypto/categories/:id/coins?currency=usd&per_page=100
 
 Reutiliza `getMarkets` con parámetro `category`, devuelve top 100 coins del sector. Cache 60s.
 
+## 📈 Mercado
+
+La página `/market` es un explorador profesional de criptomonedas con datos en tiempo real:
+
+| Componente | Descripción |
+|------------|-------------|
+| **MarketOverview** | 4 StatCards reutilizadas desde dashboard (capitalización, volumen, dominancia, monedas) |
+| **MarketTable** | Tabla completa con todas las funcionalidades profesionales |
+
+### MarketTable
+
+| Funcionalidad | Detalle |
+|---------------|---------|
+| **Columnas** | Rank, Logo+Nombre+Símbolo, Precio, 24h (Badge), 7d (Badge), Cap. Mercado, Volumen, Favorito ★ |
+| **Ordenamiento** | Clic en cualquier header numérico ordena asc/desc con icono de dirección |
+| **Búsqueda** | Input con filtro local por nombre o símbolo (case-insensitive) |
+| **Top Filter** | Botones Top 10 / Top 50 / Top 100 / Todos, filtra sobre los 250 coins cargados |
+| **Responsive** | Tabla completa en ≥768px (`hidden md:block`), cards con rank+logo+precio+cap+vol en <768px |
+| **Skeleton** | 10 filas placeholder en desktop, 5 cards placeholder en mobile |
+| **Estados** | Empty state con mensaje de búsqueda sin resultados, Error state con botón reintentar |
+| **Favoritos** | Botón estrella por fila/card si el usuario está autenticado |
+
+### Animación
+
+Las filas de la tabla usan `motion.tr` con stagger de 20ms entre filas para entrada progresiva al cargar los datos.
+
+### Detalles técnicos
+
+- Backend: `GET /api/crypto/markets?vs_currency=usd&per_page=250` con cache 60s
+- La columna 7d usa `price_change_percentage_7d_in_currency` desde CoinGecko (parámetro `&price_change_percentage=7d`)
+- Nav link "Market" con icono TrendingUp agregado al Header entre Dashboard y Sectores
+
 ## 🔍 Búsqueda
 
 Componente `SearchBar` en `frontend/src/components/crypto/search-bar.tsx`, integrado en el Header (visible en desktop):
@@ -265,7 +299,7 @@ cd frontend
 npx playwright test
 ```
 
-**33 tests** en 8 specs — todas las llamadas API mockeadas (sin dependencia del backend real):
+**39 tests** en 9 specs — todas las llamadas API mockeadas (sin dependencia del backend real):
 
 | Spec             | Tests | Mockea                       |
 |------------------|-------|------------------------------|
@@ -275,6 +309,7 @@ npx playwright test
 | Category Detail  | 8     | crypto endpoints + categories/:id/coins |
 | Favorites        | 3     | auth + crypto + favorites    |
 | Coin Detail      | 4     | crypto endpoints             |
+| Market           | 6     | crypto endpoints             |
 | Search           | 4     | crypto endpoints             |
 | Theme            | 2     | auth (me)                    |
 
@@ -380,6 +415,7 @@ Trigger: `push` y `pull_request` a `main`. Job `status-check` consolida y requie
 - [x] Búsqueda de criptomonedas con debounce
 - [x] Crypto Market Explorer (categorías premium + detalle de sector)
 - [x] Tests e2e de categorías y detalle (33 tests total)
+- [x] Página /market con tabla profesional (sort, search, top filter, 7d column)
 - [ ] Portfolio personal (módulo de inversión)
 - [ ] Alertas de precio (backend + frontend)
 - [ ] Solucionar Docker Desktop para e2e local
