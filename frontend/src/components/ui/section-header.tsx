@@ -9,7 +9,7 @@ interface SectionHeaderProps {
 
 export function SectionHeader({ title, description, action, className }: SectionHeaderProps) {
   return (
-    <div className={cn("flex items-center justify-between mb-6", className)}>
+    <div className={cn("flex items-center justify-between mb-6", className)} suppressHydrationWarning>
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold">{title}</h1>
         {description && (

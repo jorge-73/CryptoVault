@@ -16,7 +16,7 @@ export function AnimatedMount({ children, className }: AnimatedMountProps) {
   }, []);
 
   if (!isMounted) {
-    return <div className={className}>{children}</div>;
+    return <div className={className} suppressHydrationWarning>{children}</div>;
   }
 
   return (
@@ -25,6 +25,7 @@ export function AnimatedMount({ children, className }: AnimatedMountProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" as const }}
       className={className}
+      suppressHydrationWarning
     >
       {children}
     </motion.div>
