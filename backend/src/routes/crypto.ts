@@ -5,6 +5,7 @@ const router = Router();
 
 router.get('/markets', cryptoController.getMarkets);
 router.get('/categories', cryptoController.getCategories);
+router.get('/categories/:id/coins', cryptoController.getCategoryCoins);
 router.get('/global', cryptoController.getGlobal);
 router.get('/chart/:coinId', cryptoController.getChart);
 

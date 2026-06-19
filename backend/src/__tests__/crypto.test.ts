@@ -51,14 +51,24 @@ const mockCategories = [
     name: 'DeFi',
     market_cap: 50_000_000_000,
     market_cap_change_24h: 3.1,
-    top_3_coins: ['uniswap', 'aave', 'maker'],
+    content: 'Decentralized finance sector',
+    volume_24h: 2_000_000_000,
+    top_3_coins: [
+      { id: 'uniswap', image: 'https://example.com/uni.png' },
+      { id: 'aave', image: 'https://example.com/aave.png' },
+      { id: 'maker', image: 'https://example.com/mkr.png' },
+    ],
   },
   {
     id: 'meme',
     name: 'Meme',
     market_cap: 10_000_000_000,
     market_cap_change_24h: -5.2,
-    top_3_coins: ['dogecoin'],
+    content: 'Meme coin sector',
+    volume_24h: 500_000_000,
+    top_3_coins: [
+      { id: 'dogecoin', image: null },
+    ],
   },
 ];
 
@@ -130,21 +140,14 @@ describe('GET /api/crypto/categories', () => {
     ]);
   });
 
-  it('should return categories with null images when enrichment fails', async () => {
+  it('should return categories with description and volume', async () => {
     mockGetCategories.mockResolvedValue(mockCategories);
-    mockGetPricesByIds.mockRejectedValue(
-      new Error('Enrichment failed'),
-    );
 
     const res = await request(app).get('/api/crypto/categories');
 
     expect(res.status).toBe(200);
-    expect(res.body[0].name).toBe('DeFi');
-    expect(res.body[0].top_3_coins).toEqual([
-      { id: 'uniswap', image: null },
-      { id: 'aave', image: null },
-      { id: 'maker', image: null },
-    ]);
+    expect(res.body[0].content).toBe('Decentralized finance sector');
+    expect(res.body[0].volume_24h).toBe(2_000_000_000);
   });
 
   it('should return 502 on CoinGecko error', async () => {
@@ -256,5 +259,30 @@ describe('GET /api/crypto/chart/:coinId', () => {
 
     expect(res.status).toBe(502);
     expect(res.body.error).toBe('Chart API error');
+  });
+});
+
+describe('GET /api/crypto/categories/:id/coins', () => {
+  it('should return coins for a category', async () => {
+    const mockCoins = [
+      { id: 'uniswap', symbol: 'uni', name: 'Uniswap', current_price: 7.5, market_cap: 4_500_000_000, market_cap_rank: 30, price_change_percentage_24h: 3.1, total_volume: 500_000_000, circulating_supply: 600_000_000, image: 'https://example.com/uni.png' },
+    ];
+    mockGetMarkets.mockResolvedValue(mockCoins);
+
+    const res = await request(app).get('/api/crypto/categories/defi/coins');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0].id).toBe('uniswap');
+    expect(mockGetMarkets).toHaveBeenCalledWith('usd', 100, 'defi');
+  });
+
+  it('should return 502 on CoinGecko error', async () => {
+    mockGetMarkets.mockRejectedValue(new Error('Coins API error'));
+
+    const res = await request(app).get('/api/crypto/categories/defi/coins');
+
+    expect(res.status).toBe(502);
+    expect(res.body.error).toBe('Coins API error');
   });
 });

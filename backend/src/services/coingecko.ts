@@ -46,7 +46,9 @@ export interface CoinCategory {
   name: string;
   market_cap: number | null;
   market_cap_change_24h: number | null;
-  top_3_coins: string[];
+  content: string | null;
+  volume_24h: number | null;
+  top_3_coins: { id: string; image: string | null }[];
 }
 
 export interface ChartDataPoint {
@@ -74,13 +76,38 @@ export interface GlobalData {
 const GLOBAL_TTL = 120_000;
 
 export const coingeckoService = {
-  async getMarkets(currency: string = 'usd', perPage: number = 50): Promise<CoinMarket[]> {
-    const endpoint = `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false`;
+  async getMarkets(currency: string = 'usd', perPage: number = 50, category?: string): Promise<CoinMarket[]> {
+    let endpoint = `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false`;
+    if (category) endpoint += `&category=${category}`;
     return cachedFetch<CoinMarket[]>(endpoint, MARKETS_TTL);
   },
 
   async getCategories(): Promise<CoinCategory[]> {
-    return cachedFetch<CoinCategory[]>('/coins/categories', CATEGORIES_TTL);
+    interface RawCategory {
+      id: string;
+      name: string;
+      market_cap: number | null;
+      market_cap_change_24h: number | null;
+      content: string | null;
+      volume_24h: number | null;
+      top_3_coins_id: string[];
+      top_3_coins: string[];
+    }
+
+    const raw = await cachedFetch<RawCategory[]>('/coins/categories', CATEGORIES_TTL);
+
+    return raw.map((cat) => ({
+      id: cat.id,
+      name: cat.name,
+      market_cap: cat.market_cap,
+      market_cap_change_24h: cat.market_cap_change_24h,
+      content: cat.content,
+      volume_24h: cat.volume_24h,
+      top_3_coins: cat.top_3_coins_id.map((id, i) => ({
+        id,
+        image: cat.top_3_coins[i] ?? null,
+      })),
+    }));
   },
 
   async getPricesByIds(ids: string[], currency: string = 'usd'): Promise<CoinMarket[]> {

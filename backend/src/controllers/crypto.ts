@@ -18,30 +18,23 @@ export const cryptoController = {
   async getCategories(_req: Request, res: Response, next: NextFunction) {
     try {
       const categories = await coingeckoService.getCategories();
-
-      const allCoinIds = [...new Set(categories.flatMap((c) => c.top_3_coins))];
-      let imageMap = new Map<string, string | null>();
-
-      if (allCoinIds.length > 0) {
-        try {
-          const coinData = await coingeckoService.getPricesByIds(allCoinIds);
-          imageMap = new Map(coinData.map((c) => [c.id, c.image]));
-        } catch {
-          // Enrichment failed — images will be null, categories still work
-        }
-      }
-
-      const result = categories.map((cat) => ({
-        ...cat,
-        top_3_coins: cat.top_3_coins.map((id) => ({
-          id,
-          image: imageMap.get(id) ?? null,
-        })),
-      }));
-
-      res.json(result);
+      res.json(categories);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch categories from CoinGecko';
+      next(new AppError(message, 502));
+    }
+  },
+
+  async getCategoryCoins(req: Request<{ id: string }>, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const currency = (req.query.currency as string) || 'usd';
+      const perPage = Number(req.query.per_page) || 100;
+
+      const data = await coingeckoService.getMarkets(currency, perPage, id);
+      res.json(data);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch category coins from CoinGecko';
       next(new AppError(message, 502));
     }
   },
