@@ -33,7 +33,7 @@ export default function MarketPage() {
     setLoading(true);
     setError(null);
     api.crypto
-      .getMarkets("usd", 250)
+      .getMarkets("usd", 100)
       .then(setCoins)
       .catch(() => setError("Error al cargar el mercado"))
       .finally(() => setLoading(false));
