@@ -22,6 +22,7 @@ export interface CoinMarket {
   market_cap: number;
   market_cap_rank: number | null;
   price_change_percentage_24h: number | null;
+  price_change_percentage_7d_in_currency: number | null;
   total_volume: number;
   circulating_supply: number;
 }

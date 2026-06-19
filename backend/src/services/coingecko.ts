@@ -37,6 +37,7 @@ export interface CoinMarket {
   market_cap: number;
   market_cap_rank: number | null;
   price_change_percentage_24h: number | null;
+  price_change_percentage_7d_in_currency: number | null;
   total_volume: number;
   circulating_supply: number;
 }
@@ -77,7 +78,7 @@ const GLOBAL_TTL = 120_000;
 
 export const coingeckoService = {
   async getMarkets(currency: string = 'usd', perPage: number = 50, category?: string): Promise<CoinMarket[]> {
-    let endpoint = `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false`;
+    let endpoint = `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false&price_change_percentage=7d`;
     if (category) endpoint += `&category=${category}`;
     return cachedFetch<CoinMarket[]>(endpoint, MARKETS_TTL);
   },
@@ -111,7 +112,7 @@ export const coingeckoService = {
   },
 
   async getPricesByIds(ids: string[], currency: string = 'usd'): Promise<CoinMarket[]> {
-    const endpoint = `/coins/markets?vs_currency=${currency}&ids=${ids.join(',')}&order=market_cap_desc&per_page=${ids.length}&page=1&sparkline=false`;
+    const endpoint = `/coins/markets?vs_currency=${currency}&ids=${ids.join(',')}&order=market_cap_desc&per_page=${ids.length}&page=1&sparkline=false&price_change_percentage=7d`;
     return cachedFetch<CoinMarket[]>(endpoint, MARKETS_TTL);
   },
 

@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { useAuth } from "@/providers/auth-provider";
 import { ThemeToggle } from "./theme-toggle";
-import { LogOut, Star, BarChart3, LayoutDashboard } from "lucide-react";
+import { LogOut, Star, BarChart3, LayoutDashboard, TrendingUp } from "lucide-react";
 import { SearchBar } from "@/components/crypto/search-bar";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
 const navLinks = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/categories", label: "Categorías", icon: BarChart3 },
+  { href: "/market", label: "Market", icon: TrendingUp },
+  { href: "/categories", label: "Sectores", icon: BarChart3 },
   { href: "/profile", label: "Favoritos", icon: Star },
 ];
 
@@ -19,7 +20,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm" suppressHydrationWarning>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
           <span className="text-accent">◆</span>
