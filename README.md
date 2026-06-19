@@ -201,7 +201,7 @@ Las filas de la tabla usan `motion.tr` con stagger de 20ms entre filas para entr
 
 ### Detalles técnicos
 
-- Backend: `GET /api/crypto/markets?vs_currency=usd&per_page=250` con cache 60s
+- Backend: `GET /api/crypto/markets?vs_currency=usd&per_page=100` con cache 60s. Se cargan las top 100 por market cap (respetando límites del free tier de CoinGecko).
 - La columna 7d usa `price_change_percentage_7d_in_currency` desde CoinGecko (parámetro `&price_change_percentage=7d`)
 - Nav link "Market" con icono TrendingUp agregado al Header entre Dashboard y Sectores
 
@@ -362,14 +362,16 @@ El backend implementa un cache en memoria con TTL para reducir llamadas a la API
 | `/coins/chart`              | 300 segundos |
 | `/global`                   | 120 segundos |
 
+Además, el cache **previene cache stampede**: cuando múltiples requests concurrentes llegan con cache miss, solo una hace la llamada a CoinGecko y las demás esperan la misma promesa pendiente. Si CoinGecko responde con 429 (rate limit), se reintenta automáticamente tras 500ms antes de fallar.
+
 ## ⚡ Rate Limiting
 
-Dos rate limiters protegen los endpoints públicos:
+Dos rate limiters protegen los endpoints públicos, con límites más permisivos en desarrollo para evitar bloqueos durante Fast Refresh:
 
-| Limiter  | Endpoints         | Ventana | Máximo |
-|----------|-------------------|---------|--------|
-| Auth     | `/api/auth/*`     | 15 min  | 10 req |
-| Crypto   | `/api/crypto/*`   | 1 min   | 30 req |
+| Limiter  | Endpoints         | Ventana | Dev     | Prod    |
+|----------|-------------------|---------|---------|---------|
+| Auth     | `/api/auth/*`     | 15 min  | 100 req | 10 req  |
+| Crypto   | `/api/crypto/*`   | 1 min   | 200 req | 30 req  |
 
 ## 🗄️ Modelo de Datos (Prisma)
 
