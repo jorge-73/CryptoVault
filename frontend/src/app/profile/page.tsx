@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { CryptoCard } from "@/components/crypto/crypto-card";
 import { CryptoListSkeleton } from "@/components/crypto/crypto-list-skeleton";
-import { AnimatedMount } from "@/components/ui";
+import { AnimatedMount, EmptyState } from "@/components/ui";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -56,7 +57,7 @@ export default function ProfilePage() {
   if (authLoading || loading) {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
-        <div className="h-9 w-48 rounded bg-muted animate-pulse mb-6" />
+        <Skeleton className="h-9 w-48 rounded mb-6" />
         <CryptoListSkeleton count={5} />
       </div>
     );
@@ -75,19 +76,19 @@ export default function ProfilePage() {
         </div>
 
         {favorites.length === 0 ? (
-          <div className="rounded-xl border bg-card p-12 text-center">
-            <Star className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h2 className="text-lg font-semibold mb-2">Sin favoritos</h2>
-            <p className="text-muted-foreground mb-6">
-              Añade criptomonedas a tu lista desde el dashboard
-            </p>
-            <button
-              onClick={() => router.push("/")}
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors"
-            >
-              Explorar mercado
-            </button>
-          </div>
+          <EmptyState
+            icon={<Star className="h-8 w-8" />}
+            title="Sin favoritos"
+            description="Añade criptomonedas a tu lista desde el dashboard"
+            action={
+              <button
+                onClick={() => router.push("/")}
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors"
+              >
+                Explorar mercado
+              </button>
+            }
+          />
         ) : (
           <div className="space-y-3">
             {favorites.map((coin) => (

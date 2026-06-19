@@ -11,6 +11,8 @@ import {
 } from "recharts";
 import { api } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ErrorState } from "@/components/ui/error-state";
 
 interface PriceChartProps {
   coinId: string;
@@ -62,17 +64,11 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
   };
 
   if (loading) {
-    return (
-      <div className="h-64 animate-pulse rounded-xl bg-muted" />
-    );
+    return <Skeleton className="h-64 rounded-xl" />;
   }
 
   if (error) {
-    return (
-      <div className="rounded-xl border border-red/20 bg-red/5 p-4 text-red text-sm">
-        {error}
-      </div>
-    );
+    return <ErrorState message={error} />;
   }
 
   return (

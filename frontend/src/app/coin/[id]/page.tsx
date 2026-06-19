@@ -10,7 +10,7 @@ import { cn, formatPrice, formatMarketCap } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/ui/stat-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AnimatedMount } from "@/components/ui";
+import { AnimatedMount, ErrorState } from "@/components/ui";
 import { PriceChart } from "@/components/crypto/price-chart";
 import { useAuth } from "@/providers/auth-provider";
 import { toast } from "sonner";
@@ -110,9 +110,7 @@ export default function CoinDetailPage() {
           <ArrowLeft className="h-4 w-4" />
           Volver al dashboard
         </Link>
-        <div className="rounded-xl border border-red/20 bg-red/5 p-4 text-red text-sm">
-          {error || "Criptomoneda no encontrada"}
-        </div>
+        <ErrorState message={error || "Criptomoneda no encontrada"} />
       </div>
     );
   }
