@@ -82,32 +82,68 @@ export const mockCategories = [
   {
     id: 'defi', name: 'DeFi',
     market_cap: 45_000_000_000, market_cap_change_24h: 2.3,
-    top_3_coins: ['uniswap', 'aave', 'maker'],
+    content: 'Decentralized finance protocols enabling lending, borrowing, and trading without intermediaries.',
+    volume_24h: 2_100_000_000,
+    top_3_coins: [
+      { id: 'uniswap', image: 'https://coin-images.coingecko.com/coins/images/12504/large/uniswap.png' },
+      { id: 'aave', image: 'https://coin-images.coingecko.com/coins/images/12645/large/aave.png' },
+      { id: 'maker', image: 'https://coin-images.coingecko.com/coins/images/1364/large/maker.png' },
+    ],
   },
   {
     id: 'meme', name: 'Meme',
     market_cap: 25_000_000_000, market_cap_change_24h: 5.1,
-    top_3_coins: ['dogecoin', 'shiba-inu', 'pepe'],
+    content: 'Community-driven cryptocurrencies inspired by internet memes and viral culture.',
+    volume_24h: 3_500_000_000,
+    top_3_coins: [
+      { id: 'dogecoin', image: 'https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png' },
+      { id: 'shiba-inu', image: null },
+      { id: 'pepe', image: null },
+    ],
   },
   {
     id: 'layer-1', name: 'Layer 1',
     market_cap: 800_000_000_000, market_cap_change_24h: 1.2,
-    top_3_coins: ['bitcoin', 'ethereum', 'solana'],
+    content: 'Base blockchain networks that serve as the foundation for decentralized applications and smart contracts.',
+    volume_24h: 55_000_000_000,
+    top_3_coins: [
+      { id: 'bitcoin', image: 'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png' },
+      { id: 'ethereum', image: 'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png' },
+      { id: 'solana', image: 'https://coin-images.coingecko.com/coins/images/4128/large/solana.png' },
+    ],
   },
   {
     id: 'layer-2', name: 'Layer 2',
     market_cap: 30_000_000_000, market_cap_change_24h: -0.8,
-    top_3_coins: ['polygon', 'optimism', 'arbitrum'],
+    content: 'Scaling solutions built on top of Layer 1 blockchains to improve transaction speed and reduce costs.',
+    volume_24h: 2_000_000_000,
+    top_3_coins: [
+      { id: 'polygon', image: null },
+      { id: 'optimism', image: null },
+      { id: 'arbitrum', image: null },
+    ],
   },
   {
     id: 'gaming', name: 'Gaming',
     market_cap: 12_000_000_000, market_cap_change_24h: -3.2,
-    top_3_coins: ['axie-infinity', 'sandbox', 'decentraland'],
+    content: 'Blockchain-based gaming projects and virtual worlds with play-to-earn mechanics.',
+    volume_24h: 800_000_000,
+    top_3_coins: [
+      { id: 'axie-infinity', image: null },
+      { id: 'sandbox', image: null },
+      { id: 'decentraland', image: null },
+    ],
   },
   {
     id: 'ai', name: 'AI',
     market_cap: 8_000_000_000, market_cap_change_24h: 10.5,
-    top_3_coins: ['fetch-ai', 'render-token', 'bittensor'],
+    content: 'Artificial intelligence projects leveraging blockchain for decentralized compute and data markets.',
+    volume_24h: 1_200_000_000,
+    top_3_coins: [
+      { id: 'fetch-ai', image: null },
+      { id: 'render-token', image: null },
+      { id: 'bittensor', image: null },
+    ],
   },
 ];
 
@@ -175,13 +211,29 @@ export function setupCryptoMocks(page: any) {
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockMarkets) });
   });
 
+  page.route('**/api/crypto/categories/*/coins**', async (route: any) => {
+    const url = new URL(route.request().url());
+    const categoryId = url.pathname.split('/').filter(Boolean).slice(-2)[0];
+    const categoryMap: Record<string, number[]> = {
+      defi: [0, 1, 2, 6, 7],
+      meme: [8, 9, 10],
+      'layer-1': [3, 4, 5, 11],
+      'layer-2': [6, 7, 12],
+      gaming: [13, 14, 15],
+      ai: [16, 17, 18],
+    };
+    const indices = categoryMap[categoryId] ?? [0, 1, 2];
+    const coins = indices.map((i) => mockMarkets[i]).filter(Boolean);
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(coins) });
+  });
+
   page.route('**/api/crypto/categories', async (route: any) => {
     const enriched = mockCategories.map((cat) => ({
       ...cat,
-      top_3_coins: cat.top_3_coins.map((id) => {
-        const coin = mockPricesByIds.find((c) => c.id === id);
-        const topCoin = mockMarkets.find((m) => m.id === id);
-        return { id, image: coin?.image ?? topCoin?.image ?? null };
+      top_3_coins: cat.top_3_coins.map((coin: { id: string; image: string | null }) => {
+        const pricesCoin = mockPricesByIds.find((c) => c.id === coin.id);
+        const marketCoin = mockMarkets.find((m) => m.id === coin.id);
+        return { id: coin.id, image: coin.image ?? pricesCoin?.image ?? marketCoin?.image ?? null };
       }),
     }));
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(enriched) });
