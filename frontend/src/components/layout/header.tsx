@@ -21,7 +21,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm" suppressHydrationWarning>
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6" suppressHydrationWarning>
         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
           <span className="text-accent">◆</span>
           <span>CryptoVault</span>
@@ -50,7 +50,7 @@ export function Header() {
           })}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden md:block" suppressHydrationWarning>
           <SearchBar />
         </div>
 
@@ -58,7 +58,7 @@ export function Header() {
           <ThemeToggle />
 
           {user ? (
-            <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3" suppressHydrationWarning>
               <span className="hidden sm:block text-sm text-muted-foreground">
                 {user.name || user.email}
               </span>

@@ -111,7 +111,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
   }
 
   return (
-    <div>
+    <div suppressHydrationWarning>
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <div className="flex items-center gap-2">
           <div className="relative">
