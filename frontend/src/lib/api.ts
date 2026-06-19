@@ -70,7 +70,7 @@ export const api = {
   },
   crypto: {
     getMarkets: (currency = "usd", perPage = 50) =>
-      request<import("@/types/crypto").CoinMarket[]>(`/crypto/markets?currency=${currency}&per_page=${perPage}`),
+      request<any[]>(`/crypto/markets?currency=${currency}&per_page=${perPage}`),
     getCategories: () =>
       request<import("@/types/crypto").CoinCategory[]>("/crypto/categories"),
     getCategoryCoins: (categoryId: string, currency = "usd", perPage = 100) =>
