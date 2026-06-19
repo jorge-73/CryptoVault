@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuth } from "@/providers/auth-provider";
 import { ThemeToggle } from "./theme-toggle";
 import { LogOut, Star, BarChart3, LayoutDashboard } from "lucide-react";
+import { SearchBar } from "@/components/crypto/search-bar";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
@@ -47,6 +48,10 @@ export function Header() {
             );
           })}
         </nav>
+
+        <div className="hidden md:block">
+          <SearchBar />
+        </div>
 
         <div className="flex items-center gap-3">
           <ThemeToggle />
