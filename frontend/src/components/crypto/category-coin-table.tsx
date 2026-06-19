@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 interface Coin {
   id: string;
@@ -133,9 +134,12 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((coin) => (
-                  <tr
+                {filtered.map((coin, i) => (
+                  <motion.tr
                     key={coin.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: i * 0.03 }}
                     className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors"
                   >
                     <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums">
@@ -177,7 +181,7 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                     <td className="hidden md:table-cell px-4 py-3 text-right text-sm font-medium tabular-nums">
                       {formatMarketCap(coin.market_cap)}
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
