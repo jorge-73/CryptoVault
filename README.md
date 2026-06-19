@@ -53,7 +53,7 @@ crypto-app/
 │   │   ├── components/
 │   │   │   ├── crypto/      # CryptoCard, MarketOverview, CategoryCard, PriceChart,
 │   │   │   │                # SearchBar, SectorOverview, TrendingSectors,
-│   │   │   │                # CategoryCoinTable, CategoryDetailHeader
+│   │   │   │                # MarketIntelligence, CategoryCoinTable, CategoryDetailHeader
 │   │   │   ├── layout/      # Header, ThemeToggle
 │   │   │   └── ui/          # 9 componentes reutilizables (ver sección UI Kit)
 │   │   ├── hooks/           # useDebounce
@@ -108,6 +108,25 @@ El servidor arrancará en `http://localhost:3000`.
 - **Logout**: limpieza de ambas cookies
 - **Refresh**: endpoint `POST /api/auth/refresh` rota el refresh token y devuelve un nuevo access token
 - Endpoint `/api/auth/me` retorna `{ user }` si hay sesión o `{ user: null }` si no
+
+## 📊 Dashboard Premium
+
+La página principal (`/`) se rediseñó con estructura de plataforma fintech:
+
+| Sección | Descripción |
+|---------|-------------|
+| **MarketOverview** | 4 StatCards con datos globales: capitalización total (con trend), volumen 24h, dominancia BTC, criptomonedas activas. Skeleton de 4 placeholders mientras carga. |
+| **TrendingCoins** | Top 3 gainers (mayor subida 24h) + Top 3 losers (mayor bajada 24h). Cada uno con logo, nombre, símbolo, precio y badge de cambio. Hover premium con shadow y border accent. Skeleton por lado (3+3 placeholders). |
+| **Todas las Criptomonedas** | Grid responsivo (1/2/3 columnas) con `StaggerGrid` + `StaggerItem`. Cada `CryptoCard` incluye: rank, logo, nombre, símbolo, precio, badge 24h, market cap, volumen 24h y botón de favoritos. |
+
+| **MarketIntelligence** | BTC dominance (barra de progreso), sentimiento del mercado (alcista/bajista según cambio 24h) y top 3 sectores por capitalización con link a detalle. Skeleton con 4 placeholders. |
+
+**Cambios visuales respecto a la versión anterior:**
+- Título renovado: "Crypto Market" con subtítulo descriptivo
+- `CryptoCard` ahora muestra volumen 24h además de market cap
+- Hover accent en nombre de moneda (group-hover:text-accent)
+- `CryptoListSkeleton` rediseñado para coincidir con el grid de 3 columnas (antes usaba filas verticales que no coincidían)
+- `SectionHeader` ahora acepta `className` para control de espaciado
 
 ## 🏢 Crypto Sectors (Market Explorer)
 
