@@ -6,9 +6,11 @@ import { CryptoCard } from "@/components/crypto/crypto-card";
 import { CryptoListSkeleton } from "@/components/crypto/crypto-list-skeleton";
 import { MarketOverview } from "@/components/crypto/market-overview";
 import { TrendingCoins, TrendingCoinsSkeleton } from "@/components/crypto/trending-coins";
+import { MarketIntelligence, MarketIntelligenceSkeleton } from "@/components/crypto/market-intelligence";
 import { ErrorState, AnimatedMount, StaggerGrid, StaggerItem, SectionHeader } from "@/components/ui";
 import { useAuth } from "@/providers/auth-provider";
 import { toast } from "sonner";
+import type { CoinCategory } from "@/types/crypto";
 
 interface Coin {
   id: string;
@@ -24,6 +26,8 @@ interface Coin {
 
 export default function DashboardPage() {
   const [coins, setCoins] = useState<Coin[]>([]);
+  const [categories, setCategories] = useState<CoinCategory[]>([]);
+  const [globalData, setGlobalData] = useState<{ btc_dominance: number; market_cap_change_24h: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -47,17 +51,32 @@ export default function DashboardPage() {
     [coins]
   );
 
-  const fetchCoins = () => {
+  const topSectors = useMemo(
+    () =>
+      [...categories]
+        .sort((a, b) => ((b.market_cap ?? 0) - (a.market_cap ?? 0)))
+        .slice(0, 3),
+    [categories]
+  );
+
+  const fetchData = () => {
     setLoading(true);
     setError(null);
-    api.crypto
-      .getMarkets()
-      .then(setCoins)
+    Promise.all([
+      api.crypto.getMarkets(),
+      api.crypto.getCategories().catch(() => [] as CoinCategory[]),
+      api.crypto.getGlobal().catch(() => null),
+    ])
+      .then(([coinsData, catsData, global]) => {
+        setCoins(coinsData);
+        setCategories(catsData as CoinCategory[]);
+        if (global) setGlobalData(global as any);
+      })
       .catch(() => setError("Error al cargar las criptomonedas"))
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchCoins(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   useEffect(() => {
     if (user) {
@@ -102,17 +121,25 @@ export default function DashboardPage() {
 
         {error && (
           <div className="mb-6">
-            <ErrorState message={error} onRetry={fetchCoins} />
+            <ErrorState message={error} onRetry={fetchData} />
           </div>
         )}
 
         {loading ? (
           <>
+            <MarketIntelligenceSkeleton />
             <TrendingCoinsSkeleton />
             <CryptoListSkeleton count={10} />
           </>
         ) : (
           <>
+            {globalData && (
+              <MarketIntelligence
+                btcDominance={globalData.btc_dominance}
+                marketCapChange24h={globalData.market_cap_change_24h}
+                topSectors={topSectors}
+              />
+            )}
             <TrendingCoins gainers={trendingGainers} losers={trendingLosers} />
             <section>
               <SectionHeader
