@@ -48,6 +48,6 @@ test.describe('Coin Detail', () => {
     await backLink.click();
 
     await page.waitForURL('/');
-    await expect(page.locator('h1')).toContainText('Dashboard');
+    await expect(page.locator('h1').first()).toContainText('Crypto Market');
   });
 });

@@ -24,8 +24,9 @@ test.describe('Dashboard', () => {
 
     await page.goto('/');
 
-    const cards = page.locator('a[href^="/coin/"]');
-    await expect(cards).toHaveCount(mockMarkets.length, { timeout: 10000 });
+    for (const coin of mockMarkets) {
+      await expect(page.locator(`a[href="/coin/${coin.id}"]`).first()).toBeVisible({ timeout: 10000 });
+    }
   });
 
   test('should navigate to coin detail on click', async ({ page }) => {

@@ -62,7 +62,7 @@ export function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardPro
               <span className="text-xs text-muted-foreground tabular-nums">
                 #{coin.market_cap_rank ?? "—"}
               </span>
-              <h3 className="font-semibold truncate text-sm">{coin.name}</h3>
+              <h3 className="font-semibold truncate text-sm group-hover:text-accent transition-colors">{coin.name}</h3>
             </div>
             <span className="text-xs text-muted-foreground uppercase tracking-wide">
               {coin.symbol}
@@ -72,17 +72,25 @@ export function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardPro
 
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-lg font-bold tabular-nums">
+            <p className="text-lg font-bold tabular-nums leading-none">
               {formatPrice(coin.current_price)}
             </p>
-            <Badge value={coin.price_change_percentage_24h} className="mt-0.5" />
+            <Badge value={coin.price_change_percentage_24h} className="mt-1.5" />
           </div>
 
-          <div className="text-right">
-            <p className="text-[11px] text-muted-foreground">Cap.</p>
-            <p className="text-xs font-medium tabular-nums">
-              {formatMarketCap(coin.market_cap)}
-            </p>
+          <div className="text-right space-y-0.5">
+            <div>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Cap.</p>
+              <p className="text-xs font-semibold tabular-nums">
+                {formatMarketCap(coin.market_cap)}
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Vol 24h</p>
+              <p className="text-xs font-medium tabular-nums text-muted-foreground">
+                {formatMarketCap(coin.total_volume)}
+              </p>
+            </div>
           </div>
         </div>
       </Link>

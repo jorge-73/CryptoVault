@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { api } from "@/lib/api";
 import { CryptoCard } from "@/components/crypto/crypto-card";
 import { CryptoListSkeleton } from "@/components/crypto/crypto-list-skeleton";
 import { MarketOverview } from "@/components/crypto/market-overview";
-import { ErrorState, AnimatedMount, StaggerGrid, StaggerItem } from "@/components/ui";
+import { TrendingCoins, TrendingCoinsSkeleton } from "@/components/crypto/trending-coins";
+import { ErrorState, AnimatedMount, StaggerGrid, StaggerItem, SectionHeader } from "@/components/ui";
 import { useAuth } from "@/providers/auth-provider";
 import { toast } from "sonner";
 
@@ -27,6 +28,24 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const { user } = useAuth();
+
+  const trendingGainers = useMemo(
+    () =>
+      [...coins]
+        .filter((c) => (c.price_change_percentage_24h ?? 0) > 0)
+        .sort((a, b) => (b.price_change_percentage_24h ?? 0) - (a.price_change_percentage_24h ?? 0))
+        .slice(0, 3),
+    [coins]
+  );
+
+  const trendingLosers = useMemo(
+    () =>
+      [...coins]
+        .filter((c) => (c.price_change_percentage_24h ?? 0) < 0)
+        .sort((a, b) => (a.price_change_percentage_24h ?? 0) - (b.price_change_percentage_24h ?? 0))
+        .slice(0, 3),
+    [coins]
+  );
 
   const fetchCoins = () => {
     setLoading(true);
@@ -73,12 +92,11 @@ export default function DashboardPage() {
   return (
     <AnimatedMount>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Precios de criptomonedas en tiempo real
-          </p>
-        </div>
+        <SectionHeader
+          title="Crypto Market"
+          description="Precios, tendencias y datos del mercado en tiempo real"
+          className="mb-6"
+        />
 
         <MarketOverview />
 
@@ -89,19 +107,32 @@ export default function DashboardPage() {
         )}
 
         {loading ? (
-          <CryptoListSkeleton count={10} />
+          <>
+            <TrendingCoinsSkeleton />
+            <CryptoListSkeleton count={10} />
+          </>
         ) : (
-          <StaggerGrid className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {coins.map((coin) => (
-              <StaggerItem key={coin.id}>
-                <CryptoCard
-                  coin={coin}
-                  isFavorite={favorites.has(coin.id)}
-                  onToggleFavorite={toggleFavorite}
-                />
-              </StaggerItem>
-            ))}
-          </StaggerGrid>
+          <>
+            <TrendingCoins gainers={trendingGainers} losers={trendingLosers} />
+            <section>
+              <SectionHeader
+                title="Todas las Criptomonedas"
+                description={`${coins.length} monedas ordenadas por capitalización de mercado`}
+                className="mb-4"
+              />
+              <StaggerGrid className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {coins.map((coin) => (
+                  <StaggerItem key={coin.id}>
+                    <CryptoCard
+                      coin={coin}
+                      isFavorite={favorites.has(coin.id)}
+                      onToggleFavorite={toggleFavorite}
+                    />
+                  </StaggerItem>
+                ))}
+              </StaggerGrid>
+            </section>
+          </>
         )}
       </div>
     </AnimatedMount>
