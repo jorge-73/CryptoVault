@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/market", label: "Market", icon: TrendingUp },
   { href: "/categories", label: "Sectores", icon: BarChart3 },
-  { href: "/profile", label: "Favoritos", icon: Star },
+  { href: "/profile", label: "Watchlist", icon: Star },
 ];
 
 export function Header() {

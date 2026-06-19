@@ -14,6 +14,7 @@ interface CryptoCardProps {
     market_cap: number;
     market_cap_rank: number | null;
     price_change_percentage_24h: number | null;
+    price_change_percentage_7d_in_currency?: number | null;
     total_volume: number;
   };
   isFavorite?: boolean;
@@ -75,7 +76,12 @@ export function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardPro
             <p className="text-lg font-bold tabular-nums leading-none">
               {formatPrice(coin.current_price)}
             </p>
-            <Badge value={coin.price_change_percentage_24h} className="mt-1.5" />
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <Badge value={coin.price_change_percentage_24h} period="24h" />
+              {coin.price_change_percentage_7d_in_currency != null && (
+                <Badge value={coin.price_change_percentage_7d_in_currency} period="7d" />
+              )}
+            </div>
           </div>
 
           <div className="text-right space-y-0.5">

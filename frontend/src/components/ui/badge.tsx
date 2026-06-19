@@ -4,12 +4,14 @@ import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 interface BadgeProps {
   value: number | null | undefined;
   className?: string;
+  period?: string;
 }
 
-export function Badge({ value, className }: BadgeProps) {
+export function Badge({ value, className, period }: BadgeProps) {
   if (value == null) {
     return (
       <span className={cn("inline-flex items-center gap-1 rounded-md bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground", className)}>
+        {period && <span className="opacity-60">{period}</span>}
         <Minus className="h-3 w-3" />
         N/A
       </span>
@@ -33,6 +35,7 @@ export function Badge({ value, className }: BadgeProps) {
       ) : (
         <TrendingDown className="h-3 w-3" />
       )}
+      {period && <span className="opacity-60">{period}</span>}
       {isPositive ? "+" : ""}
       {value.toFixed(2)}%
     </span>
