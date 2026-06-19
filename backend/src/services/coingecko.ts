@@ -76,6 +76,26 @@ export interface CoinChartData {
 }
 
 const CHART_TTL = 300_000;
+const COIN_DETAIL_TTL = 300_000;
+
+export interface CoinDetail {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  description: string | null;
+  homepage: string | null;
+  explorer: string | null;
+  current_price: number | null;
+  market_cap: number;
+  market_cap_rank: number | null;
+  price_change_percentage_24h: number | null;
+  price_change_percentage_7d_in_currency: number | null;
+  total_volume: number;
+  circulating_supply: number;
+  total_supply: number | null;
+  max_supply: number | null;
+}
 
 export interface GlobalData {
   total_market_cap: number;
@@ -156,6 +176,48 @@ export const coingeckoService = {
       btc_dominance: raw.data.market_cap_percentage.btc,
       market_cap_change_24h: raw.data.market_cap_change_percentage_24h_usd,
       active_cryptocurrencies: raw.data.active_cryptocurrencies,
+    };
+  },
+
+  async getCoinDetail(id: string): Promise<CoinDetail> {
+    const endpoint = `/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false`;
+    const raw = await cachedFetch<{
+      id: string;
+      symbol: string;
+      name: string;
+      image: { large: string };
+      description: { en: string | null };
+      links: { homepage: string[]; blockchain_site: string[] };
+      market_data: {
+        current_price: { usd: number | null };
+        market_cap: { usd: number };
+        market_cap_rank: number | null;
+        price_change_percentage_24h: number | null;
+        price_change_percentage_7d: number | null;
+        total_volume: { usd: number };
+        circulating_supply: number;
+        total_supply: number | null;
+        max_supply: number | null;
+      };
+    }>(endpoint, COIN_DETAIL_TTL);
+
+    return {
+      id: raw.id,
+      symbol: raw.symbol,
+      name: raw.name,
+      image: raw.image.large,
+      description: raw.description.en ?? null,
+      homepage: raw.links.homepage[0] ?? null,
+      explorer: raw.links.blockchain_site[0] ?? null,
+      current_price: raw.market_data.current_price.usd,
+      market_cap: raw.market_data.market_cap.usd,
+      market_cap_rank: raw.market_data.market_cap_rank,
+      price_change_percentage_24h: raw.market_data.price_change_percentage_24h,
+      price_change_percentage_7d_in_currency: raw.market_data.price_change_percentage_7d,
+      total_volume: raw.market_data.total_volume.usd,
+      circulating_supply: raw.market_data.circulating_supply,
+      total_supply: raw.market_data.total_supply,
+      max_supply: raw.market_data.max_supply,
     };
   },
 };

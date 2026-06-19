@@ -20,9 +20,10 @@ interface PriceChartProps {
 }
 
 const DAYS_OPTIONS = [
+  { label: "1d", value: 1 },
   { label: "7d", value: 7 },
   { label: "30d", value: 30 },
-  { label: "90d", value: 90 },
+  { label: "1y", value: 365 },
 ] as const;
 
 export function PriceChart({ coinId, coinName }: PriceChartProps) {
@@ -56,11 +57,14 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
   );
 
   const formatXAxis = (value: string) => {
+    const d = new Date(value);
+    if (days <= 1) {
+      return d.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
+    }
     if (days <= 7) {
-      const d = new Date(value);
       return d.toLocaleDateString("es", { weekday: "short" });
     }
-    return value;
+    return d.toLocaleDateString("es", { month: "short", day: "numeric" });
   };
 
   if (loading) {

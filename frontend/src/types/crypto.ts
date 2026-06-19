@@ -26,3 +26,22 @@ export interface CoinMarket {
   total_volume: number;
   circulating_supply: number;
 }
+
+export interface CoinDetail {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  description: string | null;
+  homepage: string | null;
+  explorer: string | null;
+  current_price: number | null;
+  market_cap: number;
+  market_cap_rank: number | null;
+  price_change_percentage_24h: number | null;
+  price_change_percentage_7d_in_currency: number | null;
+  total_volume: number;
+  circulating_supply: number;
+  total_supply: number | null;
+  max_supply: number | null;
+}

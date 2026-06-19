@@ -6,7 +6,15 @@ export const cryptoController = {
   async getMarkets(req: Request, res: Response, next: NextFunction) {
     try {
       const currency = (req.query.currency as string) || 'usd';
+      const ids = req.query.ids as string | undefined;
       const perPage = Number(req.query.per_page) || 50;
+
+      if (ids) {
+        const data = await coingeckoService.getPricesByIds(ids.split(','), currency);
+        res.json(data);
+        return;
+      }
+
       const data = await coingeckoService.getMarkets(currency, perPage);
       res.json(data);
     } catch (err) {
@@ -59,6 +67,17 @@ export const cryptoController = {
       res.json(data);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch chart data from CoinGecko';
+      next(new AppError(message, 502));
+    }
+  },
+
+  async getCoin(req: Request<{ id: string }>, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const data = await coingeckoService.getCoinDetail(id);
+      res.json(data);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch coin detail from CoinGecko';
       next(new AppError(message, 502));
     }
   },
