@@ -1,15 +1,20 @@
 import { env } from '../config/env.js';
-import { getCache, setCache } from './cache.js';
+import { getCache, setCache, getPending, setPending } from './cache.js';
 
 const BASE = env.COINGECKO_API_URL;
 
 const MARKETS_TTL = 60_000;
 const CATEGORIES_TTL = 300_000;
 
-async function fetchFromCoinGecko<T>(endpoint: string): Promise<T> {
+async function fetchFromCoinGecko<T>(endpoint: string, retried = false): Promise<T> {
   const response = await fetch(`${BASE}${endpoint}`, {
     headers: { Accept: 'application/json' },
   });
+
+  if (response.status === 429 && !retried) {
+    await new Promise((r) => setTimeout(r, 500));
+    return fetchFromCoinGecko<T>(endpoint, true);
+  }
 
   if (!response.ok) {
     throw new Error(`CoinGecko API error: ${response.status} ${response.statusText}`);
@@ -22,10 +27,16 @@ function cachedFetch<T>(endpoint: string, ttl: number): Promise<T> {
   const cached = getCache<T>(endpoint);
   if (cached) return Promise.resolve(cached);
 
-  return fetchFromCoinGecko<T>(endpoint).then((data) => {
+  const pending = getPending<T>(endpoint);
+  if (pending) return pending;
+
+  const promise = fetchFromCoinGecko<T>(endpoint).then((data) => {
     setCache(endpoint, data, ttl);
     return data;
   });
+
+  setPending(endpoint, promise);
+  return promise;
 }
 
 export interface CoinMarket {
