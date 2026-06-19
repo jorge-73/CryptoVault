@@ -5,6 +5,7 @@ export function Skeleton({ className }: { className?: string }) {
     <div
       className={cn("animate-pulse rounded-lg bg-muted", className)}
       aria-hidden="true"
+      suppressHydrationWarning
     />
   );
 }
