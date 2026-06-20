@@ -7,6 +7,7 @@ const mockGetCategories = vi.hoisted(() => vi.fn());
 const mockGetPricesByIds = vi.hoisted(() => vi.fn());
 const mockGetChart = vi.hoisted(() => vi.fn());
 const mockGetGlobal = vi.hoisted(() => vi.fn());
+const mockGetCoinDetail = vi.hoisted(() => vi.fn());
 
 vi.mock('../services/coingecko.js', () => ({
   coingeckoService: {
@@ -15,6 +16,7 @@ vi.mock('../services/coingecko.js', () => ({
     getPricesByIds: mockGetPricesByIds,
     getChart: mockGetChart,
     getGlobal: mockGetGlobal,
+    getCoinDetail: mockGetCoinDetail,
   },
 }));
 
@@ -108,12 +110,12 @@ describe('GET /api/crypto/markets', () => {
     expect(mockGetMarkets).toHaveBeenCalledWith('eur', 1);
   });
 
-  it('should return 502 on CoinGecko error', async () => {
+  it('should return 503 on CoinGecko error', async () => {
     mockGetMarkets.mockRejectedValue(new Error('API error'));
 
     const res = await request(app).get('/api/crypto/markets');
 
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(503);
     expect(res.body.error).toBe('API error');
   });
 });
@@ -150,14 +152,14 @@ describe('GET /api/crypto/categories', () => {
     expect(res.body[0].volume_24h).toBe(2_000_000_000);
   });
 
-  it('should return 502 on CoinGecko error', async () => {
+  it('should return 503 on CoinGecko error', async () => {
     mockGetCategories.mockRejectedValue(
       new Error('Categories API error'),
     );
 
     const res = await request(app).get('/api/crypto/categories');
 
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(503);
     expect(res.body.error).toBe('Categories API error');
   });
 
@@ -194,12 +196,12 @@ describe('GET /api/crypto/global', () => {
     expect(mockGetGlobal).toHaveBeenCalledOnce();
   });
 
-  it('should return 502 on CoinGecko error', async () => {
+  it('should return 503 on CoinGecko error', async () => {
     mockGetGlobal.mockRejectedValue(new Error('Global API error'));
 
     const res = await request(app).get('/api/crypto/global');
 
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(503);
     expect(res.body.error).toBe('Global API error');
   });
 });
@@ -250,14 +252,14 @@ describe('GET /api/crypto/chart/:coinId', () => {
     expect(res.body.days).toBe(30);
   });
 
-  it('should return 502 on CoinGecko error', async () => {
+  it('should return 503 on CoinGecko error', async () => {
     mockGetChart.mockRejectedValue(
       new Error('Chart API error'),
     );
 
     const res = await request(app).get('/api/crypto/chart/unknown');
 
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(503);
     expect(res.body.error).toBe('Chart API error');
   });
 });
@@ -277,12 +279,54 @@ describe('GET /api/crypto/categories/:id/coins', () => {
     expect(mockGetMarkets).toHaveBeenCalledWith('usd', 100, 'defi');
   });
 
-  it('should return 502 on CoinGecko error', async () => {
+  it('should return 503 on CoinGecko error', async () => {
     mockGetMarkets.mockRejectedValue(new Error('Coins API error'));
 
     const res = await request(app).get('/api/crypto/categories/defi/coins');
 
-    expect(res.status).toBe(502);
+    expect(res.status).toBe(503);
     expect(res.body.error).toBe('Coins API error');
+  });
+});
+
+describe('GET /api/crypto/coin/:id', () => {
+  const mockDetail = {
+    id: 'bitcoin',
+    symbol: 'btc',
+    name: 'Bitcoin',
+    image: 'https://example.com/btc.png',
+    description: 'Bitcoin is a cryptocurrency.',
+    homepage: 'https://bitcoin.org',
+    explorer: 'https://blockchain.info',
+    current_price: 50000,
+    market_cap: 1_000_000_000_000,
+    market_cap_rank: 1,
+    price_change_percentage_24h: 2.5,
+    price_change_percentage_7d_in_currency: 3.1,
+    total_volume: 50_000_000_000,
+    circulating_supply: 19_000_000,
+    total_supply: 21_000_000,
+    max_supply: 21_000_000,
+  };
+
+  it('should return coin detail', async () => {
+    mockGetCoinDetail.mockResolvedValue(mockDetail);
+
+    const res = await request(app).get('/api/crypto/coin/bitcoin');
+
+    expect(res.status).toBe(200);
+    expect(res.body.id).toBe('bitcoin');
+    expect(res.body.name).toBe('Bitcoin');
+    expect(res.body.description).toBe('Bitcoin is a cryptocurrency.');
+    expect(res.body.max_supply).toBe(21_000_000);
+  });
+
+  it('should return 503 on CoinGecko error', async () => {
+    mockGetCoinDetail.mockRejectedValue(new Error('Coin detail API error'));
+
+    const res = await request(app).get('/api/crypto/coin/unknown');
+
+    expect(res.status).toBe(503);
+    expect(res.body.error).toBe('Coin detail API error');
   });
 });

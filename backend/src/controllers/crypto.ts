@@ -18,8 +18,9 @@ export const cryptoController = {
       const data = await coingeckoService.getMarkets(currency, perPage);
       res.json(data);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to fetch market data from CoinGecko';
-      next(new AppError(message, 502));
+      const message = err instanceof Error ? err.message : 'Failed to fetch market data';
+      console.error(`[CRYPTO] GET /api/crypto/markets → ${message}`);
+      next(new AppError(message, 503));
     }
   },
 
@@ -28,8 +29,9 @@ export const cryptoController = {
       const categories = await coingeckoService.getCategories();
       res.json(categories);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to fetch categories from CoinGecko';
-      next(new AppError(message, 502));
+      const message = err instanceof Error ? err.message : 'Failed to fetch categories';
+      console.error(`[CRYPTO] GET /api/crypto/categories → ${message}`);
+      next(new AppError(message, 503));
     }
   },
 
@@ -42,8 +44,9 @@ export const cryptoController = {
       const data = await coingeckoService.getMarkets(currency, perPage, id);
       res.json(data);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to fetch category coins from CoinGecko';
-      next(new AppError(message, 502));
+      const message = err instanceof Error ? err.message : 'Failed to fetch category coins';
+      console.error(`[CRYPTO] GET /api/crypto/categories/${req.params.id}/coins → ${message}`);
+      next(new AppError(message, 503));
     }
   },
 
@@ -52,8 +55,9 @@ export const cryptoController = {
       const data = await coingeckoService.getGlobal();
       res.json(data);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to fetch global data from CoinGecko';
-      next(new AppError(message, 502));
+      const message = err instanceof Error ? err.message : 'Failed to fetch global data';
+      console.error(`[CRYPTO] GET /api/crypto/global → ${message}`);
+      next(new AppError(message, 503));
     }
   },
 
@@ -66,8 +70,9 @@ export const cryptoController = {
       const data = await coingeckoService.getChart(coinId, currency, days);
       res.json(data);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to fetch chart data from CoinGecko';
-      next(new AppError(message, 502));
+      const message = err instanceof Error ? err.message : 'Failed to fetch chart data';
+      console.error(`[CRYPTO] GET /api/crypto/chart/${req.params.coinId} → ${message}`);
+      next(new AppError(message, 503));
     }
   },
 
@@ -77,8 +82,9 @@ export const cryptoController = {
       const data = await coingeckoService.getCoinDetail(id);
       res.json(data);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to fetch coin detail from CoinGecko';
-      next(new AppError(message, 502));
+      const message = err instanceof Error ? err.message : 'Failed to fetch coin detail';
+      console.error(`[CRYPTO] GET /api/crypto/coin/${req.params.id} → ${message}`);
+      next(new AppError(message, 503));
     }
   },
 };

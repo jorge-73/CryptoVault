@@ -9,11 +9,13 @@ const pending = new Map<string, Promise<unknown>>();
 export function getCache<T>(key: string): T | null {
   const entry = store.get(key);
   if (!entry) return null;
-  if (Date.now() > entry.expiry) {
-    store.delete(key);
-    return null;
-  }
+  if (Date.now() > entry.expiry) return null;
   return entry.data as T;
+}
+
+export function getStaleCache<T>(key: string): T | null {
+  const entry = store.get(key);
+  return entry ? (entry.data as T) : null;
 }
 
 export function setCache<T>(key: string, data: T, ttlMs: number): void {

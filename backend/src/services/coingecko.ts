@@ -1,19 +1,49 @@
 import { env } from '../config/env.js';
-import { getCache, setCache, getPending, setPending } from './cache.js';
+import { getCache, setCache, getStaleCache, getPending, setPending } from './cache.js';
 
 const BASE = env.COINGECKO_API_URL;
+const FETCH_TIMEOUT = 5000;
 
 const MARKETS_TTL = 60_000;
 const CATEGORIES_TTL = 300_000;
 
-async function fetchFromCoinGecko<T>(endpoint: string, retried = false): Promise<T> {
-  const response = await fetch(`${BASE}${endpoint}`, {
-    headers: { Accept: 'application/json' },
-  });
+async function fetchWithTimeout(endpoint: string, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
-  if (response.status === 429 && !retried) {
-    await new Promise((r) => setTimeout(r, 500));
-    return fetchFromCoinGecko<T>(endpoint, true);
+  try {
+    const response = await fetch(`${BASE}${endpoint}`, {
+      headers: { Accept: 'application/json' },
+      signal: controller.signal,
+    });
+    return response;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function fetchFromCoinGecko<T>(endpoint: string, attempt = 1): Promise<T> {
+  let response: Response;
+
+  try {
+    response = await fetchWithTimeout(endpoint, FETCH_TIMEOUT);
+  } catch (err) {
+    const isTimeout = err instanceof DOMException && err.name === 'AbortError';
+    if (isTimeout && attempt < 2) {
+      console.warn(`[COINGECKO] Timeout on ${endpoint}, retrying (attempt ${attempt + 1})...`);
+      await new Promise((r) => setTimeout(r, 500 * attempt));
+      return fetchFromCoinGecko<T>(endpoint, attempt + 1);
+    }
+    throw new Error(isTimeout
+      ? `CoinGecko timeout after ${FETCH_TIMEOUT}ms`
+      : `CoinGecko network error: ${err instanceof Error ? err.message : 'Unknown error'}`
+    );
+  }
+
+  if (response.status === 429 && attempt < 2) {
+    console.warn(`[COINGECKO] Rate limited on ${endpoint}, retrying (attempt ${attempt + 1})...`);
+    await new Promise((r) => setTimeout(r, 500 * attempt));
+    return fetchFromCoinGecko<T>(endpoint, attempt + 1);
   }
 
   if (!response.ok) {
@@ -33,6 +63,13 @@ function cachedFetch<T>(endpoint: string, ttl: number): Promise<T> {
   const promise = fetchFromCoinGecko<T>(endpoint).then((data) => {
     setCache(endpoint, data, ttl);
     return data;
+  }).catch((err) => {
+    const stale = getStaleCache<T>(endpoint);
+    if (stale) {
+      console.warn(`[COINGECKO] Serving stale cache for ${endpoint}: ${err.message}`);
+      return stale;
+    }
+    throw err;
   });
 
   setPending(endpoint, promise);
