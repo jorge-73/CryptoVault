@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
@@ -9,7 +10,7 @@ interface StatCardProps {
   className?: string;
 }
 
-export function StatCard({ label, value, trend, icon, className }: StatCardProps) {
+export const StatCard = memo(function StatCard({ label, value, trend, icon, className }: StatCardProps) {
   const isPositive = trend != null && trend >= 0;
 
   return (
@@ -48,4 +49,4 @@ export function StatCard({ label, value, trend, icon, className }: StatCardProps
       )}
     </div>
   );
-}
+});

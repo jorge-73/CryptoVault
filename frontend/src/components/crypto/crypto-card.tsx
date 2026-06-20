@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
@@ -21,7 +22,7 @@ interface CryptoCardProps {
   onToggleFavorite?: (id: string) => void;
 }
 
-export function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardProps) {
+export const CryptoCard = memo(function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardProps) {
   return (
     <div className="group relative rounded-xl border bg-card p-4 transition-all hover:shadow-lg hover:border-accent/30 hover:-translate-y-0.5">
       {onToggleFavorite && (
@@ -102,4 +103,4 @@ export function CryptoCard({ coin, isFavorite, onToggleFavorite }: CryptoCardPro
       </Link>
     </div>
   );
-}
+});

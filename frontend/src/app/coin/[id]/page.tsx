@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { ArrowLeft, DollarSign, Activity, BarChart3, Layers, PieChart, Hash } from "lucide-react";
 import { api } from "@/lib/api";
 import { formatPrice, formatMarketCap } from "@/lib/utils";
@@ -11,7 +12,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedMount, ErrorState } from "@/components/ui";
 import { CoinDetailHeader } from "@/components/crypto/coin-detail-header";
 import { CoinAbout } from "@/components/crypto/coin-about";
-import { PriceChart } from "@/components/crypto/price-chart";
+
+const PriceChart = dynamic(
+  () => import("@/components/crypto/price-chart").then((m) => ({ default: m.PriceChart })),
+  { ssr: false, loading: () => <Skeleton className="h-64 rounded-xl" /> }
+);
 import { useAuth } from "@/providers/auth-provider";
 import { toast } from "sonner";
 import type { CoinDetail } from "@/types/crypto";

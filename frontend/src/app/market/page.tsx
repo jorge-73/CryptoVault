@@ -1,13 +1,23 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { api } from "@/lib/api";
-import { MarketTable, MarketTableSkeleton } from "@/components/crypto/market-table";
 import { MarketOverview } from "@/components/crypto/market-overview";
 import { SectionHeader, AnimatedMount } from "@/components/ui";
 import { ErrorState } from "@/components/ui/error-state";
 import { useAuth } from "@/providers/auth-provider";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const MarketTable = dynamic(
+  () => import("@/components/crypto/market-table").then((m) => ({ default: m.MarketTable })),
+  { ssr: false, loading: () => <div className="space-y-3 mt-8">
+    {Array.from({ length: 5 }).map((_, i) => (
+      <Skeleton key={i} className="h-16 rounded-xl" />
+    ))}
+  </div> }
+);
 
 interface MarketCoin {
   id: string;
