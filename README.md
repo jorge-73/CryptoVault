@@ -51,16 +51,17 @@ crypto-app/
 │   │   │   │   └── page.tsx # Listado premium con sort/filter
 │   │   │   ├── coin/[id]/   # Detalle de moneda con gráfico
 │   │   │   ├── auth/        # login, register
-│   │   │   └── profile/     # Favoritos
+│   │   │   └── profile/     # Watchlist (favoritos)
 │   │   ├── components/
 │   │   │   ├── crypto/      # CryptoCard, MarketOverview, MarketTable, CategoryCard, PriceChart,
 │   │   │   │                # SearchBar, SectorOverview, TrendingSectors,
-│   │   │   │                # MarketIntelligence, CategoryCoinTable, CategoryDetailHeader
+│   │   │   │                # MarketIntelligence, CategoryCoinTable, CategoryDetailHeader,
+│   │   │   │                # CoinDetailHeader, CoinAbout
 │   │   │   ├── layout/      # Header, ThemeToggle
 │   │   │   └── ui/          # 9 componentes reutilizables (ver sección UI Kit)
 │   │   ├── hooks/           # useDebounce
 │   │   ├── providers/       # auth + theme context
-│   │   ├── types/           # crypto.ts (CoinCategory, CoinMarket, TopCoin)
+│   │   ├── types/           # crypto.ts (CoinCategory, CoinMarket, CoinDetail, TopCoin)
 │   │   └── lib/             # api client, utilities
 │   ├── playwright.config.ts
 │   └── next.config.ts       # remote image patterns
@@ -220,7 +221,7 @@ Componente `SearchBar` en `frontend/src/components/crypto/search-bar.tsx`, integ
 La página `/coin/[id]` muestra un gráfico interactivo de precios usando **Recharts**:
 
 - **AreaChart** con gradient fill (verde si sube, rojo si baja)
-- Selector de rango temporal: **7d**, **30d**, **90d**
+- Selector de rango temporal: **1d**, **7d**, **30d**, **1y**
 - Tooltip con precio formateado y fecha
 - Datos servidos por `GET /api/crypto/chart/:coinId`
 
@@ -282,12 +283,12 @@ cd backend
 npm test
 ```
 
-**25 tests** en 3 suites — completamente mockeados (sin llamadas reales a CoinGecko):
+**27 tests** en 3 suites — completamente mockeados (sin llamadas reales a CoinGecko):
 
 | Suite     | Tests | Descripción                                           |
 |-----------|-------|-------------------------------------------------------|
 | Auth      | 7     | registro, login, refresh, logout, duplicados          |
-| Crypto    | 14    | markets, categories (+content/volume), chart, global, category coins, errores 502 |
+| Crypto    | 16    | markets, categories (+content/volume), chart, global, category coins, coin detail, errores 503 |
 | Favorites | 4     | CRUD, autorización, duplicados                        |
 
 Config: `fileParallelism: false` para evitar conflictos de DB entre forks.
@@ -344,12 +345,13 @@ Stack aislado con puertos en 3001/4001/5433 para no interferir con el dev stack 
 | GET    | `/api/crypto/categories`            | No       | Categorías con imágenes, contenido y volumen |
 | GET    | `/api/crypto/categories/:id/coins`  | No       | Coins de una categoría (cache 60s)   |
 | GET    | `/api/crypto/global`                | No       | Datos globales del mercado           |
+| GET    | `/api/crypto/coin/:id`              | No       | Detalle completo de una moneda       |
 | GET    | `/api/crypto/chart/:coinId`         | No       | Precios históricos para gráfico      |
 | GET    | `/api/favorites`                    | Sí       | Favoritos del usuario con precios    |
 | POST   | `/api/favorites`                    | Sí       | Añadir cripto a favoritos            |
 | DELETE | `/api/favorites/:cryptoId`          | Sí       | Eliminar favorito                    |
 
-## 🧠 Cache
+## 🧠 Cache & Reliability
 
 El backend implementa un cache en memoria con TTL para reducir llamadas a la API de CoinGecko y evitar rate limits del tier gratuito (~10-30 req/min):
 
@@ -358,11 +360,20 @@ El backend implementa un cache en memoria con TTL para reducir llamadas a la API
 | `/coins/markets`            | 60 segundos |
 | `/coins/markets?ids=`       | 60 segundos |
 | `/coins/categories`         | 300 segundos |
-| `/coins/categories/:id`     | 60 segundos |
+| `/coins/:id` (detail)       | 300 segundos |
 | `/coins/chart`              | 300 segundos |
 | `/global`                   | 120 segundos |
 
-Además, el cache **previene cache stampede**: cuando múltiples requests concurrentes llegan con cache miss, solo una hace la llamada a CoinGecko y las demás esperan la misma promesa pendiente. Si CoinGecko responde con 429 (rate limit), se reintenta automáticamente tras 500ms antes de fallar.
+Mecanismos de resiliencia:
+
+| Mecanismo | Descripción |
+|-----------|-------------|
+| **Cache stampede prevention** | Múltiples requests concurrentes con cache miss comparten una sola promesa pendiente |
+| **Timeout** | `AbortController` con 5s de timeout en todas las llamadas a CoinGecko |
+| **Universal retry** | Reintento automático en cualquier error (429, 5xx, timeout, red) con backoff exponencial (500ms × attempt) |
+| **Stale cache fallback** | Si CoinGecko falla y hay datos en cache aunque expirados, se sirven como fallback con advertencia en logs |
+| **HTTP 503** | CoinGecko caído responde con `503 Service Unavailable` (antes 502 Bad Gateway) |
+| **Logging estructurado** | Todos los errores se loguean con formato `[CRYPTO] GET /endpoint → mensaje de error` |
 
 ## ⚡ Rate Limiting
 
