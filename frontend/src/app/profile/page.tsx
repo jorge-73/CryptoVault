@@ -133,7 +133,7 @@ export default function ProfilePage() {
                   <button
                     key={opt.key}
                     onClick={() => toggleSort(opt.key)}
-                    className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
+                    className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap active:scale-95 cursor-pointer ${
                       active
                         ? "bg-accent/10 text-accent"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"

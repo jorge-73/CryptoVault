@@ -156,7 +156,7 @@ export default function CategoriesPage() {
                     <button
                       onClick={() => toggleSort("market_cap")}
                       className={cn(
-                        "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                        "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-95 cursor-pointer",
                         sortKey === "market_cap"
                           ? "bg-accent/10 text-accent"
                           : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -168,7 +168,7 @@ export default function CategoriesPage() {
                     <button
                       onClick={() => toggleSort("market_cap_change_24h")}
                       className={cn(
-                        "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                        "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-95 cursor-pointer",
                         sortKey === "market_cap_change_24h"
                           ? "bg-accent/10 text-accent"
                           : "text-muted-foreground hover:text-foreground hover:bg-muted"

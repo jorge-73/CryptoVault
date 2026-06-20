@@ -187,7 +187,7 @@ export default function CoinDetailPage() {
         <div className="flex gap-1 mb-6 border-b">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
+            className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px active:scale-95 cursor-pointer ${
               activeTab === "overview"
                 ? "border-accent text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -197,7 +197,7 @@ export default function CoinDetailPage() {
           </button>
           <button
             onClick={() => setActiveTab("about")}
-            className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
+            className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px active:scale-95 cursor-pointer ${
               activeTab === "about"
                 ? "border-accent text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground"

@@ -86,7 +86,7 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
             <button
               key={opt.value}
               onClick={() => setDays(opt.value)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors active:scale-95 ${
                 days === opt.value
                   ? "bg-accent text-accent-foreground"
                   : "text-muted-foreground hover:bg-accent/50"
@@ -105,12 +105,12 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
               <linearGradient id={`gradient-${coinId}`} x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor={isPositive ? "#16a34a" : "#dc2626"}
+                  stopColor={isPositive ? "var(--green)" : "var(--red)"}
                   stopOpacity={0.3}
                 />
                 <stop
                   offset="95%"
-                  stopColor={isPositive ? "#16a34a" : "#dc2626"}
+                  stopColor={isPositive ? "var(--green)" : "var(--red)"}
                   stopOpacity={0}
                 />
               </linearGradient>
@@ -143,7 +143,7 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
             <Area
               type="monotone"
               dataKey="price"
-              stroke={isPositive ? "#16a34a" : "#dc2626"}
+              stroke={isPositive ? "var(--green)" : "var(--red)"}
               strokeWidth={2}
               fill={`url(#gradient-${coinId})`}
             />

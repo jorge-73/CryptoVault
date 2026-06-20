@@ -132,7 +132,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
               key={opt.value}
               onClick={() => setTopFilter(opt.value)}
               className={cn(
-                "px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                "px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-95 cursor-pointer",
                 topFilter === opt.value
                   ? "bg-accent/10 text-accent"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
