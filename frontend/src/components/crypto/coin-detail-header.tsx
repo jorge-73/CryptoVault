@@ -54,7 +54,7 @@ export function CoinDetailHeader({
               {coin.symbol}
             </span>
             <span className="hidden sm:inline text-xs text-muted-foreground">
-              {t.coinDetail.stats.ranking} #{coin.market_cap_rank ?? "—"}
+              {t.coinDetail.stats.ranking} #{coin.market_cap_rank ?? t.badge.na}
             </span>
           </div>
           <div className="flex items-center gap-3 mt-1.5">

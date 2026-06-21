@@ -41,7 +41,7 @@ export function TrendingSectors({ sectors }: TrendingSectorsProps) {
                     isPositive ? "text-green" : "text-red"
                   )}
                 >
-                  {change != null ? formatPercentage(change) : "—"}
+                  {change != null ? formatPercentage(change) : t.badge.na}
                 </span>
               </div>
               <h3 className="font-semibold text-sm truncate group-hover:text-accent transition-colors">

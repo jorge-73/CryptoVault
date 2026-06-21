@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatMarketCap } from "@/lib/utils";
+import { useTranslations } from "@/lib/use-translations";
 import { MOCK_CATEGORIES } from "./mock-data";
 
 const containerVariants = {
@@ -18,19 +19,21 @@ const itemVariants = {
 };
 
 export function AnalyticsSection() {
+  const t = useTranslations();
+
   return (
     <section>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-20">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold">Explora el ecosistema crypto por sectores</h2>
-            <p className="text-muted-foreground mt-2">Desde DeFi hasta inteligencia artificial, descubre cómo se mueve cada segmento del mercado.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold">{t.landing.analytics.title}</h2>
+            <p className="text-muted-foreground mt-2">{t.landing.analytics.subtitle}</p>
           </div>
           <Link
             href="/categories"
             className="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
           >
-            Ver todos los sectores <ArrowRight className="h-3.5 w-3.5" />
+            {t.landing.analytics.viewAll} <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
@@ -54,13 +57,13 @@ export function AnalyticsSection() {
                 <div>
                   <h3 className="font-semibold group-hover:text-accent transition-colors">{cat.name}</h3>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-muted-foreground">{cat.top_3_coins.length} monedas</span>
+                    <span className="text-xs text-muted-foreground">{t.landing.analytics.coinsCount(cat.top_3_coins.length)}</span>
                     <Badge value={cat.market_cap_change_24h} className="text-[10px]" />
                   </div>
                 </div>
               </div>
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground uppercase tracking-wider">Cap.</span>
+                <span className="text-muted-foreground uppercase tracking-wider">{t.landing.analytics.cap}</span>
                 <span className="font-semibold tabular-nums">{formatMarketCap(cat.market_cap)}</span>
               </div>
             </motion.div>
@@ -71,7 +74,7 @@ export function AnalyticsSection() {
           href="/categories"
           className="sm:hidden inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline mt-4"
         >
-          Ver todos los sectores <ArrowRight className="h-3.5 w-3.5" />
+          {t.landing.analytics.viewAll} <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
     </section>

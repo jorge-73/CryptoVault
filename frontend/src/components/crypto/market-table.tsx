@@ -185,7 +185,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                       className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors"
                     >
                       <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums w-16">
-                        {coin.market_cap_rank ?? "—"}
+                        {coin.market_cap_rank ?? t.badge.na}
                       </td>
                       <td className="px-4 py-3">
                         <Link
@@ -268,7 +268,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                   <Link href={`/coin/${coin.id}`} className="block">
                     <div className="flex items-center gap-3">
                       <span className="text-xs text-muted-foreground tabular-nums w-5 flex-shrink-0">
-                        {coin.market_cap_rank ?? "—"}
+                        {coin.market_cap_rank ?? t.badge.na}
                       </span>
                       {coin.image ? (
                         <div className="relative h-8 w-8 flex-shrink-0">

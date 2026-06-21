@@ -2,6 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { api } from "@/lib/api";
+import { useTranslations } from "@/lib/use-translations";
 import { CategoryDetailHeader } from "@/components/crypto/category-detail-header";
 import { CategoryCoinTable, CategoryCoinTableSkeleton } from "@/components/crypto/category-coin-table";
 import { AnimatedMount } from "@/components/ui";
@@ -16,6 +17,7 @@ export default function CategoryDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const t = useTranslations();
   const [category, setCategory] = useState<CoinCategory | null>(null);
   const [coins, setCoins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +34,7 @@ export default function CategoryDetailPage({
         if (cancelled) return;
         const cat = (categories as CoinCategory[]).find((c) => c.id === id);
         if (!cat) {
-          setError("Sector no encontrado");
+          setError(t.categories.errorNotFound);
           return;
         }
         setCategory(cat);
@@ -40,8 +42,8 @@ export default function CategoryDetailPage({
       })
       .catch(() => {
         if (cancelled) return;
-        setError("Error al cargar el sector");
-        toast.error("Error al cargar el sector");
+        setError(t.categories.pageError);
+        toast.error(t.categories.pageErrorToast);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);

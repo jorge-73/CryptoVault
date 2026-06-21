@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { Toaster } from "sonner";
+import { es } from "@/translations/es";
 import "./globals.css";
 
 const inter = Inter({
@@ -17,19 +18,19 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const brand = es.nav.brand;
+
 export const metadata: Metadata = {
   title: {
-    default: "CryptoVault | Plataforma de análisis crypto",
-    template: "%s | CryptoVault",
+    default: es.meta.title(brand),
+    template: `%s | ${brand}`,
   },
-  description:
-    "Explora criptomonedas, analiza tendencias y sigue el mercado crypto en una plataforma profesional.",
+  description: es.meta.description,
   openGraph: {
-    title: "CryptoVault | Plataforma de análisis crypto",
-    description:
-      "Explora criptomonedas, analiza tendencias y sigue el mercado crypto en una plataforma profesional.",
+    title: es.meta.ogTitle(brand),
+    description: es.meta.ogDescription,
     type: "website",
-    siteName: "CryptoVault",
+    siteName: es.meta.ogSiteName,
   },
 };
 

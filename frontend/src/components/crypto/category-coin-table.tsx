@@ -99,7 +99,7 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                     onClick={() => toggleSort("market_cap_rank")}
                   >
                     <div className="flex items-center gap-1">
-                      #
+                      {t.crypto.rank}
                       <SortIcon field="market_cap_rank" />
                     </div>
                   </th>
@@ -145,7 +145,7 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                     className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors"
                   >
                     <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums">
-                      {coin.market_cap_rank ?? "—"}
+                      {coin.market_cap_rank ?? t.badge.na}
                     </td>
                     <td className="px-4 py-3">
                       <Link

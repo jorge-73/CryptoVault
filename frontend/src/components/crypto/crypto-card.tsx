@@ -67,7 +67,7 @@ export const CryptoCard = memo(function CryptoCard({ coin, isFavorite, onToggleF
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="text-xs text-muted-foreground tabular-nums">
-                #{coin.market_cap_rank ?? "—"}
+                #{coin.market_cap_rank ?? t.badge.na}
               </span>
               <h3 className="font-semibold truncate text-sm group-hover:text-accent transition-colors">{coin.name}</h3>
             </div>

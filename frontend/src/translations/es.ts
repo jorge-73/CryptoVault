@@ -212,6 +212,100 @@ export const es = {
     cap: "Cap.",
     vol24h: "Vol 24h",
     price: (name: string) => `Precio de ${name}`,
+    rank: "#",
+  },
+
+  meta: {
+    tagline: "Plataforma de análisis crypto",
+    title: (brand: string) => `${brand} | Plataforma de análisis crypto`,
+    description: "Explora criptomonedas, analiza tendencias y sigue el mercado crypto en una plataforma profesional.",
+    ogTitle: (brand: string) => `${brand} | Plataforma de análisis crypto`,
+    ogDescription: "Explora criptomonedas, analiza tendencias y sigue el mercado crypto en una plataforma profesional.",
+    ogSiteName: "CryptoVault",
+  },
+
+  landing: {
+    hero: {
+      title: "Analiza el mercado crypto como un profesional",
+      subtitle: "Explora criptomonedas, descubre tendencias del mercado y sigue tus activos favoritos desde una plataforma diseñada para tomar mejores decisiones.",
+      cta: "Comenzar ahora",
+      explore: "Explorar mercado",
+    },
+    heroStats: {
+      totalCap: "Cap. Total",
+      volume24h: "Volumen 24h",
+      btcDominance: "Dominancia BTC",
+      activeCryptos: "Criptos activas",
+    },
+    socialProof: {
+      heading: "Datos de mercado actualizados",
+      cryptos: "criptomonedas",
+      sectors: "sectores",
+      realtime: "datos en tiempo real",
+    },
+    features: {
+      title: "Todo el mercado crypto en un solo lugar",
+      intelligence: {
+        title: "Market Intelligence",
+        description: "Obtén una visión clara del mercado con métricas globales, tendencias y movimientos importantes.",
+      },
+      explorer: {
+        title: "Crypto Explorer",
+        description: "Explora sectores, categorías y encuentra oportunidades dentro del ecosistema crypto.",
+      },
+      analysis: {
+        title: "Asset Analysis",
+        description: "Analiza cada criptomoneda con métricas, gráficos históricos y datos relevantes.",
+      },
+    },
+    marketExplorer: {
+      title: "Descubre qué está pasando en el mercado",
+      subtitle: "Filtra, compara y analiza miles de activos con información actualizada.",
+      viewAll: "Ver mercado completo",
+      rank: "#",
+      name: "Nombre",
+      price: "Precio",
+      change24h: "24h",
+      cap: "Cap.",
+    },
+    analytics: {
+      title: "Explora el ecosistema crypto por sectores",
+      subtitle: "Desde DeFi hasta inteligencia artificial, descubre cómo se mueve cada segmento del mercado.",
+      viewAll: "Ver todos los sectores",
+      cap: "Cap.",
+      coinsCount: (n: number) => `${n} monedas`,
+    },
+    watchlist: {
+      title: "Construye tu propia lista de seguimiento",
+      subtitle: "Sigue tus activos favoritos y ten siempre la información importante a tu alcance.",
+      go: "Ir a watchlist",
+    },
+    cta: {
+      title: "Empieza a explorar el mercado crypto",
+      subtitle: "Analiza activos, descubre tendencias y sigue tus inversiones desde un solo lugar.",
+      button: "Entrar a CryptoVault",
+    },
+    header: {
+      market: "Mercado",
+      categories: "Categorías",
+      features: "Características",
+      cta: "Comenzar",
+      ariaNav: "Navegación principal",
+      ariaMenuOpen: "Abrir menú",
+      ariaMenuClose: "Cerrar menú",
+    },
+    footer: {
+      product: "Producto",
+      resources: "Recursos",
+      dashboard: "Dashboard",
+      market: "Mercado",
+      categories: "Categorías",
+      apiCredit: "CoinGecko API",
+      description: "Plataforma de análisis de criptomonedas en tiempo real con datos impulsados por CoinGecko.",
+      disclaimer: "Los datos de precios y mercado son proporcionados por CoinGecko. Pueden existir retrasos.",
+      copyright: (year: number, brand: string) => `© ${year} ${brand}. Todos los derechos reservados.`,
+      noAdvice: "Este producto no constituye asesoría financiera.",
+    },
   },
 } as const;
 

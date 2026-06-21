@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Star } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "@/lib/use-translations";
 
 const MOCK_WATCHLIST = [
   { id: "bitcoin", name: "Bitcoin", symbol: "BTC", current_price: 67450, price_change_percentage_24h: 2.34 },
@@ -23,19 +24,21 @@ const itemVariants = {
 };
 
 export function WatchlistSection() {
+  const t = useTranslations();
+
   return (
     <section className="border-y bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-20">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold">Construye tu propia lista de seguimiento</h2>
-            <p className="text-muted-foreground mt-2">Sigue tus activos favoritos y ten siempre la información importante a tu alcance.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold">{t.landing.watchlist.title}</h2>
+            <p className="text-muted-foreground mt-2">{t.landing.watchlist.subtitle}</p>
           </div>
           <Link
             href="/profile"
             className="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
           >
-            Ir a watchlist <ArrowRight className="h-3.5 w-3.5" />
+            {t.landing.watchlist.go} <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
@@ -74,7 +77,7 @@ export function WatchlistSection() {
           href="/profile"
           className="sm:hidden inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline mt-4"
         >
-          Ir a watchlist <ArrowRight className="h-3.5 w-3.5" />
+          {t.landing.watchlist.go} <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
     </section>

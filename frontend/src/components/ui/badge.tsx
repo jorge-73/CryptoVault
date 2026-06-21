@@ -1,5 +1,6 @@
 import { cn, formatPercentage } from "@/lib/utils";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { es } from "@/translations/es";
 
 interface BadgeProps {
   value: number | null | undefined;
@@ -13,7 +14,7 @@ export function Badge({ value, className, period }: BadgeProps) {
       <span className={cn("inline-flex items-center gap-1 rounded-md bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground", className)}>
         {period && <span className="opacity-60">{period}</span>}
         <Minus className="h-3 w-3" />
-        —
+        {es.badge.na}
       </span>
     );
   }

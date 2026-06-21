@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { formatPrice, formatMarketCap } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "@/lib/use-translations";
 import { MOCK_COINS } from "./mock-data";
 
 const containerVariants = {
@@ -18,19 +19,21 @@ const itemVariants = {
 };
 
 export function MarketExplorerSection() {
+  const t = useTranslations();
+
   return (
     <section className="border-y bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-20">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold">Descubre qué está pasando en el mercado</h2>
-            <p className="text-muted-foreground mt-2">Filtra, compara y analiza miles de activos con información actualizada.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold">{t.landing.marketExplorer.title}</h2>
+            <p className="text-muted-foreground mt-2">{t.landing.marketExplorer.subtitle}</p>
           </div>
           <Link
             href="/market"
             className="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
           >
-            Ver mercado completo <ArrowRight className="h-3.5 w-3.5" />
+            {t.landing.marketExplorer.viewAll} <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
@@ -39,11 +42,11 @@ export function MarketExplorerSection() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-12">#</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Nombre</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Precio</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">24h</th>
-                  <th className="hidden sm:table-cell px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Cap.</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-12">{t.landing.marketExplorer.rank}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">{t.landing.marketExplorer.name}</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">{t.landing.marketExplorer.price}</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">{t.landing.marketExplorer.change24h}</th>
+                  <th className="hidden sm:table-cell px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">{t.landing.marketExplorer.cap}</th>
                 </tr>
               </thead>
               <motion.tbody variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true }}>
@@ -78,7 +81,7 @@ export function MarketExplorerSection() {
           href="/market"
           className="sm:hidden inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline mt-4"
         >
-          Ver mercado completo <ArrowRight className="h-3.5 w-3.5" />
+          {t.landing.marketExplorer.viewAll} <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
     </section>

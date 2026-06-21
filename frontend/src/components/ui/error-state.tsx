@@ -1,5 +1,6 @@
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { es } from "@/translations/es";
 
 interface ErrorStateProps {
   message: string;
@@ -18,7 +19,7 @@ export function ErrorState({ message, onRetry, className }: ErrorStateProps) {
           className="inline-flex items-center gap-1.5 rounded-lg bg-red px-3 py-1.5 text-xs font-medium text-white hover:bg-red/90 transition-colors active:scale-95 cursor-pointer"
         >
           <RefreshCw className="h-3.5 w-3.5" />
-          Reintentar
+          {es.error.retry}
         </button>
       )}
     </div>

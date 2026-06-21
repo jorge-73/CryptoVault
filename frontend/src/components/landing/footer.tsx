@@ -1,16 +1,19 @@
 import Link from "next/link";
-
-const PRODUCT_LINKS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/market", label: "Mercado" },
-  { href: "/categories", label: "Categorías" },
-];
-
-const RESOURCE_LINKS = [
-  { href: "https://www.coingecko.com/", label: "CoinGecko API" },
-];
+import { es } from "@/translations/es";
 
 export function Footer() {
+  const year = new Date().getFullYear();
+
+  const PRODUCT_LINKS = [
+    { href: "/dashboard", label: es.landing.footer.dashboard },
+    { href: "/market", label: es.landing.footer.market },
+    { href: "/categories", label: es.landing.footer.categories },
+  ];
+
+  const RESOURCE_LINKS = [
+    { href: "https://www.coingecko.com/", label: es.landing.footer.apiCredit },
+  ];
+
   return (
     <footer className="border-t bg-card/50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10">
@@ -18,15 +21,15 @@ export function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2 font-bold text-lg">
               <span className="text-accent">◆</span>
-              <span>CryptoVault</span>
+              <span>{es.nav.brand}</span>
             </Link>
             <p className="text-xs text-muted-foreground mt-2 max-w-xs">
-              Plataforma de análisis de criptomonedas en tiempo real con datos impulsados por CoinGecko.
+              {es.landing.footer.description}
             </p>
           </div>
 
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Producto</h4>
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">{es.landing.footer.product}</h4>
             <ul className="space-y-2">
               {PRODUCT_LINKS.map((link) => (
                 <li key={link.href}>
@@ -39,7 +42,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Recursos</h4>
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">{es.landing.footer.resources}</h4>
             <ul className="space-y-2">
               {RESOURCE_LINKS.map((link) => (
                 <li key={link.href}>
@@ -50,17 +53,17 @@ export function Footer() {
               ))}
             </ul>
             <p className="text-[11px] text-muted-foreground/60 mt-3">
-              Los datos de precios y mercado son proporcionados por CoinGecko. Pueden existir retrasos.
+              {es.landing.footer.disclaimer}
             </p>
           </div>
         </div>
 
         <div className="border-t mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} CryptoVault. Todos los derechos reservados.
+            {es.landing.footer.copyright(year, es.nav.brand)}
           </p>
           <p className="text-[10px] text-muted-foreground/50">
-            Este producto no constituye asesoría financiera.
+            {es.landing.footer.noAdvice}
           </p>
         </div>
       </div>

@@ -110,17 +110,18 @@ export default function CoinDetailPage() {
     );
   }
 
+  const na = t.badge.na;
   const supplyFormatted = coin.circulating_supply
     ? coin.circulating_supply.toLocaleString("es-AR", { maximumFractionDigits: 0 })
-    : "—";
+    : na;
 
   const totalSupplyFormatted = coin.total_supply
     ? coin.total_supply.toLocaleString("es-AR", { maximumFractionDigits: 0 })
-    : "—";
+    : na;
 
   const volumeToCapRatio = coin.market_cap > 0
     ? (coin.total_volume / coin.market_cap).toFixed(4)
-    : "—";
+    : na;
 
   const stats = [
     {
@@ -135,7 +136,7 @@ export default function CoinDetailPage() {
     },
     {
       label: t.coinDetail.stats.ranking,
-      value: `#${coin.market_cap_rank ?? "—"}`,
+      value: `#${coin.market_cap_rank ?? na}`,
       icon: <BarChart3 className="h-4 w-4" />,
     },
     {
@@ -155,7 +156,7 @@ export default function CoinDetailPage() {
       label: t.coinDetail.stats.maxSupply,
       value: coin.max_supply
         ? coin.max_supply.toLocaleString("es-AR", { maximumFractionDigits: 0 })
-        : "—",
+        : na,
       icon: <Hash className="h-4 w-4" />,
     },
   ];
