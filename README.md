@@ -455,7 +455,9 @@ Stack aislado con puertos en 3001/4001/5433 para no interferir con el dev stack 
 ## 🧠 Cache & Reliability
 
 ### Timeouts y temporizador
-Cada llamada a CoinGecko usa `fetchWithTimeout` con `AbortController` y timeout de **5 segundos**. Si el servidor no responde dentro de ese plazo, la request se aborta automáticamente.
+Cada llamada a CoinGecko usa `fetchWithTimeout` con `AbortController`. Timeout diferenciado:
+- **5 segundos** para endpoints ligeros (categories, chart, coin detail, global)
+- **8 segundos** para `/coins/markets` (payload pesado con per_page=100)
 
 ### Cache en memoria
 El backend implementa un cache en memoria con TTL para reducir llamadas a la API de CoinGecko y evitar rate limits del tier gratuito (~10-30 req/min):
@@ -474,9 +476,16 @@ Cuando múltiples requests concurrentes tienen cache miss, todas comparten una *
 
 ### Universal Retry
 Reintento automático en **cualquier error** (no solo 429):
-- Timeout, 5xx, errores de red, rate limiting
-- Backoff: **500ms × número de intento** (intento 1 → 500ms, intento 2 → 1000ms)
-- Máximo **2 intentos** por request
+- Timeout: backoff **500ms × intento**, máx **3 intentos**
+- Network errors (fetch failed): backoff **1000ms × intento**, máx **3 intentos**
+- Rate limiting (429): backoff **1000ms × intento**, máx **3 intentos**
+
+### Diagnóstico de errores de red
+Cuando `fetch` lanza un error, se captura y loguea `err.cause` para conocer la causa exacta:
+```
+[COINGECKO] Network error on /coins/markets (attempt 1) (cause code: ENOTFOUND)
+[COINGECKO] Network error on /coins/markets (attempt 1) (cause code: ECONNRESET)
+```
 
 ### Stale Cache Fallback
 Si CoinGecko falla y hay datos en cache **aunque expirados**, se sirven como fallback con advertencia en logs:
@@ -485,8 +494,9 @@ Si CoinGecko falla y hay datos en cache **aunque expirados**, se sirven como fal
 ```
 
 ### Códigos de error
-- **503 Service Unavailable** en vez de 502 Bad Gateway cuando CoinGecko está caído
-- Logging estructurado con formato `[CRYPTO] GET /endpoint → mensaje de error`
+- **503 Service Unavailable** cuando CoinGecko está caído
+- Respuesta con formato `{ success: false, error: "Datos del mercado temporalmente no disponibles. Intente de nuevo más tarde." }` para todos los endpoints crypto
+- Logging estructurado con formato `[CRYPTO] GET /endpoint → mensaje de error` incluyendo causa de red cuando está disponible
 
 ## ⚡ Rate Limiting
 

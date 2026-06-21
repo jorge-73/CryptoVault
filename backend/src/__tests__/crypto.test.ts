@@ -116,7 +116,8 @@ describe('GET /api/crypto/markets', () => {
     const res = await request(app).get('/api/crypto/markets');
 
     expect(res.status).toBe(503);
-    expect(res.body.error).toBe('API error');
+    expect(res.body.success).toBe(false);
+    expect(res.body.error).toBe('Datos del mercado temporalmente no disponibles. Intente de nuevo más tarde.');
   });
 });
 
@@ -160,7 +161,8 @@ describe('GET /api/crypto/categories', () => {
     const res = await request(app).get('/api/crypto/categories');
 
     expect(res.status).toBe(503);
-    expect(res.body.error).toBe('Categories API error');
+    expect(res.body.success).toBe(false);
+    expect(res.body.error).toBe('Datos del mercado temporalmente no disponibles. Intente de nuevo más tarde.');
   });
 
   it('should handle empty categories gracefully', async () => {
@@ -202,7 +204,8 @@ describe('GET /api/crypto/global', () => {
     const res = await request(app).get('/api/crypto/global');
 
     expect(res.status).toBe(503);
-    expect(res.body.error).toBe('Global API error');
+    expect(res.body.success).toBe(false);
+    expect(res.body.error).toBe('Datos del mercado temporalmente no disponibles. Intente de nuevo más tarde.');
   });
 });
 
@@ -260,7 +263,8 @@ describe('GET /api/crypto/chart/:coinId', () => {
     const res = await request(app).get('/api/crypto/chart/unknown');
 
     expect(res.status).toBe(503);
-    expect(res.body.error).toBe('Chart API error');
+    expect(res.body.success).toBe(false);
+    expect(res.body.error).toBe('Datos del mercado temporalmente no disponibles. Intente de nuevo más tarde.');
   });
 });
 
@@ -285,7 +289,8 @@ describe('GET /api/crypto/categories/:id/coins', () => {
     const res = await request(app).get('/api/crypto/categories/defi/coins');
 
     expect(res.status).toBe(503);
-    expect(res.body.error).toBe('Coins API error');
+    expect(res.body.success).toBe(false);
+    expect(res.body.error).toBe('Datos del mercado temporalmente no disponibles. Intente de nuevo más tarde.');
   });
 });
 
@@ -327,6 +332,7 @@ describe('GET /api/crypto/coin/:id', () => {
     const res = await request(app).get('/api/crypto/coin/unknown');
 
     expect(res.status).toBe(503);
-    expect(res.body.error).toBe('Coin detail API error');
+    expect(res.body.success).toBe(false);
+    expect(res.body.error).toBe('Datos del mercado temporalmente no disponibles. Intente de nuevo más tarde.');
   });
 });

@@ -3,9 +3,19 @@ import { getCache, setCache, getStaleCache, getPending, setPending } from './cac
 
 const BASE = env.COINGECKO_API_URL;
 const FETCH_TIMEOUT = 5000;
+const MARKETS_TIMEOUT = 8000;
 
 const MARKETS_TTL = 60_000;
 const CATEGORIES_TTL = 300_000;
+
+function getCauseInfo(err: unknown): string {
+  if (err instanceof Error && 'cause' in err) {
+    const cause = (err as Error & { cause: Error | { code?: string; message?: string } }).cause;
+    if (cause instanceof Error) return ` (cause: ${cause.message})`;
+    if (typeof cause === 'object' && cause) return ` (cause code: ${(cause as { code?: string }).code ?? (cause as { message?: string }).message ?? 'unknown'})`;
+  }
+  return '';
+}
 
 async function fetchWithTimeout(endpoint: string, timeoutMs: number): Promise<Response> {
   const controller = new AbortController();
@@ -22,28 +32,34 @@ async function fetchWithTimeout(endpoint: string, timeoutMs: number): Promise<Re
   }
 }
 
-async function fetchFromCoinGecko<T>(endpoint: string, attempt = 1): Promise<T> {
+async function fetchFromCoinGecko<T>(endpoint: string, timeoutMs: number = FETCH_TIMEOUT, attempt = 1): Promise<T> {
   let response: Response;
 
   try {
-    response = await fetchWithTimeout(endpoint, FETCH_TIMEOUT);
+    response = await fetchWithTimeout(endpoint, timeoutMs);
   } catch (err) {
     const isTimeout = err instanceof DOMException && err.name === 'AbortError';
-    if (isTimeout && attempt < 2) {
-      console.warn(`[COINGECKO] Timeout on ${endpoint}, retrying (attempt ${attempt + 1})...`);
-      await new Promise((r) => setTimeout(r, 500 * attempt));
-      return fetchFromCoinGecko<T>(endpoint, attempt + 1);
+    const causeInfo = getCauseInfo(err);
+
+    console.error(`[COINGECKO] ${isTimeout ? 'Timeout' : 'Network error'} on ${endpoint} (attempt ${attempt})${causeInfo}`);
+
+    if (attempt < 3) {
+      const delay = isTimeout ? 500 * attempt : 1000 * attempt;
+      console.warn(`[COINGECKO] Retrying ${endpoint} in ${delay}ms (attempt ${attempt + 1})...`);
+      await new Promise((r) => setTimeout(r, delay));
+      return fetchFromCoinGecko<T>(endpoint, timeoutMs, attempt + 1);
     }
+
     throw new Error(isTimeout
-      ? `CoinGecko timeout after ${FETCH_TIMEOUT}ms`
+      ? `CoinGecko timeout after ${timeoutMs}ms`
       : `CoinGecko network error: ${err instanceof Error ? err.message : 'Unknown error'}`
     );
   }
 
-  if (response.status === 429 && attempt < 2) {
+  if (response.status === 429 && attempt < 3) {
     console.warn(`[COINGECKO] Rate limited on ${endpoint}, retrying (attempt ${attempt + 1})...`);
-    await new Promise((r) => setTimeout(r, 500 * attempt));
-    return fetchFromCoinGecko<T>(endpoint, attempt + 1);
+    await new Promise((r) => setTimeout(r, 1000 * attempt));
+    return fetchFromCoinGecko<T>(endpoint, timeoutMs, attempt + 1);
   }
 
   if (!response.ok) {
@@ -53,14 +69,14 @@ async function fetchFromCoinGecko<T>(endpoint: string, attempt = 1): Promise<T> 
   return response.json();
 }
 
-function cachedFetch<T>(endpoint: string, ttl: number): Promise<T> {
+function cachedFetch<T>(endpoint: string, ttl: number, timeoutMs?: number): Promise<T> {
   const cached = getCache<T>(endpoint);
   if (cached) return Promise.resolve(cached);
 
   const pending = getPending<T>(endpoint);
   if (pending) return pending;
 
-  const promise = fetchFromCoinGecko<T>(endpoint).then((data) => {
+  const promise = fetchFromCoinGecko<T>(endpoint, timeoutMs).then((data) => {
     setCache(endpoint, data, ttl);
     return data;
   }).catch((err) => {
@@ -148,7 +164,7 @@ export const coingeckoService = {
   async getMarkets(currency: string = 'usd', perPage: number = 50, category?: string): Promise<CoinMarket[]> {
     let endpoint = `/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=${perPage}&page=1&sparkline=false&price_change_percentage=7d`;
     if (category) endpoint += `&category=${category}`;
-    return cachedFetch<CoinMarket[]>(endpoint, MARKETS_TTL);
+    return cachedFetch<CoinMarket[]>(endpoint, MARKETS_TTL, MARKETS_TIMEOUT);
   },
 
   async getCategories(): Promise<CoinCategory[]> {
