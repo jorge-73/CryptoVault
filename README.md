@@ -49,9 +49,9 @@ crypto-app/
 │   │   │   ├── categories/
 │   │   │   │   ├── [id]/    # Detalle de sector (client component)
 │   │   │   │   └── page.tsx # Listado premium con sort/filter
-│   │   │   ├── coin/[id]/   # Detalle de moneda con gráfico
+│   │   │   ├── coin/[id]/   # Detalle de moneda con gráfico premium
 │   │   │   ├── auth/        # login, register
-│   │   │   └── profile/     # Watchlist (favoritos)
+│   │   │   └── profile/     # Watchlist con sort (nombre/precio/24h/marketCap)
 │   │   ├── components/
 │   │   │   ├── crypto/      # CryptoCard, MarketOverview, MarketTable, CategoryCard, PriceChart,
 │   │   │   │                # SearchBar, SectorOverview, TrendingSectors,
@@ -61,8 +61,9 @@ crypto-app/
 │   │   │   └── ui/          # 9 componentes reutilizables (ver sección UI Kit)
 │   │   ├── hooks/           # useDebounce
 │   │   ├── providers/       # auth + theme context
+│   │   ├── translations/    # es.ts — diccionario tipado (~220 strings)
 │   │   ├── types/           # crypto.ts (CoinCategory, CoinMarket, CoinDetail, TopCoin)
-│   │   └── lib/             # api client, utilities
+│   │   └── lib/             # api client, formatters (es-AR), crypto-transform, use-translations
 │   ├── playwright.config.ts
 │   └── next.config.ts       # remote image patterns
 ├── .github/workflows/
@@ -216,14 +217,33 @@ Componente `SearchBar` en `frontend/src/components/crypto/search-bar.tsx`, integ
 - **Interacción**: clic en resultado navega a `/coin/[id]`, botón X para limpiar, Escape/click-outside para cerrar
 - **Accesibilidad**: roles `combobox`, `listbox`, `option`, `aria-expanded`, `aria-autocomplete`
 
-## 📊 Gráficos Históricos
+## 📊 Gráficos Históricos y Detalle Premium
 
-La página `/coin/[id]` muestra un gráfico interactivo de precios usando **Recharts**:
+La página `/coin/[id]` ofrece una experiencia premium de detalle de criptomoneda con múltiples secciones:
 
-- **AreaChart** con gradient fill (verde si sube, rojo si baja)
-- Selector de rango temporal: **1d**, **7d**, **30d**, **1y**
-- Tooltip con precio formateado y fecha
-- Datos servidos por `GET /api/crypto/chart/:coinId`
+| Componente | Descripción |
+|------------|-------------|
+| **CoinDetailHeader** | Header premium con: imagen grande (64px), nombre + símbolo, rank, precio grande con badge 24h, botón favorito con feedback visual. Link "Volver al dashboard". |
+| **StatCards** | 6 tarjetas con datos clave: capitalización, volumen 24h, ranking, suministro circulante, suministro total, suministro máximo. Más indicador Vol/Cap. |
+| **PriceChart** | Área chart interactivo con Recharts, gradient fill verde/rojo según tendencia. Selector de rango: **1d**, **7d**, **30d**, **1y**. Tooltip con precio y fecha. Datos servidos por `GET /api/crypto/chart/:coinId`. |
+| **CoinAbout** | Descripción del proyecto (sanitizada + truncada a 1000 chars), enlaces a sitio web y explorador de bloques. Tabs para alternar entre gráfico y descripción. |
+
+Carga diferida: `PriceChart` y `MarketTable` usan `next/dynamic` + `ssr: false` para reducir bundle inicial.
+
+Rendimiento adicional: `CryptoCard` y `StatCard` envueltas en `React.memo` para evitar re-renders innecesarios.
+
+## 👁️ Watchlist
+
+La página `/profile` funciona como un dashboard de watchlist profesional:
+
+- **Autenticación requerida**: redirige a `/auth/login` si no hay sesión
+- **Lista dinámica**: muestra las criptomonedas favoritas con datos de mercado en vivo
+- **Ordenamiento**: botones con `ArrowUpDown` para ordenar por nombre, precio, cambio 24h o capitalización de mercado. Segundo clic invierte la dirección.
+- **Badge con período**: las `CryptoCard` dentro del watchlist muestran badge de **7d** además del badge 24h estándar
+- **Eliminación**: clic en estrella elimina de watchlist con confirmación vía toast
+- **Estados vacío**: `EmptyState` con icono y botón "Explorar mercado" que redirige a `/market`
+- **Skeleton**: `CryptoListSkeleton` con 5 placeholders mientras cargan los datos
+- El nav link "Favoritos" fue renombrado a "Watchlist"
 
 ## 🎞️ Animaciones (Framer Motion)
 
@@ -257,6 +277,26 @@ Scrollbar delgada (6px), track transparente, thumb con color `--muted-foreground
 ### Transiciones globales
 
 El `body` tiene `transition: background-color 0.2s ease, color 0.2s ease` para transiciones suaves al cambiar de tema.
+
+## 🌐 Localización Española
+
+Todo el frontend está traducido al español con un sistema centralizado de traducciones y formato regional argentino:
+
+### Arquitectura
+
+| Archivo | Propósito |
+|---------|-----------|
+| `frontend/src/translations/es.ts` | Diccionario tipado `as const` con ~220 strings organizadas por módulo (nav, auth, dashboard, market, categories, coinDetail, watchlist, search, chart, badge, error, theme, crypto) |
+| `frontend/src/lib/use-translations.ts` | Hook `useTranslations()` que retorna el objeto de traducciones |
+| `frontend/src/lib/formatters.ts` | Formateo de números con `toLocaleString("es-AR")`: precios (`$50.000,00`), porcentajes (`+12,5%`), market cap, números genéricos |
+| `frontend/src/lib/crypto-transform.ts` | Utilidades para limpiar datos de CoinGecko: `stripHtml()`, `sanitizeHtml()`, `truncate()` por word boundary, `formatCategoryDescription()` |
+
+### Convenciones
+- Textos con interpolación se definen como funciones flecha: `(name: string) => \`Precio de ${name}\``
+- No se traducen: Bitcoin, Ethereum, DeFi, NFT, Blockchain, Layer 2
+- Los componentes usan `const t = useTranslations()` y referencian `t.modulo.clave`
+- Server components (auth pages) importan `es` directamente para metadata
+- Arrays estáticos que necesitan `t` (`navLinks`, `TOP_OPTIONS`, `SORT_OPTIONS`) se movieron dentro del componente
 
 ## 🧩 UI Kit
 
@@ -353,6 +393,10 @@ Stack aislado con puertos en 3001/4001/5433 para no interferir con el dev stack 
 
 ## 🧠 Cache & Reliability
 
+### Timeouts y temporizador
+Cada llamada a CoinGecko usa `fetchWithTimeout` con `AbortController` y timeout de **5 segundos**. Si el servidor no responde dentro de ese plazo, la request se aborta automáticamente.
+
+### Cache en memoria
 El backend implementa un cache en memoria con TTL para reducir llamadas a la API de CoinGecko y evitar rate limits del tier gratuito (~10-30 req/min):
 
 | Endpoint                    | TTL        |
@@ -364,16 +408,24 @@ El backend implementa un cache en memoria con TTL para reducir llamadas a la API
 | `/coins/chart`              | 300 segundos |
 | `/global`                   | 120 segundos |
 
-Mecanismos de resiliencia:
+### Prevención de cache stampede
+Cuando múltiples requests concurrentes tienen cache miss, todas comparten una **misma promesa pendiente** en lugar de disparar N llamadas a CoinGecko. La primera request que detecta cache miss inicia la llamada y las demás esperan la misma promesa.
 
-| Mecanismo | Descripción |
-|-----------|-------------|
-| **Cache stampede prevention** | Múltiples requests concurrentes con cache miss comparten una sola promesa pendiente |
-| **Timeout** | `AbortController` con 5s de timeout en todas las llamadas a CoinGecko |
-| **Universal retry** | Reintento automático en cualquier error (429, 5xx, timeout, red) con backoff exponencial (500ms × attempt) |
-| **Stale cache fallback** | Si CoinGecko falla y hay datos en cache aunque expirados, se sirven como fallback con advertencia en logs |
-| **HTTP 503** | CoinGecko caído responde con `503 Service Unavailable` (antes 502 Bad Gateway) |
-| **Logging estructurado** | Todos los errores se loguean con formato `[CRYPTO] GET /endpoint → mensaje de error` |
+### Universal Retry
+Reintento automático en **cualquier error** (no solo 429):
+- Timeout, 5xx, errores de red, rate limiting
+- Backoff: **500ms × número de intento** (intento 1 → 500ms, intento 2 → 1000ms)
+- Máximo **2 intentos** por request
+
+### Stale Cache Fallback
+Si CoinGecko falla y hay datos en cache **aunque expirados**, se sirven como fallback con advertencia en logs:
+```
+[COINGECKO] Serving stale cache for /coins/markets
+```
+
+### Códigos de error
+- **503 Service Unavailable** en vez de 502 Bad Gateway cuando CoinGecko está caído
+- Logging estructurado con formato `[CRYPTO] GET /endpoint → mensaje de error`
 
 ## ⚡ Rate Limiting
 
@@ -427,8 +479,14 @@ Trigger: `push` y `pull_request` a `main`. Job `status-check` consolida y requie
 - [x] CI/CD con GitHub Actions
 - [x] Búsqueda de criptomonedas con debounce
 - [x] Crypto Market Explorer (categorías premium + detalle de sector)
-- [x] Tests e2e de categorías y detalle (33 tests total)
+- [x] Tests e2e de categorías y detalle (39 tests total)
 - [x] Página /market con tabla profesional (sort, search, top filter, 7d column)
+- [x] Coin Detail premium (CoinDetailHeader, CoinAbout, PriceChart 1d/1y, stat cards con supply)
+- [x] Watchlist profesional con sort, badges 7d, dashboard de perfil
+- [x] Performance: dynamic imports + React.memo
+- [x] Visual Quality: CSS vars en chart, active:scale-95 en botones, cursor-pointer
+- [x] API Reliability: fetchWithTimeout, stale cache fallback, 503, universal retry, logs estructurados
+- [x] Localización completa al español (es-AR, ~220 strings centralizadas)
 - [ ] Portfolio personal (módulo de inversión)
 - [ ] Alertas de precio (backend + frontend)
 - [ ] Solucionar Docker Desktop para e2e local
