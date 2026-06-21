@@ -1,6 +1,6 @@
 # CryptoVault 🪙
 
-Dashboard de criptomonedas en tiempo real + Crypto Market Explorer con sectores, búsqueda avanzada, favoritos y categorías premium.
+Dashboard de criptomonedas en tiempo real + Landing Page SaaS + Crypto Market Explorer con sectores, búsqueda avanzada, favoritos, categorías premium y localización completa al español.
 
 ## 🚀 Stack
 
@@ -45,19 +45,40 @@ crypto-app/
 │   │   └── mocks.ts         # mock data + setup functions
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── market/      # Mercado con tabla profesional (sort, search, top filter)
-│   │   │   ├── categories/
-│   │   │   │   ├── [id]/    # Detalle de sector (client component)
-│   │   │   │   └── page.tsx # Listado premium con sort/filter
-│   │   │   ├── coin/[id]/   # Detalle de moneda con gráfico premium
-│   │   │   ├── auth/        # login, register
-│   │   │   └── profile/     # Watchlist con sort (nombre/precio/24h/marketCap)
+│   │   │   ├── (app)/       # Route group — aplicación (header con search, theme, auth)
+│   │   │   │   ├── dashboard/  # Dashboard principal
+│   │   │   │   ├── market/     # Mercado con tabla profesional (sort, search, top filter)
+│   │   │   │   ├── categories/
+│   │   │   │   │   ├── [id]/   # Detalle de sector
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── coin/[id]/  # Detalle de moneda con gráfico premium
+│   │   │   │   ├── auth/       # login, register
+│   │   │   │   └── profile/    # Watchlist con sort
+│   │   │   ├── (landing)/      # Route group — landing marketing
+│   │   │   │   ├── layout.tsx  # LandingHeader + Footer
+│   │   │   │   └── page.tsx    # Landing page en /
+│   │   │   ├── error.tsx
+│   │   │   ├── loading.tsx
+│   │   │   ├── favicon.ico
+│   │   │   ├── globals.css
+│   │   │   └── layout.tsx     # Root layout (providers, fonts, metadata)
 │   │   ├── components/
 │   │   │   ├── crypto/      # CryptoCard, MarketOverview, MarketTable, CategoryCard, PriceChart,
 │   │   │   │                # SearchBar, SectorOverview, TrendingSectors,
 │   │   │   │                # MarketIntelligence, CategoryCoinTable, CategoryDetailHeader,
 │   │   │   │                # CoinDetailHeader, CoinAbout
-│   │   │   ├── layout/      # Header, ThemeToggle
+│   │   │   ├── landing/     # Landing page sections
+│   │   │   │   ├── landing-header.tsx
+│   │   │   │   ├── hero-section.tsx
+│   │   │   │   ├── social-proof.tsx
+│   │   │   │   ├── features-section.tsx
+│   │   │   │   ├── market-explorer-section.tsx
+│   │   │   │   ├── analytics-section.tsx
+│   │   │   │   ├── watchlist-section.tsx
+│   │   │   │   ├── cta-section.tsx
+│   │   │   │   ├── footer.tsx
+│   │   │   │   └── mock-data.ts
+│   │   │   ├── layout/      # Header (app), ThemeToggle
 │   │   │   └── ui/          # 9 componentes reutilizables (ver sección UI Kit)
 │   │   ├── hooks/           # useDebounce
 │   │   ├── providers/       # auth + theme context
@@ -71,6 +92,46 @@ crypto-app/
 ├── docker-compose.e2e.yml   # Stack aislado para tests e2e
 └── .gitignore
 ```
+
+## 🏠 Landing Page
+
+La raíz (`/`) es una landing page de marketing con estrategia SaaS, construida con route groups independientes del layout de la aplicación:
+
+```
+(landing)/layout.tsx    ← LandingHeader + Footer
+(landing)/page.tsx     ← Landing page en /
+(app)/layout.tsx       ← Header app (search bar, theme, auth) para rutas internas
+```
+
+### Secciones
+
+| Componente | Tipo | Descripción |
+|------------|------|-------------|
+| `LandingHeader` | Client | Navbar minimalista (logo, nav: Mercado/Categorías/Características, CTA "Comenzar"). Drawer animado en mobile. Sin search, theme toggle ni auth. |
+| `HeroSection` | Client | Título h1 + subtítulo + CTAs (Comenzar ahora / Explorar mercado) + mockup visual con StatCards y mini chart SVG. Animación fade+slide. |
+| `SocialProof` | Server | 3 métricas de confianza: +10.500 criptos, +500 sectores, CoinGecko. Stats minimalistas. |
+| `FeaturesSection` | Client | 3 pilares (Market Intelligence, Crypto Explorer, Asset Analysis) con iconos, copy y mockups visuales. Stagger animation. |
+| `MarketExplorerSection` | Client | Tabla parcial con 5 coins hardcodeados, stagger en filas, link a /market. |
+| `AnalyticsSection` | Client | 4 CategoryCards mock (DeFi, AI, Gaming, Layer 2) con stagger grid. |
+| `WatchlistSection` | Client | 3 CryptoCards mock con estrella favorita, badge 24h, link a /profile. |
+| `CTASection` | Server | CTA final con gradiente, "Entrar a CryptoVault" → /dashboard. |
+| `Footer` | Server | 3 columnas: marca + descripción, Producto (Dashboard/Mercado/Categorías), Recursos (CoinGecko API, disclaimer, copyright). |
+
+### Diseño y animaciones
+
+- Mockups visuales sin llamadas API usando `mock-data.ts` con datos estáticos
+- Reutilización de componentes existentes (`StatCard`, `Badge`)
+- Framer Motion para entrance animations (fade+slide, stagger)
+- Glass cards con `bg-card/80 backdrop-blur-sm`
+- Gradientes suaves en CTA (`bg-gradient-to-br from-accent/5`)
+- Sin animaciones molestas ni exceso de colores
+
+### Edge Cases
+
+- **Header diferenciado**: LandingHeader no tiene auth ni search. El header de la app aparece solo en rutas `(app)/`.
+- **Ruta raíz limpia**: `/` es la landing, `/dashboard` es la app. `navLinks` en app header actualizado a `"/"` → `"/dashboard"`.
+- **Metadata SEO**: title "CryptoVault | Plataforma de análisis crypto", OG tags básicos.
+- **Loading/Error**: heredados del root layout (`app/loading.tsx`, `app/error.tsx`).
 
 ## ⚙️ Instalación
 
@@ -115,7 +176,7 @@ El servidor arrancará en `http://localhost:3000`.
 
 ## 📊 Dashboard Premium
 
-La página principal (`/`) se rediseñó con estructura de plataforma fintech:
+La página `/dashboard` es el centro de comando de la aplicación con estructura de plataforma fintech (anteriormente en `/`):
 
 | Sección | Descripción |
 |---------|-------------|
@@ -487,6 +548,8 @@ Trigger: `push` y `pull_request` a `main`. Job `status-check` consolida y requie
 - [x] Visual Quality: CSS vars en chart, active:scale-95 en botones, cursor-pointer
 - [x] API Reliability: fetchWithTimeout, stale cache fallback, 503, universal retry, logs estructurados
 - [x] Localización completa al español (es-AR, ~220 strings centralizadas)
+- [x] Landing Page SaaS profesional (hero, features, mockups, CTA, footer)
+- [x] Route groups: separación landing vs app con layouts independientes
 - [ ] Portfolio personal (módulo de inversión)
 - [ ] Alertas de precio (backend + frontend)
 - [ ] Solucionar Docker Desktop para e2e local

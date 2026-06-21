@@ -15,7 +15,7 @@ export function Header() {
   const pathname = usePathname();
 
   const navLinks = [
-    { href: "/", label: t.nav.dashboard, icon: LayoutDashboard },
+    { href: "/dashboard", label: t.nav.dashboard, icon: LayoutDashboard },
     { href: "/market", label: t.nav.market, icon: TrendingUp },
     { href: "/categories", label: t.nav.sectors, icon: BarChart3 },
     { href: "/profile", label: t.nav.watchlist, icon: Star },

@@ -3,7 +3,6 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { Toaster } from "sonner";
-import { Header } from "@/components/layout/header";
 import "./globals.css";
 
 const inter = Inter({
@@ -20,15 +19,15 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "CryptoVault — Precios de Criptomonedas en Tiempo Real",
+    default: "CryptoVault | Plataforma de análisis crypto",
     template: "%s | CryptoVault",
   },
   description:
-    "Sigue los precios de criptomonedas en tiempo real, crea tu lista de favoritos y mantente al día con el mercado crypto.",
+    "Explora criptomonedas, analiza tendencias y sigue el mercado crypto en una plataforma profesional.",
   openGraph: {
-    title: "CryptoVault — Precios de Criptomonedas",
+    title: "CryptoVault | Plataforma de análisis crypto",
     description:
-      "Sigue los precios de criptomonedas en tiempo real. Dashboard, categorías y favoritos.",
+      "Explora criptomonedas, analiza tendencias y sigue el mercado crypto en una plataforma profesional.",
     type: "website",
     siteName: "CryptoVault",
   },
@@ -48,8 +47,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ThemeProvider>
           <AuthProvider>
-            <Header />
-            <main className="flex-1">{children}</main>
+            {children}
             <Toaster
               position="top-right"
               richColors
