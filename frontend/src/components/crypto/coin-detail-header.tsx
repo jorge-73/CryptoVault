@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "@/lib/use-translations";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Star } from "lucide-react";
@@ -20,6 +21,8 @@ export function CoinDetailHeader({
   onToggleFavorite,
   isAuthenticated,
 }: CoinDetailHeaderProps) {
+  const t = useTranslations();
+
   return (
     <div>
       <Link
@@ -27,14 +30,14 @@ export function CoinDetailHeader({
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        Volver al dashboard
+        {t.coinDetail.backLink}
       </Link>
 
       <div className="flex items-center gap-5 mb-8">
         <div className="relative h-16 w-16 flex-shrink-0">
           <Image
             src={coin.image}
-            alt={`Logo de ${coin.name}`}
+            alt={t.coinDetail.imageAlt(coin.name)}
             fill
             unoptimized
             className="rounded-full object-contain"
@@ -51,7 +54,7 @@ export function CoinDetailHeader({
               {coin.symbol}
             </span>
             <span className="hidden sm:inline text-xs text-muted-foreground">
-              Rank #{coin.market_cap_rank ?? "—"}
+              {t.coinDetail.stats.ranking} #{coin.market_cap_rank ?? "—"}
             </span>
           </div>
           <div className="flex items-center gap-3 mt-1.5">
@@ -73,8 +76,8 @@ export function CoinDetailHeader({
             )}
             aria-label={
               isFavorite
-                ? `Quitar ${coin.name} de favoritos`
-                : `Añadir ${coin.name} a favoritos`
+                ? t.coinDetail.favoriteRemove(coin.name)
+                : t.coinDetail.favoriteAdd(coin.name)
             }
           >
             <Star className={cn("h-5 w-5", isFavorite && "fill-current")} />

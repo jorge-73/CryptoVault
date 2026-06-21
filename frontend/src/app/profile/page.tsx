@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useTranslations } from "@/lib/use-translations";
 import { api } from "@/lib/api";
 import { CryptoCard } from "@/components/crypto/crypto-card";
 import { CryptoListSkeleton } from "@/components/crypto/crypto-list-skeleton";
@@ -14,16 +15,18 @@ import type { CoinMarket } from "@/types/crypto";
 
 type SortKey = "name" | "price" | "change24h" | "marketCap";
 
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "name", label: "Nombre" },
-  { key: "price", label: "Precio" },
-  { key: "change24h", label: "24h %" },
-  { key: "marketCap", label: "Cap. Mercado" },
-];
-
 export default function ProfilePage() {
+  const t = useTranslations();
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+
+  const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+    { key: "name", label: t.watchlist.sortName },
+    { key: "price", label: t.watchlist.sortPrice },
+    { key: "change24h", label: t.watchlist.sortChange24h },
+    { key: "marketCap", label: t.watchlist.sortMarketCap },
+  ];
+
   const [favorites, setFavorites] = useState<CoinMarket[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortKey, setSortKey] = useState<SortKey>("marketCap");
@@ -39,7 +42,7 @@ export default function ProfilePage() {
       api.favorites
         .getAll()
         .then(setFavorites)
-        .catch(() => toast.error("Error al cargar watchlist"))
+        .catch(() => toast.error(t.watchlist.toastLoadError))
         .finally(() => setLoading(false));
     }
   }, [user, authLoading, router]);
@@ -48,9 +51,9 @@ export default function ProfilePage() {
     try {
       await api.favorites.remove(id);
       setFavorites((prev) => prev.filter((c) => c.id !== id));
-      toast.success("Eliminado de watchlist");
+      toast.success(t.watchlist.toastRemoved);
     } catch {
-      toast.error("Error al eliminar de watchlist");
+      toast.error(t.watchlist.toastError);
     }
   };
 
@@ -99,25 +102,25 @@ export default function ProfilePage() {
     <AnimatedMount>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold">Watchlist</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">{t.watchlist.title}</h1>
           <p className="text-muted-foreground mt-1">
             {favorites.length > 0
-              ? `${favorites.length} criptomoneda(s) en seguimiento`
-              : "Aún no tienes criptomonedas en seguimiento"}
+              ? t.watchlist.count(favorites.length)
+              : t.watchlist.empty}
           </p>
         </div>
 
         {favorites.length === 0 ? (
           <EmptyState
             icon={<Star className="h-8 w-8" />}
-            title="Watchlist vacía"
-            description="Añade criptomonedas a tu lista desde el dashboard o el mercado"
+            title={t.watchlist.emptyTitle}
+            description={t.watchlist.emptyDescription}
             action={
               <button
                 onClick={() => router.push("/market")}
                 className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors"
               >
-                Explorar mercado
+                {t.watchlist.exploreButton}
               </button>
             }
           />
@@ -125,7 +128,7 @@ export default function ProfilePage() {
           <div>
             <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mr-1">
-                Ordenar:
+                {t.watchlist.sortLabel}
               </span>
               {SORT_OPTIONS.map((opt) => {
                 const active = sortKey === opt.key;

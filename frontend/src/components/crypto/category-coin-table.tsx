@@ -5,6 +5,7 @@ import { Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { cn, formatPrice, formatMarketCap } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useTranslations } from "@/lib/use-translations";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -24,6 +25,7 @@ type SortField = "market_cap_rank" | "current_price" | "price_change_percentage_
 type SortDir = "asc" | "desc";
 
 export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
+  const t = useTranslations();
   const [query, setQuery] = useState("");
   const [sortField, setSortField] = useState<SortField>("market_cap_rank");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
@@ -66,16 +68,16 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Monedas</h2>
+        <h2 className="text-lg font-semibold">{t.categories.coins}</h2>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar moneda..."
+            placeholder={t.market.search}
             className="h-8 w-40 rounded-lg border bg-muted/50 pl-8 pr-3 text-xs outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background transition-colors"
-            aria-label="Buscar moneda"
+            aria-label={t.market.searchAria}
           />
         </div>
       </div>
@@ -83,8 +85,8 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
       {filtered.length === 0 ? (
         <EmptyState
           icon={<Search className="h-8 w-8" />}
-          title="Sin resultados"
-          description={query ? `No hay monedas que coincidan con "${query}"` : "No hay monedas en este sector"}
+          title={t.market.noResults}
+          description={query ? t.market.noResultsQuery(query) : t.coinDetail.errorNotFound}
         />
       ) : (
         <div className="rounded-xl border bg-card overflow-hidden">
@@ -102,14 +104,14 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                     </div>
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Nombre
+                    {t.watchlist.sortName}
                   </th>
                   <th
                     className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors"
                     onClick={() => toggleSort("current_price")}
                   >
                     <div className="flex items-center justify-end gap-1">
-                      Precio
+                      {t.market.columns.price}
                       <SortIcon field="current_price" />
                     </div>
                   </th>
@@ -118,7 +120,7 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                     onClick={() => toggleSort("price_change_percentage_24h")}
                   >
                     <div className="flex items-center justify-end gap-1">
-                      24h
+                      {t.market.columns.change24h}
                       <SortIcon field="price_change_percentage_24h" />
                     </div>
                   </th>
@@ -127,7 +129,7 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                     onClick={() => toggleSort("market_cap")}
                   >
                     <div className="flex items-center justify-end gap-1">
-                      Cap. Mercado
+                      {t.market.columns.marketCap}
                       <SortIcon field="market_cap" />
                     </div>
                   </th>

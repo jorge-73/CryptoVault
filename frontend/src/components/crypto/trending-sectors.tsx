@@ -1,5 +1,8 @@
+"use client";
+
 import { TrendingUp } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatPercentage } from "@/lib/utils";
+import { useTranslations } from "@/lib/use-translations";
 import Link from "next/link";
 
 interface TrendingSectorsProps {
@@ -11,13 +14,14 @@ interface TrendingSectorsProps {
 }
 
 export function TrendingSectors({ sectors }: TrendingSectorsProps) {
+  const t = useTranslations();
   if (sectors.length === 0) return null;
 
   return (
     <section className="mb-8">
       <div className="flex items-center gap-2 mb-4">
         <TrendingUp className="h-5 w-5 text-accent" />
-        <h2 className="text-lg font-semibold">Trending Sectors</h2>
+        <h2 className="text-lg font-semibold">{t.dashboard.trendingSectors}</h2>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory scrollbar-none">
         {sectors.map((sector, i) => {
@@ -37,8 +41,7 @@ export function TrendingSectors({ sectors }: TrendingSectorsProps) {
                     isPositive ? "text-green" : "text-red"
                   )}
                 >
-                  {isPositive ? "+" : ""}
-                  {change?.toFixed(1) ?? "—"}%
+                  {change != null ? formatPercentage(change) : "—"}
                 </span>
               </div>
               <h3 className="font-semibold text-sm truncate group-hover:text-accent transition-colors">

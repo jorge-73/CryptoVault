@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useTranslations } from "@/lib/use-translations";
 import { api } from "@/lib/api";
 import { CategoryCard } from "@/components/crypto/category-card";
 import { SectorOverview, SectorOverviewSkeleton } from "@/components/crypto/sector-overview";
@@ -18,6 +19,7 @@ type SortKey = "market_cap" | "market_cap_change_24h";
 type SortDir = "desc" | "asc";
 
 export default function CategoriesPage() {
+  const t = useTranslations();
   const [categories, setCategories] = useState<CoinCategory[]>([]);
   const [globalData, setGlobalData] = useState<{
     total_market_cap: number;
@@ -45,8 +47,8 @@ export default function CategoriesPage() {
       })
       .catch(() => {
         if (cancelled) return;
-        setError("Error al cargar los sectores");
-        toast.error("Error al cargar los sectores");
+        setError(t.categories.errorLoading);
+        toast.error(t.categories.pageErrorToast);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -100,9 +102,9 @@ export default function CategoriesPage() {
     <AnimatedMount>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold">Crypto Sectors</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">{t.categories.title}</h1>
           <p className="text-muted-foreground mt-1">
-            Explora los principales sectores del mercado crypto
+            {t.categories.subtitle}
           </p>
         </div>
 
@@ -139,7 +141,7 @@ export default function CategoriesPage() {
 
             <section>
               <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-                <h2 className="text-lg font-semibold">Top Crypto Sectors</h2>
+                <h2 className="text-lg font-semibold">{t.categories.topSectors}</h2>
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
@@ -147,9 +149,9 @@ export default function CategoriesPage() {
                       type="text"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      placeholder="Filtrar sectores..."
+                      placeholder={t.categories.search}
                       className="h-8 w-40 rounded-lg border bg-muted/50 pl-8 pr-3 text-xs outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background transition-colors"
-                      aria-label="Filtrar sectores"
+                      aria-label={t.categories.searchAria}
                     />
                   </div>
                   <div className="flex items-center gap-1">
@@ -163,7 +165,7 @@ export default function CategoriesPage() {
                       )}
                     >
                       <ArrowUpDown className="h-3 w-3" />
-                      Cap
+                      {t.categories.sortCap}
                     </button>
                     <button
                       onClick={() => toggleSort("market_cap_change_24h")}
@@ -175,7 +177,7 @@ export default function CategoriesPage() {
                       )}
                     >
                       <ArrowUpDown className="h-3 w-3" />
-                      Crecimiento
+                      {t.categories.sortGrowth}
                     </button>
                   </div>
                 </div>
@@ -184,8 +186,8 @@ export default function CategoriesPage() {
               {filtered.length === 0 ? (
                 <EmptyState
                   icon={<LayoutGrid className="h-8 w-8" />}
-                  title="Sin resultados"
-                  description={query ? `No hay sectores que coincidan con "${query}"` : "No hay sectores disponibles"}
+                  title={t.categories.noResults}
+                  description={query ? t.categories.noResultsQuery(query) : t.categories.noResultsDefault}
                 />
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

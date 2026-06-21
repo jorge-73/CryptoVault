@@ -1,4 +1,6 @@
 import { formatMarketCap, cn } from "@/lib/utils";
+import { formatCategoryDescription } from "@/lib/crypto-transform";
+import { useTranslations } from "@/lib/use-translations";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -10,12 +12,8 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
-  const description = category.content
-    ? category.content.length > 100
-      ? category.content.slice(0, 100).trimEnd() + "…"
-      : category.content
-    : null;
-
+  const t = useTranslations();
+  const description = formatCategoryDescription(category.content, 100);
   const heroCoin = category.top_3_coins[0];
 
   return (
@@ -44,7 +42,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
                 {category.name}
               </h3>
               <span className="text-xs text-muted-foreground">
-                {category.top_3_coins.length} monedas destacadas
+                {t.categories.featuredCoins(category.top_3_coins.length)}
               </span>
             </div>
           </div>
@@ -59,14 +57,14 @@ export function CategoryCard({ category }: CategoryCardProps) {
 
         <div className="mt-auto flex items-center justify-between pt-3 border-t border-border/50">
           <div>
-            <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Cap.</span>
+            <span className="text-[11px] text-muted-foreground uppercase tracking-wider">{t.crypto.cap}</span>
             <p className="text-sm font-semibold tabular-nums">
               {formatMarketCap(category.market_cap)}
             </p>
           </div>
           {category.volume_24h != null && (
             <div className="text-right">
-              <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Vol 24h</span>
+              <span className="text-[11px] text-muted-foreground uppercase tracking-wider">{t.crypto.vol24h}</span>
               <p className="text-sm font-semibold tabular-nums">
                 {formatMarketCap(category.volume_24h)}
               </p>

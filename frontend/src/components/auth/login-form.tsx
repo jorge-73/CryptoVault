@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "@/lib/use-translations";
 import { useAuth } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -8,6 +9,7 @@ import Link from "next/link";
 import { Eye, EyeOff, LogIn, Loader2 } from "lucide-react";
 
 export function LoginForm() {
+  const t = useTranslations();
   const { login } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -21,10 +23,10 @@ export function LoginForm() {
 
     try {
       await login(email, password);
-      toast.success("Sesión iniciada correctamente");
+      toast.success(t.auth.toastLoginSuccess);
       router.push("/");
     } catch (err: any) {
-      toast.error(err.message || "Error al iniciar sesión");
+      toast.error(err.message || t.auth.toastLoginError);
     } finally {
       setLoading(false);
     }
@@ -34,7 +36,7 @@ export function LoginForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
         <label htmlFor="email" className="block text-sm font-medium mb-1.5">
-          Email
+          {t.auth.emailLabel}
         </label>
         <input
           id="email"
@@ -43,14 +45,14 @@ export function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="block w-full rounded-lg border bg-background px-4 py-2.5 text-sm outline-none ring-ring transition-all focus:ring-2 focus:ring-accent focus:border-accent"
-          placeholder="tu@email.com"
+          placeholder={t.auth.emailPlaceholder}
           autoComplete="email"
         />
       </div>
 
       <div>
         <label htmlFor="password" className="block text-sm font-medium mb-1.5">
-          Contraseña
+          {t.auth.passwordLabel}
         </label>
         <div className="relative">
           <input
@@ -60,14 +62,14 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="block w-full rounded-lg border bg-background px-4 py-2.5 pr-10 text-sm outline-none ring-ring transition-all focus:ring-2 focus:ring-accent focus:border-accent"
-            placeholder="••••••••"
+            placeholder={t.auth.passwordPlaceholder}
             autoComplete="current-password"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors active:scale-90"
-            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            aria-label={showPassword ? t.auth.hidePassword : t.auth.showPassword}
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
@@ -84,13 +86,13 @@ export function LoginForm() {
         ) : (
           <LogIn className="h-4 w-4" />
         )}
-        {loading ? "Iniciando sesión..." : "Iniciar sesión"}
+        {loading ? t.auth.loginLoading : t.auth.loginButton}
       </button>
 
       <p className="text-center text-sm text-muted-foreground">
-        ¿No tienes cuenta?{" "}
+        {t.auth.noAccount}{" "}
         <Link href="/auth/register" className="text-accent hover:underline font-medium">
-          Regístrate
+          {t.auth.registerLink}
         </Link>
       </p>
     </form>

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, formatPercentage } from "@/lib/utils";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 interface BadgeProps {
@@ -13,12 +13,13 @@ export function Badge({ value, className, period }: BadgeProps) {
       <span className={cn("inline-flex items-center gap-1 rounded-md bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground", className)}>
         {period && <span className="opacity-60">{period}</span>}
         <Minus className="h-3 w-3" />
-        N/A
+        —
       </span>
     );
   }
 
   const isPositive = value >= 0;
+  const formatted = formatPercentage(value);
 
   return (
     <span
@@ -36,8 +37,7 @@ export function Badge({ value, className, period }: BadgeProps) {
         <TrendingDown className="h-3 w-3" />
       )}
       {period && <span className="opacity-60">{period}</span>}
-      {isPositive ? "+" : ""}
-      {value.toFixed(2)}%
+      {formatted}
     </span>
   );
 }

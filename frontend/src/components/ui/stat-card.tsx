@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formatPercentage } from "@/lib/utils";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
 interface StatCardProps {
@@ -42,8 +42,7 @@ export const StatCard = memo(function StatCard({ label, value, trend, icon, clas
               isPositive ? "text-green" : "text-red"
             )}
           >
-            {isPositive ? "+" : ""}
-            {trend.toFixed(2)}%
+            {formatPercentage(trend)}
           </span>
         </div>
       )}

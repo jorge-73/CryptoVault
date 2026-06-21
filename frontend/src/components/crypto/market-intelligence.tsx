@@ -1,4 +1,8 @@
-import { cn, formatMarketCap } from "@/lib/utils";
+"use client";
+
+import { cn, formatPercentage } from "@/lib/utils";
+import { formatMarketCap, formatNumber } from "@/lib/formatters";
+import { useTranslations } from "@/lib/use-translations";
 import { BarChart3, BrainCircuit, TrendingUp, TrendingDown } from "lucide-react";
 import Link from "next/link";
 
@@ -14,6 +18,7 @@ interface MarketIntelligenceProps {
 }
 
 export function MarketIntelligence({ btcDominance, marketCapChange24h, topSectors }: MarketIntelligenceProps) {
+  const t = useTranslations();
   const sentiment = marketCapChange24h != null
     ? marketCapChange24h >= 0 ? "positive" : "negative"
     : null;
@@ -24,20 +29,20 @@ export function MarketIntelligence({ btcDominance, marketCapChange24h, topSector
         <div className="flex h-6 w-6 items-center justify-center rounded-md bg-accent/10">
           <BrainCircuit className="h-3.5 w-3.5 text-accent" />
         </div>
-        <h2 className="text-lg font-semibold">Market Intelligence</h2>
+        <h2 className="text-lg font-semibold">{t.dashboard.marketIntelligence}</h2>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border bg-card p-4 transition-all hover:shadow-md hover:border-accent/20">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              BTC Dominance
+              {t.dashboard.btcDominance}
             </span>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="flex items-end justify-between mb-2">
             <span className="text-2xl font-bold tabular-nums">
-              {btcDominance.toFixed(1)}%
+              {formatNumber(btcDominance)}%
             </span>
             {sentiment && (
               <span className={cn(
@@ -49,7 +54,7 @@ export function MarketIntelligence({ btcDominance, marketCapChange24h, topSector
                 ) : (
                   <TrendingDown className="h-3 w-3" />
                 )}
-                Mercado
+                {t.dashboard.marketSentiment}
               </span>
             )}
           </div>
@@ -82,7 +87,7 @@ export function MarketIntelligence({ btcDominance, marketCapChange24h, topSector
                     "text-xs font-semibold tabular-nums flex-shrink-0 ml-2",
                     isPositive ? "text-green" : "text-red"
                   )}>
-                    {isPositive ? "+" : ""}{change.toFixed(1)}%
+                    {formatPercentage(change)}
                   </span>
                 )}
               </div>

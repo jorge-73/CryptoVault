@@ -1,6 +1,11 @@
+"use client";
+
 import { StatCard } from "@/components/ui/stat-card";
 import { Badge } from "@/components/ui/badge";
 import { formatMarketCap, formatPercentage } from "@/lib/utils";
+import { formatNumber } from "@/lib/formatters";
+import { formatCategoryDescription } from "@/lib/crypto-transform";
+import { useTranslations } from "@/lib/use-translations";
 import { DollarSign, Activity, BarChart3, Layers } from "lucide-react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -12,6 +17,9 @@ interface CategoryDetailHeaderProps {
 }
 
 export function CategoryDetailHeader({ category, coinCount }: CategoryDetailHeaderProps) {
+  const t = useTranslations();
+  const description = formatCategoryDescription(category.content);
+
   return (
     <div>
       <Link
@@ -19,7 +27,7 @@ export function CategoryDetailHeader({ category, coinCount }: CategoryDetailHead
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
-        Volver a Crypto Sectors
+        {t.categories.backLink}
       </Link>
 
       <div className="mb-6">
@@ -27,27 +35,27 @@ export function CategoryDetailHeader({ category, coinCount }: CategoryDetailHead
           <h1 className="text-2xl sm:text-3xl font-bold">{category.name}</h1>
           <Badge value={category.market_cap_change_24h} className="text-sm px-2 py-0.5" />
         </div>
-        {category.content && (
+        {description && (
           <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
-            {category.content}
+            {description}
           </p>
         )}
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
         <StatCard
-          label="Capitalización"
+          label={t.categories.marketCap}
           value={formatMarketCap(category.market_cap)}
           icon={<DollarSign className="h-4 w-4" />}
         />
         <StatCard
-          label="Volumen 24h"
+          label={t.categories.volume24h}
           value={formatMarketCap(category.volume_24h)}
           icon={<Activity className="h-4 w-4" />}
         />
         <StatCard
-          label="Monedas"
-          value={coinCount.toLocaleString()}
+          label={t.categories.coins}
+          value={formatNumber(coinCount)}
           icon={<Layers className="h-4 w-4" />}
         />
       </div>

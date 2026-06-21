@@ -1,6 +1,7 @@
 "use client";
 
 import { Star } from "lucide-react";
+import { useTranslations } from "@/lib/use-translations";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/providers/auth-provider";
@@ -21,6 +22,7 @@ export function FavoriteButton({
   isFavorite,
   onToggle,
 }: FavoriteButtonProps) {
+  const t = useTranslations();
   const { user } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -35,14 +37,14 @@ export function FavoriteButton({
     try {
       if (isFavorite) {
         await api.favorites.remove(cryptoId);
-        toast.success(`${cryptoName} eliminado de favoritos`);
+        toast.success(t.coinDetail.toastRemoved);
       } else {
         await api.favorites.add(cryptoId);
-        toast.success(`${cryptoName} añadido a favoritos`);
+        toast.success(t.coinDetail.toastAdded);
       }
       onToggle(cryptoId);
     } catch {
-      toast.error("Error al actualizar favoritos");
+      toast.error(t.coinDetail.toastError);
     } finally {
       setLoading(false);
     }
@@ -60,8 +62,8 @@ export function FavoriteButton({
       )}
       aria-label={
         isFavorite
-          ? `Quitar ${cryptoName} de favoritos`
-          : `Añadir ${cryptoName} a favoritos`
+          ? t.coinDetail.favoriteRemove(cryptoName)
+          : t.coinDetail.favoriteAdd(cryptoName)
       }
     >
       <Star className={cn("h-5 w-5", isFavorite && "fill-current")} />

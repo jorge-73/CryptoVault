@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "@/lib/use-translations";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -22,6 +23,7 @@ import { toast } from "sonner";
 import type { CoinDetail } from "@/types/crypto";
 
 export default function CoinDetailPage() {
+  const t = useTranslations();
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const [coin, setCoin] = useState<CoinDetail | null>(null);
@@ -39,10 +41,10 @@ export default function CoinDetailPage() {
         if (detail) {
           setCoin(detail);
         } else {
-          setError("Criptomoneda no encontrada");
+          setError(t.coinDetail.errorNotFound);
         }
       })
-      .catch(() => setError("Error al cargar la criptomoneda"))
+      .catch(() => setError(t.coinDetail.errorLoading))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -61,14 +63,14 @@ export default function CoinDetailPage() {
       if (isFavorite) {
         await api.favorites.remove(coin.id);
         setIsFavorite(false);
-        toast.success("Eliminado de favoritos");
+        toast.success(t.coinDetail.toastRemoved);
       } else {
         await api.favorites.add(coin.id);
         setIsFavorite(true);
-        toast.success("Añadido a favoritos");
+        toast.success(t.coinDetail.toastAdded);
       }
     } catch {
-      toast.error("Error al actualizar favoritos");
+      toast.error(t.coinDetail.toastError);
     }
   };
 
@@ -101,19 +103,19 @@ export default function CoinDetailPage() {
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Volver al dashboard
+          {t.coinDetail.backLink}
         </Link>
-        <ErrorState message={error || "Criptomoneda no encontrada"} />
+        <ErrorState message={error || t.coinDetail.errorNotFound} />
       </div>
     );
   }
 
   const supplyFormatted = coin.circulating_supply
-    ? coin.circulating_supply.toLocaleString("en-US", { maximumFractionDigits: 0 })
+    ? coin.circulating_supply.toLocaleString("es-AR", { maximumFractionDigits: 0 })
     : "—";
 
   const totalSupplyFormatted = coin.total_supply
-    ? coin.total_supply.toLocaleString("en-US", { maximumFractionDigits: 0 })
+    ? coin.total_supply.toLocaleString("es-AR", { maximumFractionDigits: 0 })
     : "—";
 
   const volumeToCapRatio = coin.market_cap > 0
@@ -122,22 +124,22 @@ export default function CoinDetailPage() {
 
   const stats = [
     {
-      label: "Capitalización",
+      label: t.coinDetail.stats.marketCap,
       value: formatMarketCap(coin.market_cap),
       icon: <DollarSign className="h-4 w-4" />,
     },
     {
-      label: "Volumen 24h",
+      label: t.coinDetail.stats.volume24h,
       value: formatMarketCap(coin.total_volume),
       icon: <Activity className="h-4 w-4" />,
     },
     {
-      label: "Ranking",
+      label: t.coinDetail.stats.ranking,
       value: `#${coin.market_cap_rank ?? "—"}`,
       icon: <BarChart3 className="h-4 w-4" />,
     },
     {
-      label: "Suministro circ.",
+      label: t.coinDetail.stats.circSupply,
       value: supplyFormatted,
       icon: <Layers className="h-4 w-4" />,
     },
@@ -145,14 +147,14 @@ export default function CoinDetailPage() {
 
   const extraStats = [
     {
-      label: "Suministro total",
+      label: t.coinDetail.stats.totalSupply,
       value: totalSupplyFormatted,
       icon: <PieChart className="h-4 w-4" />,
     },
     {
-      label: "Suministro máx.",
+      label: t.coinDetail.stats.maxSupply,
       value: coin.max_supply
-        ? coin.max_supply.toLocaleString("en-US", { maximumFractionDigits: 0 })
+        ? coin.max_supply.toLocaleString("es-AR", { maximumFractionDigits: 0 })
         : "—",
       icon: <Hash className="h-4 w-4" />,
     },
@@ -179,7 +181,7 @@ export default function CoinDetailPage() {
             <StatCard key={s.label} {...s} />
           ))}
           <div className="col-span-2 flex items-center gap-4 rounded-xl border bg-card px-4 py-3 text-sm">
-            <span className="text-muted-foreground">Vol / Cap:</span>
+            <span className="text-muted-foreground">{t.coinDetail.stats.volToCap}</span>
             <span className="font-medium tabular-nums">{volumeToCapRatio}</span>
           </div>
         </div>
@@ -193,7 +195,7 @@ export default function CoinDetailPage() {
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            Gráfico
+            {t.coinDetail.tabs.chart}
           </button>
           <button
             onClick={() => setActiveTab("about")}
@@ -203,7 +205,7 @@ export default function CoinDetailPage() {
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            Acerca de
+            {t.coinDetail.tabs.about}
           </button>
         </div>
 

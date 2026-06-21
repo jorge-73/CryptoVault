@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useTranslations } from "@/lib/use-translations";
 import { api } from "@/lib/api";
 import { CryptoCard } from "@/components/crypto/crypto-card";
 import { CryptoListSkeleton } from "@/components/crypto/crypto-list-skeleton";
@@ -25,6 +26,7 @@ interface Coin {
 }
 
 export default function DashboardPage() {
+  const t = useTranslations();
   const [coins, setCoins] = useState<Coin[]>([]);
   const [categories, setCategories] = useState<CoinCategory[]>([]);
   const [globalData, setGlobalData] = useState<{ btc_dominance: number; market_cap_change_24h: number } | null>(null);
@@ -72,7 +74,7 @@ export default function DashboardPage() {
         setCategories(catsData as CoinCategory[]);
         if (global) setGlobalData(global as any);
       })
-      .catch(() => setError("Error al cargar las criptomonedas"))
+      .catch(() => setError(t.dashboard.errorLoading))
       .finally(() => setLoading(false));
   };
 
@@ -97,14 +99,14 @@ export default function DashboardPage() {
           next.delete(id);
           return next;
         });
-        toast.success("Eliminado de favoritos");
+        toast.success(t.coinDetail.toastRemoved);
       } else {
         await api.favorites.add(id);
         setFavorites((prev) => new Set(prev).add(id));
-        toast.success("Añadido a favoritos");
+        toast.success(t.coinDetail.toastAdded);
       }
     } catch {
-      toast.error("Error al actualizar favoritos");
+      toast.error(t.coinDetail.toastError);
     }
   };
 
@@ -112,8 +114,8 @@ export default function DashboardPage() {
     <AnimatedMount>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
         <SectionHeader
-          title="Crypto Market"
-          description="Precios, tendencias y datos del mercado en tiempo real"
+          title={t.dashboard.title}
+          description={t.dashboard.subtitle}
           className="mb-6"
         />
 
@@ -143,8 +145,8 @@ export default function DashboardPage() {
             <TrendingCoins gainers={trendingGainers} losers={trendingLosers} />
             <section>
               <SectionHeader
-                title="Todas las Criptomonedas"
-                description={`${coins.length} monedas ordenadas por capitalización de mercado`}
+                title={t.dashboard.allCoins}
+                description={t.dashboard.coinsCount(coins.length)}
                 className="mb-4"
               />
               <StaggerGrid className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

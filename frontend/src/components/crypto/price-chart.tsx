@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useTranslations } from "@/lib/use-translations";
 import {
   AreaChart,
   Area,
@@ -27,6 +28,7 @@ const DAYS_OPTIONS = [
 ] as const;
 
 export function PriceChart({ coinId, coinName }: PriceChartProps) {
+  const t = useTranslations();
   const [days, setDays] = useState(7);
   const [data, setData] = useState<{ timestamp: number; price: number }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +40,7 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
     api.crypto
       .getChart(coinId, "usd", days)
       .then((res) => setData(res.prices))
-      .catch(() => setError("Error al cargar el gráfico"))
+      .catch(() => setError(t.coinDetail.chartError))
       .finally(() => setLoading(false));
   }, [coinId, days]);
 
@@ -79,7 +81,7 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">
-          Precio de {coinName}
+          {t.coinDetail.chartTitle(coinName)}
         </h2>
         <div className="flex gap-1">
           {DAYS_OPTIONS.map((opt) => (
@@ -132,8 +134,8 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
               width={80}
             />
             <Tooltip
-              formatter={(value: any) => [formatPrice(value), "Precio"]}
-              labelFormatter={(label: any) => `Fecha: ${label}`}
+              formatter={(value: any) => [formatPrice(value), t.chart.tooltipPrice]}
+              labelFormatter={(label: any) => t.chart.tooltipDate(label)}
               contentStyle={{
                 borderRadius: "12px",
                 border: "1px solid hsl(var(--border))",

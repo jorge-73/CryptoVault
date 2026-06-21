@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "@/lib/use-translations";
 import dynamic from "next/dynamic";
 import { api } from "@/lib/api";
 import { MarketOverview } from "@/components/crypto/market-overview";
@@ -33,6 +34,7 @@ interface MarketCoin {
 }
 
 export default function MarketPage() {
+  const t = useTranslations();
   const [coins, setCoins] = useState<MarketCoin[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +47,7 @@ export default function MarketPage() {
     api.crypto
       .getMarkets("usd", 100)
       .then(setCoins)
-      .catch(() => setError("Error al cargar el mercado"))
+      .catch(() => setError(t.market.errorLoading))
       .finally(() => setLoading(false));
   }, []);
 
@@ -70,14 +72,14 @@ export default function MarketPage() {
           next.delete(id);
           return next;
         });
-        toast.success("Eliminado de favoritos");
+        toast.success(t.market.toastRemoved);
       } else {
         await api.favorites.add(id);
         setFavorites((prev) => new Set(prev).add(id));
-        toast.success("Añadido a favoritos");
+        toast.success(t.market.toastAdded);
       }
     } catch {
-      toast.error("Error al actualizar favoritos");
+      toast.error(t.market.toastError);
     }
   }, [favorites]);
 
@@ -85,8 +87,8 @@ export default function MarketPage() {
     <AnimatedMount>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
         <SectionHeader
-          title="Mercado"
-          description="Explora todas las criptomonedas con datos en tiempo real"
+          title={t.market.title}
+          description={t.market.subtitle}
           className="mb-6"
         />
 

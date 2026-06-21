@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
+import { useTranslations } from "@/lib/use-translations";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 interface TrendingCoin {
@@ -59,6 +62,7 @@ function TrendingCoinCard({ coin, isLoser }: { coin: TrendingCoin; isLoser?: boo
 }
 
 export function TrendingCoins({ gainers, losers }: TrendingCoinsProps) {
+  const t = useTranslations();
   if (gainers.length === 0 && losers.length === 0) return null;
 
   return (
@@ -71,7 +75,7 @@ export function TrendingCoins({ gainers, losers }: TrendingCoinsProps) {
             <Minus className="h-3.5 w-3.5 text-muted-foreground" />
           )}
         </div>
-        <h2 className="text-lg font-semibold">Trending Now</h2>
+        <h2 className="text-lg font-semibold">{t.dashboard.trending}</h2>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -80,7 +84,7 @@ export function TrendingCoins({ gainers, losers }: TrendingCoinsProps) {
             <div className="flex items-center gap-1.5 mb-2">
               <TrendingUp className="h-3.5 w-3.5 text-green" />
               <span className="text-xs font-medium text-green uppercase tracking-wider">
-                Top Gainers
+                {t.dashboard.gainers}
               </span>
             </div>
             <div className="space-y-2">
@@ -96,7 +100,7 @@ export function TrendingCoins({ gainers, losers }: TrendingCoinsProps) {
             <div className="flex items-center gap-1.5 mb-2">
               <TrendingDown className="h-3.5 w-3.5 text-red" />
               <span className="text-xs font-medium text-red uppercase tracking-wider">
-                Top Losers
+                {t.dashboard.losers}
               </span>
             </div>
             <div className="space-y-2">

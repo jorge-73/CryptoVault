@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import { useTranslations } from "@/lib/use-translations";
 import { Search, ArrowUpDown, ArrowUp, ArrowDown, Star } from "lucide-react";
 import { cn, formatPrice, formatMarketCap } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -39,14 +40,16 @@ interface MarketTableProps {
 
 type TopFilter = 10 | 50 | 100 | 0;
 
-const TOP_OPTIONS: { label: string; value: TopFilter }[] = [
-  { label: "Top 10", value: 10 },
-  { label: "Top 50", value: 50 },
-  { label: "Top 100", value: 100 },
-  { label: "Todos", value: 0 },
-];
-
 export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, error, onRetry }: MarketTableProps) {
+  const t = useTranslations();
+
+  const TOP_OPTIONS: { label: string; value: TopFilter }[] = [
+    { label: t.market.filters.top10, value: 10 },
+    { label: t.market.filters.top50, value: 50 },
+    { label: t.market.filters.top100, value: 100 },
+    { label: t.market.filters.all, value: 0 },
+  ];
+
   const [query, setQuery] = useState("");
   const [sortField, setSortField] = useState<SortField>("market_cap_rank");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
@@ -120,9 +123,9 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar moneda..."
-              className="h-8 w-40 rounded-lg border bg-muted/50 pl-8 pr-3 text-xs outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background transition-colors"
-              aria-label="Buscar moneda"
+              placeholder={t.market.search}
+              className="h-8 w-48 rounded-lg border bg-muted/50 pl-8 pr-3 text-xs outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background transition-colors"
+              aria-label={t.market.searchAria}
             />
           </div>
         </div>
@@ -149,8 +152,8 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
       ) : filtered.length === 0 ? (
         <EmptyState
           icon={<Search className="h-8 w-8" />}
-          title="Sin resultados"
-          description={query ? `No hay monedas que coincidan con "${query}"` : "No hay monedas disponibles"}
+          title={t.market.noResults}
+          description={query ? t.market.noResultsQuery(query) : t.market.noResultsDefault}
         />
       ) : (
         <>
@@ -162,13 +165,13 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                   <tr className="border-b border-border bg-muted/50">
                     {sortableHeader("#", "market_cap_rank", "left", "w-16")}
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      Moneda
+                      {t.market.columns.coin}
                     </th>
-                    {sortableHeader("Precio", "current_price")}
-                    {sortableHeader("24h", "price_change_percentage_24h")}
-                    {sortableHeader("7d", "price_change_percentage_7d_in_currency")}
-                    {sortableHeader("Cap. Mercado", "market_cap", "right", "hidden lg:table-cell")}
-                    {sortableHeader("Volumen", "total_volume", "right", "hidden lg:table-cell")}
+                    {sortableHeader(t.market.columns.price, "current_price")}
+                    {sortableHeader(t.market.columns.change24h, "price_change_percentage_24h")}
+                    {sortableHeader(t.market.columns.change7d, "price_change_percentage_7d_in_currency")}
+                    {sortableHeader(t.market.columns.marketCap, "market_cap", "right", "hidden lg:table-cell")}
+                    {sortableHeader(t.market.columns.volume, "total_volume", "right", "hidden lg:table-cell")}
                     {onToggleFavorite && <th className="px-4 py-3 w-10" />}
                   </tr>
                 </thead>
@@ -239,7 +242,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                                 ? "text-yellow-500 hover:text-yellow-600"
                                 : "text-muted-foreground/40 hover:text-yellow-500"
                             )}
-                            aria-label={isFavorite?.(coin.id) ? `Quitar ${coin.name} de favoritos` : `Añadir ${coin.name} a favoritos`}
+                            aria-label={isFavorite?.(coin.id) ? t.coinDetail.favoriteRemove(coin.name) : t.coinDetail.favoriteAdd(coin.name)}
                           >
                             <Star className={cn("h-4 w-4", isFavorite?.(coin.id) && "fill-current")} />
                           </button>
@@ -311,7 +314,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                               ? "text-yellow-500 hover:text-yellow-600"
                               : "text-muted-foreground/40 hover:text-yellow-500"
                           )}
-                          aria-label={isFavorite?.(coin.id) ? `Quitar ${coin.name} de favoritos` : `Añadir ${coin.name} a favoritos`}
+                          aria-label={isFavorite?.(coin.id) ? t.coinDetail.favoriteRemove(coin.name) : t.coinDetail.favoriteAdd(coin.name)}
                         >
                           <Star className={cn("h-3.5 w-3.5", isFavorite?.(coin.id) && "fill-current")} />
                         </button>
@@ -319,11 +322,11 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                     </div>
                     <div className="flex items-center gap-4 mt-2 pl-8">
                       <div className="text-[11px] text-muted-foreground">
-                        <span className="uppercase tracking-wider">Cap. </span>
+                        <span className="uppercase tracking-wider">{t.market.cardCap}</span>
                         <span className="font-medium tabular-nums">{formatMarketCap(coin.market_cap)}</span>
                       </div>
                       <div className="text-[11px] text-muted-foreground">
-                        <span className="uppercase tracking-wider">Vol </span>
+                        <span className="uppercase tracking-wider">{t.market.cardVol}</span>
                         <span className="font-medium tabular-nums">{formatMarketCap(coin.total_volume)}</span>
                       </div>
                     </div>

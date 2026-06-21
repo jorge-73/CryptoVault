@@ -1,6 +1,9 @@
+"use client";
+
 import { StatCard } from "@/components/ui/stat-card";
+import { useTranslations } from "@/lib/use-translations";
+import { formatNumber, formatMarketCap } from "@/lib/formatters";
 import { DollarSign, Activity, BarChart3, Layers } from "lucide-react";
-import { formatMarketCap } from "@/lib/utils";
 
 interface SectorOverviewProps {
   totalMarketCap: number;
@@ -15,26 +18,27 @@ export function SectorOverview({
   btcDominance,
   sectorCount,
 }: SectorOverviewProps) {
+  const t = useTranslations();
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
       <StatCard
-        label="Cap. Total Mercado"
+        label={t.categories.capTotalMercado}
         value={formatMarketCap(totalMarketCap)}
         icon={<DollarSign className="h-4 w-4" />}
       />
       <StatCard
-        label="Volumen 24h"
+        label={t.categories.volume24h}
         value={formatMarketCap(totalVolume24h)}
         icon={<Activity className="h-4 w-4" />}
       />
       <StatCard
-        label="Dominancia BTC"
-        value={`${btcDominance.toFixed(1)}%`}
+        label={t.categories.dominanciaBTC}
+        value={`${formatNumber(btcDominance)}%`}
         icon={<BarChart3 className="h-4 w-4" />}
       />
       <StatCard
-        label="Sectores Activos"
-        value={sectorCount.toLocaleString()}
+        label={t.categories.sectoresActivos}
+        value={formatNumber(sectorCount)}
         icon={<Layers className="h-4 w-4" />}
       />
     </div>

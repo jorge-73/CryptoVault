@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
+import { useTranslations } from "@/lib/use-translations";
 import { useDebounce } from "@/hooks";
 import { api } from "@/lib/api";
 import { formatPrice } from "@/lib/utils";
@@ -17,6 +18,7 @@ interface Coin {
 }
 
 export function SearchBar() {
+  const t = useTranslations();
   const [query, setQuery] = useState("");
   const [coins, setCoins] = useState<Coin[]>([]);
   const [results, setResults] = useState<Coin[]>([]);
@@ -87,9 +89,9 @@ export function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => results.length > 0 && setOpen(true)}
-          placeholder="Buscar cripto..."
+          placeholder={t.market.search}
           className="h-9 w-48 rounded-lg border bg-muted/50 pl-9 pr-8 text-sm outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background transition-colors"
-          aria-label="Buscar criptomonedas"
+          aria-label={t.market.searchAria}
           aria-expanded={open}
           aria-autocomplete="list"
           role="combobox"
@@ -98,7 +100,7 @@ export function SearchBar() {
           <button
             onClick={() => { setQuery(""); setResults([]); setOpen(false); }}
             className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Limpiar búsqueda"
+            aria-label={t.search.clearAria}
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -113,7 +115,7 @@ export function SearchBar() {
         >
           {results.length === 0 ? (
             <div className="px-4 py-3 text-sm text-muted-foreground">
-              Sin resultados para &quot;{query}&quot;
+              {t.market.noResultsQuery(query)}
             </div>
           ) : (
             results.map((coin) => (
