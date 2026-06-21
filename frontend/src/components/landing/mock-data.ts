@@ -6,6 +6,21 @@ export const MOCK_GLOBAL = {
   active_cryptocurrencies: 10_500,
 };
 
+export const MOCK_BTC_SPARKLINE = [65200, 64800, 66100, 65800, 67000, 66500, 67200, 66900, 67450];
+
+export const MOCK_ALERT = {
+  message: "Bitcoin supera los USD 67.000",
+  subtitle: "Nueva marca del año — volumen récord en las últimas 24h",
+};
+
+export const MOCK_TICKER = [
+  { id: "bitcoin", name: "Bitcoin", symbol: "BTC", price: 67450, change24h: 2.34 },
+  { id: "ethereum", name: "Ethereum", symbol: "ETH", price: 3450, change24h: 1.56 },
+  { id: "solana", name: "Solana", symbol: "SOL", price: 172, change24h: -0.82 },
+  { id: "ripple", name: "XRP", symbol: "XRP", price: 0.62, change24h: 0.15 },
+  { id: "cardano", name: "Cardano", symbol: "ADA", price: 0.45, change24h: 3.21 },
+];
+
 export const MOCK_CATEGORIES = [
   {
     id: "defi",

@@ -13,10 +13,22 @@ const containerVariants = {
   show: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
+const ease = [0.32, 0.72, 0, 1] as const;
+
 const itemVariants = {
   hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
 };
+
+function PremiumCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-border/40 bg-card/30 p-1.5 backdrop-blur-sm transition-all duration-500 hover:shadow-[0_0_25px_-8px_var(--accent)] hover:border-accent/20 hover:-translate-y-0.5 h-full">
+      <div className="rounded-[calc(1.5rem-0.375rem)] bg-card p-5 border border-border/20 h-full">
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export function AnalyticsSection() {
   const t = useTranslations();
@@ -45,27 +57,25 @@ export function AnalyticsSection() {
           className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
           {MOCK_CATEGORIES.map((cat) => (
-            <motion.div
-              key={cat.id}
-              variants={itemVariants}
-              className="group rounded-xl border bg-card p-5 transition-all hover:shadow-lg hover:border-accent/30 hover:-translate-y-0.5"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="h-9 w-9 flex-shrink-0 rounded-full bg-muted flex items-center justify-center">
-                  <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <div>
-                  <h3 className="font-semibold group-hover:text-accent transition-colors">{cat.name}</h3>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-muted-foreground">{t.landing.analytics.coinsCount(cat.top_3_coins.length)}</span>
-                    <Badge value={cat.market_cap_change_24h} className="text-[10px]" />
+            <motion.div key={cat.id} variants={itemVariants}>
+              <PremiumCard>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-10 w-10 flex-shrink-0 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center">
+                    <BarChart3 className="h-5 w-5 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sm">{cat.name}</h3>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs text-muted-foreground">{t.landing.analytics.coinsCount(cat.top_3_coins.length)}</span>
+                      <Badge value={cat.market_cap_change_24h} className="text-[10px]" />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground uppercase tracking-wider">{t.landing.analytics.cap}</span>
-                <span className="font-semibold tabular-nums">{formatMarketCap(cat.market_cap)}</span>
-              </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground uppercase tracking-wider">{t.landing.analytics.cap}</span>
+                  <span className="font-semibold tabular-nums font-mono">{formatMarketCap(cat.market_cap)}</span>
+                </div>
+              </PremiumCard>
             </motion.div>
           ))}
         </motion.div>

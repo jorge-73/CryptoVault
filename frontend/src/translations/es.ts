@@ -227,9 +227,10 @@ export const es = {
   landing: {
     hero: {
       title: "Analiza el mercado crypto como un profesional",
-      subtitle: "Explora criptomonedas, descubre tendencias del mercado y sigue tus activos favoritos desde una plataforma diseñada para tomar mejores decisiones.",
+      subtitle: "Explora activos, descubre tendencias y sigue el mercado desde una plataforma diseñada para analizar oportunidades crypto.",
       cta: "Comenzar ahora",
       explore: "Explorar mercado",
+      eyebrow: "Mercado Crypto en Tiempo Real",
     },
     heroStats: {
       totalCap: "Cap. Total",
@@ -237,36 +238,26 @@ export const es = {
       btcDominance: "Dominancia BTC",
       activeCryptos: "Criptos activas",
     },
-    socialProof: {
-      heading: "Datos de mercado actualizados",
-      cryptos: "criptomonedas",
-      sectors: "sectores",
-      realtime: "datos en tiempo real",
+    heroCards: {
+      btcPrice: "Precio BTC",
+      btcTitle: (name: string) => `${name} en vivo`,
+      alert: "Alerta de Mercado",
+      watchlistTitle: "Tu Watchlist",
+      watchlistCount: (n: number) => `${n} activos en seguimiento`,
     },
-    features: {
-      title: "Todo el mercado crypto en un solo lugar",
-      intelligence: {
-        title: "Market Intelligence",
-        description: "Obtén una visión clara del mercado con métricas globales, tendencias y movimientos importantes.",
-      },
-      explorer: {
-        title: "Crypto Explorer",
-        description: "Explora sectores, categorías y encuentra oportunidades dentro del ecosistema crypto.",
-      },
-      analysis: {
-        title: "Asset Analysis",
-        description: "Analiza cada criptomoneda con métricas, gráficos históricos y datos relevantes.",
-      },
+    bento: {
+      title: "Todo lo que necesitas para analizar el mercado",
+      marketAnalytics: "Advanced Market Analytics",
+      marketAnalyticsDesc: "Gráficos interactivos y datos en tiempo real para tomar decisiones informadas.",
+      intelligence: "Market Intelligence",
+      intelligenceDesc: "Métricas globales, dominancia BTC y tendencias del sector en un solo panel.",
+      watchlist: "Watchlist Inteligente",
+      watchlistDesc: "Sigue tus activos favoritos y recibe actualizaciones al instante.",
     },
-    marketExplorer: {
-      title: "Descubre qué está pasando en el mercado",
-      subtitle: "Filtra, compara y analiza miles de activos con información actualizada.",
+    marketPreview: {
+      title: "Activos principales",
+      subtitle: "Las criptomonedas más importantes del mercado en un vistazo.",
       viewAll: "Ver mercado completo",
-      rank: "#",
-      name: "Nombre",
-      price: "Precio",
-      change24h: "24h",
-      cap: "Cap.",
     },
     analytics: {
       title: "Explora el ecosistema crypto por sectores",
