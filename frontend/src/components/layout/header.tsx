@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useTranslations } from "@/lib/use-translations";
 import { useAuth } from "@/providers/auth-provider";
 import { ThemeToggle } from "./theme-toggle";
-import { LogOut, Star, BarChart3, LayoutDashboard, TrendingUp } from "lucide-react";
+import { LogOut, Star, BarChart3, LayoutDashboard, TrendingUp, Wallet } from "lucide-react";
 import { SearchBar } from "@/components/crypto/search-bar";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -18,6 +18,7 @@ export function Header() {
     { href: "/dashboard", label: t.nav.dashboard, icon: LayoutDashboard },
     { href: "/market", label: t.nav.market, icon: TrendingUp },
     { href: "/categories", label: t.nav.sectors, icon: BarChart3 },
+    { href: "/portfolio", label: t.nav.portfolio, icon: Wallet },
     { href: "/profile", label: t.nav.watchlist, icon: Star },
   ];
 

@@ -22,15 +22,15 @@ crypto-app/
 │   ├── src/
 │   │   ├── __tests__/       # Vitest tests (supertest + mocks)
 │   │   ├── config/          # env, prisma client
-│   │   ├── controllers/     # auth, crypto, favorites
+│   │   ├── controllers/     # auth, crypto, favorites, portfolio
 │   │   ├── middlewares/      # auth JWT, error handler, rate limiter, optionalAuth, validate
 │   │   ├── routes/          # express routers
-│   │   ├── schemas/         # Zod schemas
-│   │   ├── services/        # coingecko, auth, favorites, cache
+│   │   ├── schemas/         # Zod schemas (favorites, portfolio)
+│   │   ├── services/        # coingecko, auth, favorites, cache, portfolio
 │   │   ├── utils/           # jwt helpers
 │   │   └── index.ts         # entry point
 │   └── prisma/
-│       └── schema.prisma    # User + Favorite
+│       └── schema.prisma    # User, Favorite, Portfolio, PortfolioHolding
 ├── frontend/
 │   ├── e2e/                 # Playwright tests (9 specs, 39 tests)
 │   │   ├── auth.spec.ts
@@ -53,7 +53,8 @@ crypto-app/
 │   │   │   │   │   └── page.tsx
 │   │   │   │   ├── coin/[id]/  # Detalle de moneda con gráfico premium
 │   │   │   │   ├── auth/       # login, register
-│   │   │   │   └── profile/    # Watchlist con sort
+│   │   │   │   ├── profile/    # Watchlist con sort
+│   │   │   │   └── portfolio/  # Portfolio personal con P&L tracking
 │   │   │   ├── (landing)/      # Route group — landing marketing premium
 │   │   │   │   ├── layout.tsx  # LandingHeader + Footer
 │   │   │   │   └── page.tsx    # Landing page en / (hero 60/40, ticker, bento, market preview, analytics, CTA)
@@ -70,15 +71,15 @@ crypto-app/
 │   │   │   ├── landing/     # Landing page sections
 │   │   │   │   ├── landing-header.tsx
 │   │   │   │   ├── hero-section.tsx
-│   │   │   │   ├── social-proof.tsx
-│   │   │   │   ├── features-section.tsx
-│   │   │   │   ├── market-explorer-section.tsx
+│   │   │   │   ├── market-ticker.tsx
+│   │   │   │   ├── bento-features.tsx
+│   │   │   │   ├── market-preview.tsx
 │   │   │   │   ├── analytics-section.tsx
-│   │   │   │   ├── watchlist-section.tsx
 │   │   │   │   ├── cta-section.tsx
 │   │   │   │   ├── footer.tsx
 │   │   │   │   └── mock-data.ts
 │   │   │   ├── layout/      # Header (app), ThemeToggle
+│   │   │   ├── portfolio/   # PortfolioSummary, PortfolioTable, AddHoldingModal, PortfolioChart
 │   │   │   └── ui/          # 9 componentes reutilizables (ver sección UI Kit)
 │   │   ├── hooks/           # useDebounce
 │   │   ├── providers/       # auth + theme context
@@ -108,12 +109,11 @@ La raíz (`/`) es una landing page de marketing con estrategia SaaS, construida 
 | Componente | Tipo | Descripción |
 |------------|------|-------------|
 | `LandingHeader` | Client | Navbar minimalista (logo, nav: Mercado/Categorías/Características, CTA "Comenzar"). Drawer animado en mobile. Sin search, theme toggle ni auth. |
-| `HeroSection` | Client | Título h1 + subtítulo + CTAs (Comenzar ahora / Explorar mercado) + mockup visual con StatCards y mini chart SVG. Animación fade+slide. |
-| `SocialProof` | Server | 3 métricas de confianza: +10.500 criptos, +500 sectores, CoinGecko. Stats minimalistas. |
-| `FeaturesSection` | Client | 3 pilares (Market Intelligence, Crypto Explorer, Asset Analysis) con iconos, copy y mockups visuales. Stagger animation. |
-| `MarketExplorerSection` | Client | Tabla parcial con 5 coins hardcodeados, stagger en filas, link a /market. |
-| `AnalyticsSection` | Client | 4 CategoryCards mock (DeFi, AI, Gaming, Layer 2) con stagger grid. |
-| `WatchlistSection` | Client | 3 CryptoCards mock con estrella favorita, badge 24h, link a /profile. |
+| `HeroSection` | Client | Hero 60/40: título + CTAs + 3 double-bezel mock cards (BTC Live con sparkline SVG, Alert, Watchlist). Stagger animation. |
+| `MarketTicker` | Client | Marquee infinito Framer Motion con BTC/ETH/SOL/XRP/ADA, máscaras CSS gradient. |
+| `BentoFeatures` | Client | Grid asimétrico 3-columnas con double-bezel: Advanced Market Analytics (mock chart col-span-2), Market Intelligence (4 métricas), Watchlist Inteligente (3 activos). Stagger entry. |
+| `MarketPreview` | Server | Top 3 assets (BTC/ETH/SOL) en cards premium double-bezel con precio, Badge 24h, market cap. |
+| `AnalyticsSection` | Client | 4 CategoryCards mock (DeFi, AI, Gaming, Layer 2) con PremiumCard double-bezel + glow hover. |
 | `CTASection` | Server | CTA final con gradiente, "Entrar a CryptoVault" → /dashboard. |
 | `Footer` | Server | 3 columnas: marca + descripción, Producto (Dashboard/Mercado/Categorías), Recursos (CoinGecko API, disclaimer, copyright). |
 
@@ -306,6 +306,47 @@ La página `/profile` funciona como un dashboard de watchlist profesional:
 - **Skeleton**: `CryptoListSkeleton` con 5 placeholders mientras cargan los datos
 - El nav link "Favoritos" fue renombrado a "Watchlist"
 
+## 💼 Portfolio Tracker
+
+La página `/portfolio` permite gestionar inversiones en criptomonedas con tracking de P&L en tiempo real:
+
+- **Autenticación requerida**: redirige a `/auth/login` si no hay sesión
+- **Portfolio automático**: se crea un portfolio por defecto ("Mi Portfolio") al primer acceso
+- **Summary cards**: 4 tarjetas con Valor Total, P&L Total, ROI Total y conteo de activos
+- **Holdings table**: tabla con columnas de activo (imagen + nombre + símbolo + link a detalle), cantidad, precio de entrada, precio actual, P&L en USD, ROI (Badge 24h) y botón de eliminar
+- **Allocation chart**: gráfico de donut (Recharts, dynamic import) con colores por activo, tooltip personalizado y lista de desglose
+- **Add Holding modal**: formulario con campos para cryptoId, nombre, símbolo, imagen URL, cantidad y precio de entrada
+- **P&L calculation**: backend calcula currentValue, costBasis, pnl y roi usando precios en vivo de CoinGecko
+- **Estados**: skeleton loading (4 summary cards + table skeleton), error state con reintento, empty state cuando no hay holdings
+- **Nav link**: icono Wallet en el Header entre Sectores y Watchlist
+
+### Componentes
+
+| Componente | Descripción |
+|------------|-------------|
+| `PortfolioSummary` | 4 summary cards: total value, P&L, ROI, holdings count |
+| `PortfolioTable` | Tabla de holdings con precios en vivo, P&L, ROI, botón eliminar |
+| `AddHoldingModal` | Modal con formulario para agregar activo al portfolio |
+| `PortfolioChart` | Donut chart de allocation (Recharts, dynamic import) |
+
+### API
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/portfolio` | Portfolio con holdings enriquecidos con precios actuales y P&L |
+| POST | `/api/portfolio/holdings` | Agregar holding |
+| PUT | `/api/portfolio/holdings/:holdingId` | Actualizar holding |
+| DELETE | `/api/portfolio/holdings/:holdingId` | Eliminar holding |
+
+### Data flow
+
+1. Frontend solicita `GET /api/portfolio`
+2. Backend busca o crea portfolio por defecto para el usuario
+3. Backend recolecta todos los `cryptoId` únicos de los holdings
+4. Backend llama a `coingeckoService.getPricesByIds()` (reusa cache existente)
+5. Por cada holding calcula: `currentValue = amount × currentPrice`, `pnl = currentValue - costBasis`, `roi = ((currentPrice / entryPrice) - 1) × 100`
+6. Retorna portfolio con holdings enriquecidos + totales agregados
+
 ## 🎞️ Animaciones (Framer Motion)
 
 - **`AnimatedMount`**: fade-in (`opacity`) + slide-up (`y: 12 → 0`) en 350ms al montar páginas. Aplicado en Dashboard, Categories, Coin Detail, Profile y detalle de sector.
@@ -347,7 +388,7 @@ Todo el frontend está traducido al español con un sistema centralizado de trad
 
 | Archivo | Propósito |
 |---------|-----------|
-| `frontend/src/translations/es.ts` | Diccionario tipado `as const` con ~220 strings organizadas por módulo (nav, auth, dashboard, market, categories, coinDetail, watchlist, search, chart, badge, error, theme, crypto) |
+| `frontend/src/translations/es.ts` | Diccionario tipado `as const` con ~320 strings organizadas por módulo (nav, auth, dashboard, market, categories, coinDetail, watchlist, search, chart, badge, error, theme, crypto, meta, landing, portfolio) |
 | `frontend/src/lib/use-translations.ts` | Hook `useTranslations()` que retorna el objeto de traducciones |
 | `frontend/src/lib/formatters.ts` | Formateo de números con `toLocaleString("es-AR")`: precios (`$50.000,00`), porcentajes (`+12,5%`), market cap, números genéricos |
 | `frontend/src/lib/crypto-transform.ts` | Utilidades para limpiar datos de CoinGecko: `stripHtml()`, `sanitizeHtml()`, `truncate()` por word boundary, `formatCategoryDescription()` |
@@ -451,6 +492,10 @@ Stack aislado con puertos en 3001/4001/5433 para no interferir con el dev stack 
 | GET    | `/api/favorites`                    | Sí       | Favoritos del usuario con precios    |
 | POST   | `/api/favorites`                    | Sí       | Añadir cripto a favoritos            |
 | DELETE | `/api/favorites/:cryptoId`          | Sí       | Eliminar favorito                    |
+| GET    | `/api/portfolio`                    | Sí       | Portfolio del usuario con P&L        |
+| POST   | `/api/portfolio/holdings`           | Sí       | Agregar holding al portfolio         |
+| PUT    | `/api/portfolio/holdings/:hid`      | Sí       | Actualizar holding                   |
+| DELETE | `/api/portfolio/holdings/:hid`      | Sí       | Eliminar holding del portfolio       |
 
 ## 🧠 Cache & Reliability
 
@@ -519,6 +564,7 @@ model User {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   favorites    Favorite[]
+  portfolio    Portfolio?
 }
 
 model Favorite {
@@ -529,6 +575,32 @@ model Favorite {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, cryptoId])
+}
+
+model Portfolio {
+  id        String              @id @default(cuid())
+  userId    String              @unique
+  name      String              @default("Mi Portfolio")
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  holdings  PortfolioHolding[]
+}
+
+model PortfolioHolding {
+  id          String   @id @default(cuid())
+  portfolioId String
+  cryptoId    String
+  coinName    String
+  coinSymbol  String
+  coinImage   String?
+  amount      Float
+  entryPrice  Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@unique([portfolioId, cryptoId])
 }
 ```
 
@@ -561,7 +633,7 @@ Trigger: `push` y `pull_request` a `main`. Job `status-check` consolida y requie
 - [x] Localización completa al español (es-AR, ~220 strings centralizadas)
 - [x] Landing Page Premium (hero 60/40 con mock cards en vivo, market ticker infinito, bento features, market preview, double-bezel cards)
 - [x] Route groups: separación landing vs app con layouts independientes
-- [ ] Portfolio personal (módulo de inversión)
+- [x] Portfolio personal con P&L tracking (summary, tabla, chart donut, modal add holding)
 - [ ] Alertas de precio (backend + frontend)
 - [ ] Solucionar Docker Desktop para e2e local
 - [ ] Página de comparación de monedas

@@ -100,4 +100,26 @@ export const api = {
     remove: (cryptoId: string) =>
       request<{ message: string }>(`/favorites/${cryptoId}`, { method: "DELETE" }),
   },
+  portfolio: {
+    get: () => request<any>("/portfolio"),
+    addHolding: (data: {
+      cryptoId: string;
+      coinName: string;
+      coinSymbol: string;
+      coinImage?: string;
+      amount: number;
+      entryPrice: number;
+    }) =>
+      request<any>("/portfolio/holdings", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    updateHolding: (holdingId: string, data: { amount?: number; entryPrice?: number }) =>
+      request<any>(`/portfolio/holdings/${holdingId}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
+    removeHolding: (holdingId: string) =>
+      request<any>(`/portfolio/holdings/${holdingId}`, { method: "DELETE" }),
+  },
 };
