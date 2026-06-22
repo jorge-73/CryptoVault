@@ -1,6 +1,6 @@
 # CryptoVault 🪙
 
-Dashboard de criptomonedas en tiempo real + Landing Page SaaS + Crypto Market Explorer con sectores, búsqueda avanzada, favoritos, categorías premium y localización completa al español.
+Dashboard de criptomonedas en tiempo real + Landing Page Premium SaaS (bento grid, market ticker, hero 60/40) + Crypto Market Explorer con sectores, búsqueda avanzada, favoritos, categorías premium y localización completa al español.
 
 ## 🚀 Stack
 
@@ -54,9 +54,9 @@ crypto-app/
 │   │   │   │   ├── coin/[id]/  # Detalle de moneda con gráfico premium
 │   │   │   │   ├── auth/       # login, register
 │   │   │   │   └── profile/    # Watchlist con sort
-│   │   │   ├── (landing)/      # Route group — landing marketing
+│   │   │   ├── (landing)/      # Route group — landing marketing premium
 │   │   │   │   ├── layout.tsx  # LandingHeader + Footer
-│   │   │   │   └── page.tsx    # Landing page en /
+│   │   │   │   └── page.tsx    # Landing page en / (hero 60/40, ticker, bento, market preview, analytics, CTA)
 │   │   │   ├── error.tsx
 │   │   │   ├── loading.tsx
 │   │   │   ├── favicon.ico
@@ -557,8 +557,9 @@ Trigger: `push` y `pull_request` a `main`. Job `status-check` consolida y requie
 - [x] Performance: dynamic imports + React.memo
 - [x] Visual Quality: CSS vars en chart, active:scale-95 en botones, cursor-pointer
 - [x] API Reliability: fetchWithTimeout, stale cache fallback, 503, universal retry, logs estructurados
+- [x] Error response estructurado: { success: false, error: "mensaje usuario" } + log de err.cause para diagnóstico de red
 - [x] Localización completa al español (es-AR, ~220 strings centralizadas)
-- [x] Landing Page SaaS profesional (hero, features, mockups, CTA, footer)
+- [x] Landing Page Premium (hero 60/40 con mock cards en vivo, market ticker infinito, bento features, market preview, double-bezel cards)
 - [x] Route groups: separación landing vs app con layouts independientes
 - [ ] Portfolio personal (módulo de inversión)
 - [ ] Alertas de precio (backend + frontend)
