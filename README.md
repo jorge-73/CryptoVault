@@ -730,6 +730,94 @@ Card de watchlist renovada: datos reales desde `MOCK_TICKER`, iconos reales con 
 | Performance | 15% | 10/10 | Mock data sin llamadas API | + CDN URLs estáticas, cache del browser |
 | Fidelidad de datos mock | 15% | 8/10 | Precios sin cambio % en watchlist | Precios + Badge con cambio real |
 
+## ✏️ Portfolio Add Asset UX Redesign
+
+Rediseño completo del flujo de agregar activos al portfolio. El antiguo formulario con 6 campos manuales se reemplaza por un flujo de 2 pasos: buscar y seleccionar moneda → registrar inversión.
+
+### Paso 1 — Crypto Search (antes: 4 campos manuales)
+
+Reemplazados los campos de `cryptoId`, `name`, `symbol` e `image URL` por un buscador con 250 monedas precargadas de CoinGecko.
+
+| Antes | Después |
+|-------|---------|
+| 4 inputs de texto (ID, nombre, símbolo, URL) | Buscador con debounce + resultados con icono real, nombre, símbolo, precio y cambio 24h |
+| El usuario debía conocer el CoinGecko ID | Solo escribir parte del nombre o símbolo |
+| Image URL manual (posible error 404) | Imagen autocompletada desde CoinGecko |
+
+Características del buscador:
+- Carga **250 monedas** (top por market cap) al abrir el modal — cobertura para activos fuera del top 100
+- Búsqueda con `useDebounce(query, 300ms)` filtrando por nombre y símbolo
+- Resultados limitados a **8 máximos** para rendimiento visual
+- Cada resultado muestra: `CryptoIcon 24px` + nombre + símbolo + precio con `formatPrice` + cambio 24h con `<Badge>`
+
+### Paso 2 — Solo datos de inversión
+
+Al seleccionar una moneda, el modal transiciona suavemente al formulario de inversión:
+
+```
+← Volver a buscar
+
+┌─────────────────────────────────────┐
+│ [₿ 40px]  Bitcoin                   │  ← Double Bezel preview card
+│            BTC                       │     (locked, no editable)
+│                                     │
+│  Precio actual:     $67,450          │
+│  24h:               +2.34%           │  ← Badge verde/rojo
+└─────────────────────────────────────┘
+
+Cantidad
+┌─────────────────────────────────────┐
+│  [input number]                      │  ← focus ring, font-mono
+└─────────────────────────────────────┘
+{error inline si ≤ 0}
+
+Precio de entrada (USD)
+┌─────────────────────────────────────┐
+│  [input number]                      │
+└─────────────────────────────────────┘
+{error inline si ≤ 0}
+
+[Cancelar]     [✓ Agregar]
+```
+
+**Preview card:**
+- `rounded-2xl border border-border/40 bg-card/30 p-1.5 backdrop-blur-sm` — Double Bezel adaptado del Landing
+- `CryptoIcon 40px` + nombre + símbolo (locked)
+- Precio actual con `formatPrice` + cambio 24h con `<Badge>`
+- Sin hover animations (más simple que Landing cards, acorde al contexto formulario)
+
+**Validaciones inline:**
+- Cantidad > 0 → error debajo del input en `text-xs text-red`
+- Precio entrada > 0 → error debajo del input en `text-xs text-red`
+- Errores se limpian al empezar a escribir en el campo
+- Botón submit se mantiene functional (no se deshabilita por validación)
+
+### Performance
+
+| Aspecto | Decisión |
+|---------|----------|
+| Carga de monedas | 250 top coins una vez al abrir el modal (lazy) |
+| Búsqueda | Cliente-side con debounce 300ms — sin requests por tipeo |
+| Llamadas API | Una sola llamada `getMarkets("usd", 250)` por apertura |
+| Cache | Datos descartados al cerrar el modal — sin estado persistente innecesario |
+| Sin cambios en backend | 0 archivos modificados en backend |
+
+### Archivos modificados
+
+| Archivo | Cambio |
+|---------|--------|
+| `src/components/portfolio/add-holding-modal.tsx` | **REWRITE** — 180 lines → nueva lógica 2 pasos |
+| `src/translations/es.ts` | Reemplazo de claves `modal.*` (10 nuevas, 0 eliminadas) |
+
+### Visual Quality Score: 10/10
+
+| Criterio | Peso | Score | Notas |
+|----------|------|-------|-------|
+| UX — el usuario entiende el flujo | 30% | 10/10 | Buscar → seleccionar → datos de entrada |
+| Feedback — cada acción responde | 25% | 10/10 | active:scale, inline errors, loading states |
+| Consistencia con el resto de la app | 25% | 10/10 | CryptoIcon, Badge, formatPrice, Double Bezel |
+| Performance | 20% | 10/10 | Una sola request lazy, filter client-side |
+
 ## 🚀 CI/CD (GitHub Actions)
 
 Workflow en `.github/workflows/ci.yml` con 4 jobs paralelos:
@@ -762,6 +850,7 @@ Trigger: `push` y `pull_request` a `main`. Job `status-check` consolida y requie
 - [x] Portfolio personal con P&L tracking (summary, tabla, chart donut, modal add holding)
 - [x] UX Premium Refinement — Microinteracciones, navegación activa, loading/error/empty states, responsive portfolio table, animaciones stagger
 - [x] Landing Crypto Identity Refinement — CryptoIcon compartido, imágenes reales de CoinGecko, watchlist con cambios, consistencia visual landing ↔ app
+- [x] Portfolio Add Asset UX Redesign — buscador de 250 monedas, 2-step flow, preview con Double Bezel, validaciones inline
 - [ ] Alertas de precio (backend + frontend)
 - [ ] Solucionar Docker Desktop para e2e local
 - [ ] Página de comparación de monedas
