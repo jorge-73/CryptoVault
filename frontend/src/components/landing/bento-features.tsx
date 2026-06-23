@@ -3,8 +3,10 @@
 import { motion } from "framer-motion";
 import { BarChart3, BrainCircuit, Star, Activity } from "lucide-react";
 import { useTranslations } from "@/lib/use-translations";
-import { formatMarketCap, formatNumber } from "@/lib/formatters";
-import { MOCK_GLOBAL } from "./mock-data";
+import { formatMarketCap, formatNumber, formatPrice } from "@/lib/formatters";
+import { CryptoIcon } from "@/components/ui/crypto-icon";
+import { Badge } from "@/components/ui/badge";
+import { MOCK_GLOBAL, MOCK_TICKER } from "./mock-data";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -134,18 +136,17 @@ export function BentoFeatures() {
                 </div>
               </div>
               <div className="space-y-2">
-                {[
-                  { name: "Bitcoin", sym: "BTC", price: "$67,450" },
-                  { name: "Ethereum", sym: "ETH", price: "$3,450" },
-                  { name: "Solana", sym: "SOL", price: "$172" },
-                ].map((c) => (
-                  <div key={c.sym} className="flex items-center justify-between rounded-lg border border-border/40 bg-muted/20 px-3 py-2">
+                {MOCK_TICKER.slice(0, 3).map((c) => (
+                  <div key={c.symbol} className="flex items-center justify-between rounded-lg border border-border/40 bg-muted/20 px-3 py-2">
                     <div className="flex items-center gap-2">
-                      <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                      <CryptoIcon src={c.image} alt={c.name} symbol={c.symbol} size={18} />
                       <span className="text-xs font-medium">{c.name}</span>
-                      <span className="text-[10px] text-muted-foreground uppercase">{c.sym}</span>
+                      <span className="text-[10px] text-muted-foreground uppercase">{c.symbol}</span>
                     </div>
-                    <span className="text-xs font-semibold tabular-nums font-mono">{c.price}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold tabular-nums font-mono">{formatPrice(c.price)}</span>
+                      <Badge value={c.change24h} className="text-[10px]" />
+                    </div>
                   </div>
                 ))}
               </div>

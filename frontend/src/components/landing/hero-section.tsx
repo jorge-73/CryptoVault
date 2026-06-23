@@ -2,10 +2,12 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, AlertTriangle, Star, Activity } from "lucide-react";
+import { ArrowRight, TrendingUp, AlertTriangle, Star } from "lucide-react";
 import { useTranslations } from "@/lib/use-translations";
-import { formatPrice, formatPercentage } from "@/lib/formatters";
-import { MOCK_BTC_SPARKLINE, MOCK_ALERT } from "./mock-data";
+import { formatPrice } from "@/lib/formatters";
+import { CryptoIcon } from "@/components/ui/crypto-icon";
+import { Badge } from "@/components/ui/badge";
+import { MOCK_BTC_SPARKLINE, MOCK_ALERT, MOCK_TICKER } from "./mock-data";
 
 const sparkline = MOCK_BTC_SPARKLINE;
 const maxVal = Math.max(...sparkline);
@@ -20,11 +22,7 @@ const sparkPoints = sparkline.map((v, i) => {
   return `${x},${y}`;
 });
 
-const MOCK_WATCHLIST_COINS = [
-  { name: "Bitcoin", symbol: "BTC", price: 67450 },
-  { name: "Ethereum", symbol: "ETH", price: 3450 },
-  { name: "Solana", symbol: "SOL", price: 172 },
-];
+const MOCK_WATCHLIST_COINS = MOCK_TICKER.slice(0, 3);
 
 function DoubleBezelCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
@@ -107,19 +105,14 @@ export function HeroSection() {
               <DoubleBezelCard>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="h-7 w-7 rounded-full bg-orange-500/20 flex items-center justify-center">
-                      <TrendingUp className="h-3.5 w-3.5 text-orange-500" />
-                    </div>
+                    <CryptoIcon src={MOCK_TICKER[0].image} alt="Bitcoin" symbol="BTC" size={28} />
                     <span className="text-xs font-medium text-muted-foreground">{t.landing.heroCards.btcTitle("Bitcoin")}</span>
                   </div>
                   <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{t.landing.heroCards.btcPrice}</span>
                 </div>
                 <div className="flex items-end justify-between mb-2">
                   <span className="text-2xl font-bold tabular-nums font-mono">{formatPrice(67450)}</span>
-                  <span className="flex items-center gap-1 text-sm font-semibold tabular-nums font-mono" style={{ color: "var(--green)" }}>
-                    <TrendingUp className="h-3 w-3" />
-                    +2.34%
-                  </span>
+                  <Badge value={2.34} period="24h" />
                 </div>
                 <div className="h-12">
                   <Sparkline />
@@ -164,11 +157,14 @@ export function HeroSection() {
                   {MOCK_WATCHLIST_COINS.map((coin) => (
                     <div key={coin.symbol} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="h-5 w-5 rounded-full bg-muted" />
+                        <CryptoIcon src={coin.image} alt={coin.name} symbol={coin.symbol} size={20} />
                         <span className="text-xs font-medium">{coin.name}</span>
                         <span className="text-[10px] text-muted-foreground uppercase">{coin.symbol}</span>
                       </div>
-                      <span className="text-xs font-semibold tabular-nums font-mono">{formatPrice(coin.price)}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold tabular-nums font-mono">{formatPrice(coin.price)}</span>
+                        <Badge value={coin.change24h} className="text-[10px]" />
+                      </div>
                     </div>
                   ))}
                 </div>

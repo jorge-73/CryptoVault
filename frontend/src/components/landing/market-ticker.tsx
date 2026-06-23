@@ -4,11 +4,13 @@ import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { MOCK_TICKER } from "./mock-data";
 import { formatPrice } from "@/lib/formatters";
+import { CryptoIcon } from "@/components/ui/crypto-icon";
 
 function TickerItem({ coin }: { coin: typeof MOCK_TICKER[number] }) {
   const isUp = coin.change24h >= 0;
   return (
     <span className="inline-flex items-center gap-2.5 mx-6">
+      <CryptoIcon src={coin.image} alt={coin.name} symbol={coin.symbol} size={20} />
       <span className="text-sm font-semibold">{coin.name}</span>
       <span className="text-xs text-muted-foreground uppercase font-mono">{coin.symbol}</span>
       <span className="text-sm font-semibold tabular-nums font-mono">{formatPrice(coin.price)}</span>

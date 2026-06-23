@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { es } from "@/translations/es";
 import { formatPrice, formatMarketCap } from "@/lib/formatters";
 import { Badge } from "@/components/ui/badge";
+import { CryptoIcon } from "@/components/ui/crypto-icon";
 import { MOCK_COINS } from "./mock-data";
 
 const TOP_COINS = MOCK_COINS.slice(0, 3);
@@ -12,8 +13,8 @@ function CoinCard({ coin, index }: { coin: typeof TOP_COINS[number]; index: numb
     <div className="rounded-2xl border border-border/40 bg-card/30 p-1.5 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:border-accent/20 hover:-translate-y-0.5">
       <div className="rounded-[calc(1.5rem-0.375rem)] bg-card p-4 border border-border/20">
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-muted" />
+            <div className="flex items-center gap-2">
+            <CryptoIcon src={coin.image} alt={coin.name} symbol={coin.symbol} size={32} />
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-sm font-semibold">{coin.name}</span>

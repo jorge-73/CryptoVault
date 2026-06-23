@@ -6,3 +6,4 @@ export { ErrorState } from "./error-state";
 export { SectionHeader } from "./section-header";
 export { AnimatedMount } from "./animated-mount";
 export { StaggerGrid, StaggerItem } from "./stagger-grid";
+export { CryptoIcon } from "./crypto-icon";
