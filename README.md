@@ -308,13 +308,16 @@ La página `/profile` funciona como un dashboard de watchlist profesional:
 
 ## 💼 Portfolio Tracker
 
-La página `/portfolio` permite gestionar inversiones en criptomonedas con tracking de P&L en tiempo real:
+La página `/portfolio` permite gestionar inversiones en criptomonedas con tracking de P&L en tiempo real, diseñada con experiencia financiera profesional:
 
 - **Autenticación requerida**: redirige a `/auth/login` si no hay sesión
 - **Portfolio automático**: se crea un portfolio por defecto ("Mi Portfolio") al primer acceso
-- **Summary cards**: 4 tarjetas con Valor Total, P&L Total, ROI Total y conteo de activos
-- **Holdings table**: tabla con columnas de activo (imagen + nombre + símbolo + link a detalle), cantidad, precio de entrada, precio actual, P&L en USD, ROI (Badge 24h) y botón de eliminar
-- **Allocation chart**: gráfico de donut (Recharts, dynamic import) con colores por activo, tooltip personalizado y lista de desglose
+- **Summary cards premium**: 4 tarjetas con **Valor Total**, **Total Invertido**, **P&L Total** y **ROI %**. Tipografía financiera (`font-mono`, tracking-tight), colores semánticos (verde/rojo según signo), iconos consistentes. Card accent para Valor Total, card neutral para Total Invertido, cards verde/rojo para P&L y ROI.
+- **Holdings table**: tabla con columnas de activo (imagen + nombre + símbolo + link a detalle), **cantidad editable inline**, **precio de entrada editable inline**, precio actual, P&L en USD, ROI (Badge 24h) y botón de eliminar
+- **Inline editing**: clic en cantidad o precio entrada → input con auto-guardado en Enter/blur. Validación de número positivo. Icono Pencil en hover. Loading spinner por fila mientras guarda. Toast feedback.
+- **Stagger animation**: filas de tabla con `motion.tr` (Framer Motion) con fade+slide y stagger de 20ms — misma calidad que CategoryCoinTable
+- **Export CSV**: botón "Exportar CSV" que genera archivo con Asset, Symbol, Amount, Entry Price, Current Price, Invested Value, Current Value, Profit/Loss, ROI. Formato correcto con headers y decimales.
+- **Allocation chart**: gráfico de donut (Recharts, dynamic import) con colores por activo, tooltip personalizado, lista de desglose y título traducido "Distribución"
 - **Add Holding modal**: formulario con campos para cryptoId, nombre, símbolo, imagen URL, cantidad y precio de entrada
 - **P&L calculation**: backend calcula currentValue, costBasis, pnl y roi usando precios en vivo de CoinGecko
 - **Estados**: skeleton loading (4 summary cards + table skeleton), error state con reintento, empty state cuando no hay holdings
@@ -324,10 +327,10 @@ La página `/portfolio` permite gestionar inversiones en criptomonedas con track
 
 | Componente | Descripción |
 |------------|-------------|
-| `PortfolioSummary` | 4 summary cards: total value, P&L, ROI, holdings count |
-| `PortfolioTable` | Tabla de holdings con precios en vivo, P&L, ROI, botón eliminar |
+| `PortfolioSummary` | 4 summary cards premium con font-mono y colores semánticos |
+| `PortfolioTable` | Tabla con inline editing (cantidad/precio entrada), stagger animation, P&L, ROI, eliminar |
 | `AddHoldingModal` | Modal con formulario para agregar activo al portfolio |
-| `PortfolioChart` | Donut chart de allocation (Recharts, dynamic import) |
+| `PortfolioChart` | Donut chart de distribución (Recharts, dynamic import) |
 
 ### API
 

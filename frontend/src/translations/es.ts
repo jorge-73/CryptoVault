@@ -304,10 +304,9 @@ export const es = {
     subtitle: "Gestiona tus inversiones en criptomonedas",
     summary: {
       totalValue: "Valor Total",
+      totalInvested: "Total Invertido",
       totalPnl: "P&L Total",
       totalRoi: "ROI Total",
-      holdings: "Activos",
-      holdingsCount: (n: number) => `${n} activo(s)`,
     },
     table: {
       coin: "Activo",
@@ -319,6 +318,8 @@ export const es = {
       actions: "Acciones",
       noHoldings: "Aún no tienes activos en tu portfolio",
       addHolding: "Agregar activo",
+      exportCsv: "Exportar CSV",
+      allocation: "Distribución",
     },
     modal: {
       title: "Agregar activo",

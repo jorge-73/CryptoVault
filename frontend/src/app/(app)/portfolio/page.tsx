@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
+import { Plus, Download } from "lucide-react";
 import { PortfolioSummary } from "@/components/portfolio/portfolio-summary";
 import { PortfolioTable } from "@/components/portfolio/portfolio-table";
 import { AddHoldingModal } from "@/components/portfolio/add-holding-modal";
@@ -57,6 +57,7 @@ export default function PortfolioPage() {
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const fetchPortfolio = useCallback(async () => {
     if (!user) return;
@@ -97,6 +98,49 @@ export default function PortfolioPage() {
     } catch {
       toast.error(t.portfolio.error.add);
     }
+  };
+
+  const handleUpdateHolding = async (holdingId: string, data: { amount?: number; entryPrice?: number }) => {
+    setUpdatingId(holdingId);
+    try {
+      await api.portfolio.updateHolding(holdingId, data);
+      toast.success(t.portfolio.toastAdded);
+      await fetchPortfolio();
+    } catch {
+      toast.error(t.portfolio.error.update);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const exportCsv = () => {
+    if (!data) return;
+    const headers = [
+      "Asset", "Symbol", "Amount", "Entry Price", "Current Price",
+      "Invested Value", "Current Value", "Profit/Loss", "ROI",
+    ];
+    const rows = data.holdings.map((h) => [
+      `"${h.coinName}"`,
+      h.coinSymbol.toUpperCase(),
+      h.amount,
+      h.entryPrice,
+      h.currentPrice ?? "",
+      h.costBasis,
+      h.currentValue ?? "",
+      h.pnl ?? "",
+      h.roi != null ? `${h.roi.toFixed(2)}%` : "",
+    ].join(","));
+
+    const csv = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `portfolio-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleRemoveHolding = async (holdingId: string) => {
@@ -145,22 +189,33 @@ export default function PortfolioPage() {
               description={t.portfolio.subtitle}
             />
           </div>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors active:scale-95 cursor-pointer"
-          >
-            <Plus className="h-4 w-4" />
-            {t.portfolio.table.addHolding}
-          </button>
+          <div className="flex items-center gap-3">
+            {data && data.holdings.length > 0 && (
+              <button
+                onClick={exportCsv}
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors active:scale-95 cursor-pointer"
+              >
+                <Download className="h-4 w-4" />
+                {t.portfolio.table.exportCsv}
+              </button>
+            )}
+            <button
+              onClick={() => setModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors active:scale-95 cursor-pointer"
+            >
+              <Plus className="h-4 w-4" />
+              {t.portfolio.table.addHolding}
+            </button>
+          </div>
         </div>
 
         {data && (
           <>
             <PortfolioSummary
               totalValue={data.totalValue}
+              totalCostBasis={data.totalCostBasis}
               totalPnl={data.totalPnl}
               totalRoi={data.totalRoi}
-              holdingsCount={data.holdingsCount}
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -168,7 +223,9 @@ export default function PortfolioPage() {
                 <PortfolioTable
                   holdings={data.holdings}
                   onRemove={handleRemoveHolding}
+                  onUpdate={handleUpdateHolding}
                   removingId={removingId}
+                  updatingId={updatingId}
                 />
               </div>
               <div>
