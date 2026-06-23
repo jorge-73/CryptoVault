@@ -37,7 +37,7 @@ export const CryptoCard = memo(function CryptoCard({ coin, isFavorite, onToggleF
             onToggleFavorite(coin.id);
           }}
           className={cn(
-            "absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-md transition-colors active:scale-90 z-10",
+            "absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-md transition-colors active:scale-90 cursor-pointer z-10",
             isFavorite
               ? "text-yellow-500 hover:text-yellow-600"
               : "text-muted-foreground/40 hover:text-yellow-500"

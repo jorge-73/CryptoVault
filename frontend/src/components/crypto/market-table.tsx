@@ -124,7 +124,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t.market.search}
-              className="h-8 w-48 rounded-lg border bg-muted/50 pl-8 pr-3 text-xs outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background transition-colors"
+              className="h-8 w-48 rounded-lg border bg-muted/50 pl-8 pr-3 text-xs outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background focus:ring-2 focus:ring-accent/50 transition-colors"
               aria-label={t.market.searchAria}
             />
           </div>
@@ -237,7 +237,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                               onToggleFavorite(coin.id);
                             }}
                             className={cn(
-                              "flex h-7 w-7 items-center justify-center rounded-md transition-colors mx-auto",
+                              "flex h-7 w-7 items-center justify-center rounded-md transition-colors mx-auto active:scale-90 cursor-pointer",
                               isFavorite?.(coin.id)
                                 ? "text-yellow-500 hover:text-yellow-600"
                                 : "text-muted-foreground/40 hover:text-yellow-500"
@@ -309,7 +309,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                             onToggleFavorite(coin.id);
                           }}
                           className={cn(
-                            "flex h-7 w-7 items-center justify-center rounded-md transition-colors flex-shrink-0",
+                            "flex h-7 w-7 items-center justify-center rounded-md transition-colors flex-shrink-0 active:scale-90 cursor-pointer",
                             isFavorite?.(coin.id)
                               ? "text-yellow-500 hover:text-yellow-600"
                               : "text-muted-foreground/40 hover:text-yellow-500"

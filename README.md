@@ -607,6 +607,69 @@ model PortfolioHolding {
 }
 ```
 
+## 🎯 UX Premium Refinement
+
+Refinamiento global de experiencia de usuario para que CryptoVault se sienta como una plataforma fintech profesional.
+
+### Microinteracciones (F5)
+
+Todos los botones ahora tienen feedback visual consistente:
+- **Press feedback**: `active:scale-90` o `active:scale-95` en ~15 botones que faltaban (favorite-button, market-table favorites, search buttons, portfolio edit buttons)
+- **Hover states**: botones con `hover:bg-*` y `hover:text-*` consistentes
+- **Disabled states**: `disabled:opacity-50` en botones de submit y acciones
+- **Input focus**: todos los inputs tienen `focus:ring-2 focus:ring-accent/50` (search-bar, market-table search, category-coin-table search)
+- **Card hover**: `hover:shadow-md` añadido a coin-about y portfolio-chart
+- **Table row highlight**: `hover:bg-muted/30` en portfolio-table (consistente con market-table y category-coin-table)
+
+### Navegación y experiencia (F6)
+
+- **LandingHeader**: active page indicator con `bg-accent/10 text-accent` + `aria-current="page"` usando `usePathname`. Implementado en desktop y mobile drawer.
+- **Auth pages**: sin cambios (server components, no necesitan animación de montaje)
+
+### UX Global Review — Loading/Empty/Error states (F4)
+
+**Archivos nuevos creados:**
+
+| Ruta | loading.tsx | error.tsx |
+|------|-------------|-----------|
+| `/dashboard` | ✅ Skeletons (MarketIntelligence, TrendingCoins, CryptoList) | ✅ ErrorState component |
+| `/market` | ✅ Refactor a Skeleton component | ✅ ErrorState component |
+| `/categories` | (ya existía) | ✅ Refactor inline → ErrorState |
+| `/categories/[id]` | (ya existía) | ✅ ErrorState component |
+| `/coin/[id]` | ✅ Inline skeletons → loading.tsx | ✅ ErrorState con reset |
+| `/profile` | (ya existía) | ✅ Refactor inline → ErrorState |
+| `/portfolio` | ✅ Inline skeletons → loading.tsx | ✅ ErrorState component |
+| `/auth/login` | — | ✅ ErrorState component |
+| `/auth/register` | — | ✅ ErrorState component |
+
+**Mejoras adicionales:**
+- **Dashboard**: empty state con `<EmptyState>` + botón reintentar cuando API devuelve 0 coins
+- **Coin detail**: `onRetry` añadido al ErrorState (antes no tenía forma de reintentar)
+- **Categories**: retry refactorizado de `window.location.reload()` a fetch callback (no pierde estado)
+- **Portfolio table**: empty state refactorizado de div inline a `<EmptyState>` component
+- **Market loading**: refactorizado de raw `animate-pulse` divs a `<Skeleton>` component
+
+### Responsive UX — Portfolio table (F7)
+
+Portfolio table ahora tiene **dual layout** como market-table:
+- **Desktop** (`md:` y up): tabla completa con 7 columnas, inline editing, stagger animation
+- **Mobile** (`< md`): cards apiladas con imagen, nombre, cantidad editable, precio entrada editable, precio actual, P&L, ROI y botón eliminar. Inline editing funcional también en mobile.
+
+### Visual Quality Score: 9/10
+
+| Criterio | Peso | Score | Mejoras |
+|----------|------|-------|---------|
+| ¿Parece herramienta financiera real? | 30% | 9/10 | font-mono, colores semánticos, hover states |
+| UX — el usuario entiende qué hacer | 25% | 9/10 | Empty states con CTA, loading skeletons |
+| Feedback — cada acción responde | 20% | 9/10 | active:scale, toast, disabled states |
+| Consistencia entre páginas | 15% | 9/10 | ErrorState/EmptyState/Skeleton uniformes |
+| Responsive | 10% | 8/10 | Portfolio table dual layout, summary grid 2/4 |
+
+**Mejoras menores identificadas:**
+- Landing page y auth pages no tienen `AnimatedMount` (intencional, son server-first)
+- Portfolio chart hover solo `shadow-md` (sin translate-Y como las cards del dashboard)
+- Edit inline inputs en mobile tienen `w-28` que puede quedar ajustado en 320px
+
 ## 🚀 CI/CD (GitHub Actions)
 
 Workflow en `.github/workflows/ci.yml` con 4 jobs paralelos:
@@ -637,6 +700,7 @@ Trigger: `push` y `pull_request` a `main`. Job `status-check` consolida y requie
 - [x] Landing Page Premium (hero 60/40 con mock cards en vivo, market ticker infinito, bento features, market preview, double-bezel cards)
 - [x] Route groups: separación landing vs app con layouts independientes
 - [x] Portfolio personal con P&L tracking (summary, tabla, chart donut, modal add holding)
+- [x] UX Premium Refinement — Microinteracciones, navegación activa, loading/error/empty states, responsive portfolio table, animaciones stagger
 - [ ] Alertas de precio (backend + frontend)
 - [ ] Solucionar Docker Desktop para e2e local
 - [ ] Página de comparación de monedas

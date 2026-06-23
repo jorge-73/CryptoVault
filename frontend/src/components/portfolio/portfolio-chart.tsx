@@ -57,7 +57,7 @@ export function PortfolioChart({ holdings }: PortfolioChartProps) {
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card/50 p-4" suppressHydrationWarning>
+    <div className="rounded-2xl border border-border bg-card/50 p-4 hover:shadow-md transition-shadow" suppressHydrationWarning>
       <h3 className="text-sm font-medium text-muted-foreground mb-4">{t.portfolio.table.allocation}</h3>
       <div className="flex flex-col sm:flex-row items-center gap-6">
         <div className="h-48 w-48 shrink-0">

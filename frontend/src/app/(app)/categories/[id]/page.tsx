@@ -23,7 +23,9 @@ export default function CategoryDetailPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchData = () => {
+    setLoading(true);
+    setError(null);
     let cancelled = false;
 
     Promise.all([
@@ -50,13 +52,15 @@ export default function CategoryDetailPage({
       });
 
     return () => { cancelled = true; };
-  }, [id]);
+  };
+
+  useEffect(fetchData, [id]);
 
   if (error) {
     return (
       <AnimatedMount>
         <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8">
-          <ErrorState message={error} onRetry={() => window.location.reload()} />
+          <ErrorState message={error} onRetry={fetchData} />
         </div>
       </AnimatedMount>
     );

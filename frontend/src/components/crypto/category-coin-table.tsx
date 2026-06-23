@@ -76,7 +76,7 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t.market.search}
-            className="h-8 w-40 rounded-lg border bg-muted/50 pl-8 pr-3 text-xs outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background transition-colors"
+            className="h-8 w-40 rounded-lg border bg-muted/50 pl-8 pr-3 text-xs outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background focus:ring-2 focus:ring-accent/50 transition-colors"
             aria-label={t.market.searchAria}
           />
         </div>

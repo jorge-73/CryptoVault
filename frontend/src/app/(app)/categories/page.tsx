@@ -33,7 +33,9 @@ export default function CategoriesPage() {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [query, setQuery] = useState("");
 
-  useEffect(() => {
+  const fetchData = () => {
+    setLoading(true);
+    setError(null);
     let cancelled = false;
 
     Promise.all([
@@ -55,7 +57,9 @@ export default function CategoriesPage() {
       });
 
     return () => { cancelled = true; };
-  }, []);
+  };
+
+  useEffect(fetchData, []);
 
   const filtered = useMemo(() => {
     let list = categories;
@@ -92,7 +96,7 @@ export default function CategoriesPage() {
     return (
       <AnimatedMount>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
-          <ErrorState message={error} onRetry={() => window.location.reload()} />
+          <ErrorState message={error} onRetry={fetchData} />
         </div>
       </AnimatedMount>
     );

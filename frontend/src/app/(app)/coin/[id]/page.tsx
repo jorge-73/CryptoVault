@@ -32,9 +32,10 @@ export default function CoinDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "about">("overview");
 
-  useEffect(() => {
+  const fetchCoin = () => {
     if (!id) return;
     setLoading(true);
+    setError(null);
 
     api.crypto.getCoinById(id)
       .then((detail) => {
@@ -46,7 +47,9 @@ export default function CoinDetailPage() {
       })
       .catch(() => setError(t.coinDetail.errorLoading))
       .finally(() => setLoading(false));
-  }, [id]);
+  };
+
+  useEffect(() => { fetchCoin(); }, [id]);
 
   useEffect(() => {
     if (user && coin) {
@@ -105,7 +108,7 @@ export default function CoinDetailPage() {
           <ArrowLeft className="h-4 w-4" />
           {t.coinDetail.backLink}
         </Link>
-        <ErrorState message={error || t.coinDetail.errorNotFound} />
+        <ErrorState message={error || t.coinDetail.errorNotFound} onRetry={fetchCoin} />
       </div>
     );
   }

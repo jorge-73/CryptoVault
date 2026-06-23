@@ -8,7 +8,8 @@ import { CryptoListSkeleton } from "@/components/crypto/crypto-list-skeleton";
 import { MarketOverview } from "@/components/crypto/market-overview";
 import { TrendingCoins, TrendingCoinsSkeleton } from "@/components/crypto/trending-coins";
 import { MarketIntelligence, MarketIntelligenceSkeleton } from "@/components/crypto/market-intelligence";
-import { ErrorState, AnimatedMount, StaggerGrid, StaggerItem, SectionHeader } from "@/components/ui";
+import { ErrorState, AnimatedMount, StaggerGrid, StaggerItem, SectionHeader, EmptyState } from "@/components/ui";
+import { Coins } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
 import { toast } from "sonner";
 import type { CoinCategory } from "@/types/crypto";
@@ -149,17 +150,33 @@ export default function DashboardPage() {
                 description={t.dashboard.coinsCount(coins.length)}
                 className="mb-4"
               />
-              <StaggerGrid className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {coins.map((coin) => (
-                  <StaggerItem key={coin.id}>
-                    <CryptoCard
-                      coin={coin}
-                      isFavorite={favorites.has(coin.id)}
-                      onToggleFavorite={toggleFavorite}
-                    />
-                  </StaggerItem>
-                ))}
-              </StaggerGrid>
+              {coins.length === 0 ? (
+                <EmptyState
+                  icon={<Coins className="h-8 w-8" />}
+                  title={t.market.noResults}
+                  description={t.market.noResultsDefault}
+                  action={
+                    <button
+                      onClick={fetchData}
+                      className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors active:scale-95 cursor-pointer"
+                    >
+                      {t.error.retry}
+                    </button>
+                  }
+                />
+              ) : (
+                <StaggerGrid className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {coins.map((coin) => (
+                    <StaggerItem key={coin.id}>
+                      <CryptoCard
+                        coin={coin}
+                        isFavorite={favorites.has(coin.id)}
+                        onToggleFavorite={toggleFavorite}
+                      />
+                    </StaggerItem>
+                  ))}
+                </StaggerGrid>
+              )}
             </section>
           </>
         )}

@@ -3,10 +3,10 @@
 import { ErrorState } from "@/components/ui/error-state";
 import { es } from "@/translations/es";
 
-export default function CategoriesError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function CategoryDetailError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
-      <ErrorState message={es.error.categoriesDescription} onRetry={reset} />
+      <ErrorState message={es.categories.pageError} onRetry={reset} />
     </div>
   );
 }

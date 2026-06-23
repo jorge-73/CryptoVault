@@ -55,7 +55,7 @@ export function FavoriteButton({
       onClick={handleClick}
       disabled={loading}
       className={cn(
-        "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg transition-colors",
+        "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg transition-colors active:scale-90 cursor-pointer",
         isFavorite
           ? "text-yellow-500 hover:text-yellow-600"
           : "text-muted-foreground hover:text-yellow-500"

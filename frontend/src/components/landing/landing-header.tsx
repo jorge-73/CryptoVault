@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useTranslations } from "@/lib/use-translations";
+import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { href: "/market", key: "market" },
@@ -14,7 +16,13 @@ const NAV_LINKS = [
 
 export function LandingHeader() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const t = useTranslations();
+
+  const isActive = (href: string) => {
+    if (href.startsWith("#")) return false;
+    return pathname === href;
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
@@ -29,7 +37,13 @@ export function LandingHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                isActive(link.href)
+                  ? "bg-accent/10 text-accent"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              )}
+              aria-current={isActive(link.href) ? "page" : undefined}
             >
               {t.landing.header[link.key]}
             </Link>
@@ -47,7 +61,7 @@ export function LandingHeader() {
 
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors active:scale-90 cursor-pointer"
           aria-label={open ? t.landing.header.ariaMenuClose : t.landing.header.ariaMenuOpen}
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -68,7 +82,13 @@ export function LandingHeader() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  className={cn(
+                    "flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                    isActive(link.href)
+                      ? "bg-accent/10 text-accent"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                  aria-current={isActive(link.href) ? "page" : undefined}
                 >
                   {t.landing.header[link.key]}
                 </Link>

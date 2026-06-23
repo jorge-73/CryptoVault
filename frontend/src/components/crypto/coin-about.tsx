@@ -15,7 +15,7 @@ export function CoinAbout({ description, homepage, explorer }: CoinAboutProps) {
   if (!description && !homepage && !explorer) return null;
 
   return (
-    <div className="rounded-xl border bg-card p-4 sm:p-6 space-y-4">
+    <div className="rounded-xl border bg-card p-4 sm:p-6 space-y-4 hover:shadow-md transition-shadow">
       <h2 className="text-lg font-semibold">{t.coinDetail.about.title}</h2>
 
       {description && (

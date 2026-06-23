@@ -90,7 +90,7 @@ export function SearchBar() {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => results.length > 0 && setOpen(true)}
           placeholder={t.market.search}
-          className="h-9 w-48 rounded-lg border bg-muted/50 pl-9 pr-8 text-sm outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background transition-colors"
+          className="h-9 w-48 rounded-lg border bg-muted/50 pl-9 pr-8 text-sm outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background focus:ring-2 focus:ring-accent/50 transition-colors"
           aria-label={t.market.searchAria}
           aria-expanded={open}
           aria-autocomplete="list"
@@ -99,7 +99,7 @@ export function SearchBar() {
         {query && (
           <button
             onClick={() => { setQuery(""); setResults([]); setOpen(false); }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors active:scale-90 cursor-pointer"
             aria-label={t.search.clearAria}
           >
             <X className="h-3.5 w-3.5" />
@@ -122,7 +122,7 @@ export function SearchBar() {
               <button
                 key={coin.id}
                 onClick={() => handleSelect(coin.id)}
-                className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors"
+                className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors active:scale-[0.99] cursor-pointer"
                 role="option"
                 aria-selected={false}
               >
