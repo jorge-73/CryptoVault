@@ -66,15 +66,15 @@ export function PortfolioSummary({ totalValue, totalCostBasis, totalPnl, totalRo
     },
     {
       label: t.portfolio.summary.totalPnl,
-      value: totalPnl >= 0 ? `+${formatPrice(totalPnl)}` : `-${formatPrice(Math.abs(totalPnl))}`,
-      icon: totalPnl >= 0 ? TrendingUp : TrendingDown,
-      theme: totalPnl >= 0 ? "positive" : "negative",
+      value: totalPnl == null || Number.isNaN(totalPnl) ? "—" : totalPnl >= 0 ? `+${formatPrice(totalPnl)}` : formatPrice(totalPnl),
+      icon: totalPnl != null && !Number.isNaN(totalPnl) && totalPnl >= 0 ? TrendingUp : TrendingDown,
+      theme: totalPnl != null && !Number.isNaN(totalPnl) && totalPnl >= 0 ? "positive" : "negative",
     },
     {
       label: t.portfolio.summary.totalRoi,
-      value: totalRoi != null ? formatPercentage(totalRoi) : "—",
+      value: totalRoi != null && !Number.isNaN(totalRoi) ? formatPercentage(totalRoi) : "—",
       icon: Percent,
-      theme: totalRoi != null && totalRoi >= 0 ? "positive" : "negative",
+      theme: totalRoi != null && !Number.isNaN(totalRoi) && totalRoi >= 0 ? "positive" : "negative",
     },
   ];
 

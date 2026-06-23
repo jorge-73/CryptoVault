@@ -1,7 +1,7 @@
 const LOCALE = "es-AR";
 
 export function formatPrice(price: number | null | undefined): string {
-  if (price == null) return "—";
+  if (price == null || Number.isNaN(price)) return "—";
   if (price >= 1) {
     return price.toLocaleString(LOCALE, { style: "currency", currency: "USD" });
   }
@@ -13,7 +13,7 @@ export function formatPrice(price: number | null | undefined): string {
 }
 
 export function formatPercentage(value: number | null | undefined): string {
-  if (value == null) return "—";
+  if (value == null || Number.isNaN(value)) return "—";
   const sign = value >= 0 ? "+" : "";
   return `${sign}${value.toLocaleString(LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
 }
