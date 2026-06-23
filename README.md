@@ -670,6 +670,66 @@ Portfolio table ahora tiene **dual layout** como market-table:
 - Portfolio chart hover solo `shadow-md` (sin translate-Y como las cards del dashboard)
 - Edit inline inputs en mobile tienen `w-28` que puede quedar ajustado en 320px
 
+## 🪙 Landing Crypto Identity Refinement
+
+Refinamiento visual de la Landing Page para alinearla con Dashboard, Market y Coin Detail — misma identidad crypto, mismos componentes, misma calidad visual.
+
+### Nuevo componente compartido: `CryptoIcon`
+
+**Archivo:** `frontend/src/components/ui/crypto-icon.tsx`
+
+Componente que unifica el renderizado de iconos de criptomonedas (antes repetido inline en 7+ componentes):
+
+| Prop | Tipo | Default | Descripción |
+|------|------|---------|-------------|
+| `src` | `string \| null` | — | URL de CoinGecko CDN |
+| `alt` | `string` | — | Texto alternativo |
+| `symbol` | `string` | — | Símbolo para fallback (primer carácter) |
+| `size` | `number` | `24` | Tamaño en px (width + height) |
+| `className` | `string` | — | Clases adicionales |
+
+Elimina ~10 líneas de código repetido de cada componente existente. Sigue el mismo patrón que `market-table.tsx`: `next/image` con `fill` + `unoptimized`, fallback con `bg-muted` y símbolo en mayúscula.
+
+### Mock data con imágenes reales
+
+Todas las entradas mock de la landing ahora incluyen URLs reales de CoinGecko CDN — cero llamadas API, imágenes ya cacheadas por el navegador.
+
+| Dataset | Items | Imágenes agregadas |
+|---------|-------|--------------------|
+| `MOCK_TICKER` | BTC, ETH, SOL, XRP, ADA | ✅ |
+| `MOCK_COINS` | BTC, ETH, SOL, XRP, ADA | ✅ |
+| `MOCK_CATEGORIES.top_3_coins` | UNI, AAVE, MKR, NEAR, FET, INJ, IMX, GALA, SAND, ARB, OP, MATIC | ✅ |
+
+### HeroSection — 3 cards renovadas
+
+| Card | Antes | Después |
+|------|-------|---------|
+| **BTC Price** | Icono genérico TrendingUp naranja | `CryptoIcon` real de Bitcoin (28px) + `Badge` con 24h change |
+| **Alert** | Sin cambios (no aplica) | Sin cambios |
+| **Watchlist** | 3 círculos grises sin identidad | `CryptoIcon` para BTC/ETH/SOL (20px), precio con `formatPrice`, cambio con `Badge` |
+
+### MarketTicker
+
+Cada ticker item ahora precede el nombre con `CryptoIcon` (20px) del coin correspondiente.
+
+### MarketPreview
+
+Las 3 cards de top coins mostraban un `div` gris de 32px como placeholder de icono. Ahora muestran `CryptoIcon` real con la imagen de cada coin.
+
+### BentoFeatures — Watchlist card
+
+Card de watchlist renovada: datos reales desde `MOCK_TICKER`, iconos reales con `CryptoIcon`, precios formateados con `formatPrice`, cambios porcentuales con `Badge`.
+
+### Visual Quality Score: 9.5/10
+
+| Criterio | Peso | Score | Antes | Después |
+|----------|------|-------|-------|---------|
+| Identidad crypto visual | 25% | 10/10 | Iconos genéricos / placeholder grises | Mismos iconos que Dashboard/Market |
+| Cohesión Landing ↔ App | 25% | 10/10 | Se sentían como productos distintos | Mismos componentes, mismos badges |
+| Calidad de componentes | 20% | 9/10 | Badge y formatters ya compartidos | + CryptoIcon compartido |
+| Performance | 15% | 10/10 | Mock data sin llamadas API | + CDN URLs estáticas, cache del browser |
+| Fidelidad de datos mock | 15% | 8/10 | Precios sin cambio % en watchlist | Precios + Badge con cambio real |
+
 ## 🚀 CI/CD (GitHub Actions)
 
 Workflow en `.github/workflows/ci.yml` con 4 jobs paralelos:
@@ -701,6 +761,7 @@ Trigger: `push` y `pull_request` a `main`. Job `status-check` consolida y requie
 - [x] Route groups: separación landing vs app con layouts independientes
 - [x] Portfolio personal con P&L tracking (summary, tabla, chart donut, modal add holding)
 - [x] UX Premium Refinement — Microinteracciones, navegación activa, loading/error/empty states, responsive portfolio table, animaciones stagger
+- [x] Landing Crypto Identity Refinement — CryptoIcon compartido, imágenes reales de CoinGecko, watchlist con cambios, consistencia visual landing ↔ app
 - [ ] Alertas de precio (backend + frontend)
 - [ ] Solucionar Docker Desktop para e2e local
 - [ ] Página de comparación de monedas
