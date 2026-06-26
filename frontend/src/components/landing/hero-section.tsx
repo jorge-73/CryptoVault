@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, TrendingUp, AlertTriangle, Star } from "lucide-react";
 import { useTranslations } from "@/lib/use-translations";
 import { formatPrice } from "@/lib/formatters";
@@ -54,8 +55,17 @@ export function HeroSection() {
 
   return (
     <section className="relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none [mask-image:linear-gradient(to_bottom,white_60%,transparent_100%)]">
+        <Image
+          src="/hero.png"
+          alt=""
+          fill
+          className="object-cover opacity-10 dark:opacity-[0.07]"
+          priority
+        />
+      </div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--accent)/6%,transparent_60%)] pointer-events-none" />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 lg:py-28">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-24 lg:py-28">
         <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
