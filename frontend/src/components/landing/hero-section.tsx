@@ -57,7 +57,7 @@ export function HeroSection() {
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none [mask-image:linear-gradient(to_bottom,white_60%,transparent_100%)]">
         <Image
-          src="/hero.png"
+          src="/hero.webp"
           alt=""
           fill
           className="object-cover opacity-10 dark:opacity-[0.07]"
