@@ -96,42 +96,66 @@ crypto-app/
 
 ## 🏠 Landing Page
 
-La raíz (`/`) es una landing page de marketing con estrategia SaaS, construida con route groups independientes del layout de la aplicación:
+La raíz (`/`) es una landing page de marketing con enfoque SaaS, construida con route groups independientes del layout de la aplicación. Todo el contenido funciona sin llamadas API usando datos mock con imágenes reales de CoinGecko CDN.
 
 ```
 (landing)/layout.tsx    ← LandingHeader + Footer
-(landing)/page.tsx     ← Landing page en /
+(landing)/page.tsx     ← Landing page en / (6 secciones en orden: Hero → Ticker → Bento → MarketPreview → Analytics → CTA)
 (app)/layout.tsx       ← Header app (search bar, theme, auth) para rutas internas
 ```
 
 ### Secciones
 
-| Componente | Tipo | Descripción |
-|------------|------|-------------|
-| `LandingHeader` | Client | Navbar minimalista (logo, nav: Mercado/Categorías/Características, CTA "Comenzar"). Drawer animado en mobile. Sin search, theme toggle ni auth. |
-| `HeroSection` | Client | Hero 60/40: título + CTAs + 3 double-bezel mock cards (BTC Live con sparkline SVG, Alert, Watchlist). Stagger animation. |
-| `MarketTicker` | Client | Marquee infinito Framer Motion con BTC/ETH/SOL/XRP/ADA, máscaras CSS gradient. |
-| `BentoFeatures` | Client | Grid asimétrico 3-columnas con double-bezel: Advanced Market Analytics (mock chart col-span-2), Market Intelligence (4 métricas), Watchlist Inteligente (3 activos). Stagger entry. |
-| `MarketPreview` | Server | Top 3 assets (BTC/ETH/SOL) en cards premium double-bezel con precio, Badge 24h, market cap. |
-| `AnalyticsSection` | Client | 4 CategoryCards mock (DeFi, AI, Gaming, Layer 2) con PremiumCard double-bezel + glow hover. |
-| `CTASection` | Server | CTA final con gradiente, "Entrar a CryptoVault" → /dashboard. |
-| `Footer` | Server | 3 columnas: marca + descripción, Producto (Dashboard/Mercado/Categorías), Recursos (CoinGecko API, disclaimer, copyright). |
+| # | Componente | Tipo | Contenido interno | Animación |
+|---|------------|------|-------------------|-----------|
+| 1 | `HeroSection` | Client | **Layout 60/40**: izquierda con eyebrow badge + título + subtítulo + 2 CTAs ("Comenzar" → `/dashboard`, "Explorar" → `/market`). Derecha con 3 mock cards en `DoubleBezelCard`: **(a) BTC Price** — `CryptoIcon` 28px, `formatPrice($67,450)`, `Badge` +2.34%, sparkline SVG con gradiente verde (viewBox 200×80, 30 datos mock); **(b) Alert** — `AlertTriangle` amber + dot pulsing + texto mock de evento de mercado; **(c) Watchlist** — 3 coins (BTC/ETH/SOL) con `CryptoIcon` 20px, precio formateado, `Badge` de cambio 24h. Fondo: hero.webp con fade-out mask `[mask-image:linear-gradient(to_bottom,white_60%,transparent_100%)]` + gradiente radial accent en esquina superior derecha. | Stagger Framer Motion: hero 0.6s ease, cards con delay progresivo 0.3/0.4/0.5s |
+| 2 | `MarketTicker` | Client | Marquee infinito horizontal triplicando 5 tokens mock (BTC/ETH/SOL/XRP/ADA). Cada item: `CryptoIcon` 20px + nombre + símbolo + `formatPrice` + cambio % con `TrendingUp`/`TrendingDown` (verde/rojo). Máscaras CSS gradient (`bg-gradient-to-r from-background to-transparent`) en ambos bordes para efecto fade. | Framer Motion `animate.x: [0, -33.33%]`, 30s duración, linear, repeat Infinity |
+| 3 | `BentoFeatures` | Client | Grid asimétrico 3 columnas (2 en sm, 3 en lg). 3 cards `DoubleBezelCard`: **(a) Advanced Market Analytics** (col-span-2, row-span-2) — icono `BarChart3`, título, chart mock BTC/USD con SVG line + gradient fill (viewBox 300×128, 12 datos mensuales), header con `BTC/USD` y badge `+5.2%`; **(b) Market Intelligence** — icono `BrainCircuit`, grilla 2×2 con 4 métricas desde `MOCK_GLOBAL` (Cap. Total, Vol 24h, Dominancia BTC, Criptos activas) formateadas con `formatMarketCap` y `formatNumber`; **(c) Watchlist Inteligente** — icono `Star`, 3 coins (BTC/ETH/SOL) con `CryptoIcon` 18px + precio + `Badge`, layout en filas con borde. | Stagger children 150ms, fade+slide y:20→0, 0.6s |
+| 4 | `MarketPreview` | Server | Top 3 assets (BTC/ETH/SOL) desde `MOCK_COINS`. Cada `CoinCard` con `DoubleBezelCard` adaptado: `CryptoIcon` 32px + nombre + símbolo + rank + `formatPrice` + `Badge` 24h + market cap con `formatMarketCap`. Link "Ver todo" → `/market` (inline en desktop, abajo en mobile). Zero JavaScript. | CSS hover: `hover:shadow-lg hover:border-accent/20 hover:-translate-y-0.5` |
+| 5 | `AnalyticsSection` | Client | 4 `PremiumCard` con sectores mock de `MOCK_CATEGORIES` (DeFi, AI, Gaming, Layer 2). Cada card: icono `BarChart3` en `bg-gradient-to-br from-accent/20 to-accent/5` + nombre + contador de coins + `Badge` cambio 24h + market cap con `formatMarketCap`. `PremiumCard` usa glow hover: `hover:shadow-[0_0_25px_-8px_var(--accent)]`. Link "Ver todos" → `/categories`. | Stagger children 100ms, fade+slide 0.6s |
+| 6 | `CTASection` | Server | CTA final con fondo gradiente (`bg-gradient-to-br from-accent/5 via-card to-accent/5`) + gradiente radial overlay interior. Título + subtítulo + botón "Entrar a CryptoVault" → `/dashboard`. Zero JavaScript. | CSS `active:scale-[0.98]` en botón |
+
+### Componentes decorativos
+
+| Componente | Aparece en | Descripción |
+|------------|------------|-------------|
+| `DoubleBezelCard` | Hero (3), Bento (3), MarketPreview (3) | `rounded-2xl border border-border/50 bg-card/50 p-1.5 backdrop-blur-sm` + `rounded-[calc(1.5rem-0.375rem)] bg-card p-4 border border-border/30`. Efecto de doble borde con vidrio. Hero y Bento lo definen localmente; MarketPreview usa variante inline. |
+| `PremiumCard` | Analytics (4) | Variante de DoubleBezelCard con glow hover: `hover:shadow-[0_0_25px_-8px_var(--accent)] hover:border-accent/20`. |
+| `Sparkline` (SVG) | Hero | SVG responsivo con `viewBox="0 0 200 80"`, `w-full h-full`. Path calculado desde `MOCK_BTC_SPARKLINE` (30 puntos) con línea verde + gradiente fill. Contenedor `h-20`. |
+| `Chart BTC/USD` (SVG) | Bento | SVG responsivo con `viewBox="0 0 300 128"`, `w-full h-32`. Path desde 12 datos mensuales mock con línea accent + gradiente fill. |
+
+### Arquitectura de datos
+
+Todas las secciones funcionan **sin ninguna llamada API** — datos estáticos desde `frontend/src/components/landing/mock-data.ts`:
+
+| Dataset | Items | Propósito | Fuente de imágenes |
+|---------|-------|-----------|--------------------|
+| `MOCK_TICKER` | BTC, ETH, SOL, XRP, ADA | Ticker, Hero watchlist, Bento watchlist | CoinGecko CDN |
+| `MOCK_COINS` | BTC, ETH, SOL, XRP, ADA | MarketPreview (top 3) | CoinGecko CDN |
+| `MOCK_BTC_SPARKLINE` | 30 precios | Sparkline SVG | — |
+| `MOCK_ALERT` | 1 alerta | Hero alert card | — |
+| `MOCK_GLOBAL` | 4 métricas | Bento Market Intelligence | — |
+| `MOCK_CATEGORIES` | 4 sectores | AnalyticsSection (+ `top_3_coins` con imágenes CDN) | CoinGecko CDN |
+
+Las imágenes son URLs directas de CoinGecko CDN — estáticas, cacheadas por el navegador, cero requests.
 
 ### Diseño y animaciones
 
-- Mockups visuales sin llamadas API usando `mock-data.ts` con datos estáticos
-- Reutilización de componentes existentes (`StatCard`, `Badge`)
-- Framer Motion para entrance animations (fade+slide, stagger)
-- Glass cards con `bg-card/80 backdrop-blur-sm`
-- Gradientes suaves en CTA (`bg-gradient-to-br from-accent/5`)
-- Sin animaciones molestas ni exceso de colores
+- Framer Motion para entrance animations: fade+slide en cada sección, stagger en grids
+- Glass cards con `bg-card/80 backdrop-blur-sm`, doble borde decorativo
+- Gradiente radial accent en Hero (`ellipse_at_top_right`) y CTA
+- Hero background: `hero.webp` (148KB WebP, 83% menor que PNG original) con máscara de desvanecimiento
+- Sin animaciones molestas ni exceso de colores — tono profesional fintech
+- Secciones server-first (MarketPreview, CTA) = cero JavaScript para esas secciones
 
 ### Edge Cases
 
-- **Header diferenciado**: LandingHeader no tiene auth ni search. El header de la app aparece solo en rutas `(app)/`.
-- **Ruta raíz limpia**: `/` es la landing, `/dashboard` es la app. `navLinks` en app header actualizado a `"/"` → `"/dashboard"`.
-- **Metadata SEO**: title "CryptoVault | Plataforma de análisis crypto", OG tags básicos.
+- **Header diferenciado**: LandingHeader no tiene auth, search ni theme toggle. El header de la app aparece solo en rutas `(app)/`.
+- **Ruta raíz limpia**: `/` es la landing, `/dashboard` es la app. `navLinks` en app header redirigen de `"/"` → `"/dashboard"`.
+- **Metadata SEO**: title "CryptoVault | Plataforma de análisis crypto", OG tags básicos, favicon personalizado.
 - **Loading/Error**: heredados del root layout (`app/loading.tsx`, `app/error.tsx`).
+- **Scroll margin**: secciones con `scroll-mt-20` para navegación por hash desde el navbar.
+- **Active nav indicator**: `LandingHeader` usa `usePathname` + `aria-current="page"` con `bg-accent/10 text-accent` para marcar la sección activa.
 
 ## ⚙️ Instalación
 
