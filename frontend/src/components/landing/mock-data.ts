@@ -79,3 +79,30 @@ export const MOCK_COINS = [
   { id: "ripple", name: "XRP", symbol: "XRP", image: "https://coin-images.coingecko.com/coins/images/44/large/xrp.png", current_price: 0.62, market_cap: 34000000000, market_cap_rank: 7, price_change_percentage_24h: 0.15, total_volume: 2100000000 },
   { id: "cardano", name: "Cardano", symbol: "ADA", image: "https://coin-images.coingecko.com/coins/images/975/large/cardano.png", current_price: 0.45, market_cap: 16000000000, market_cap_rank: 9, price_change_percentage_24h: 3.21, total_volume: 1200000000 },
 ];
+
+export const MOCK_PORTFOLIO = {
+  totalValue: 98450,
+  totalCostBasis: 86110,
+  totalPnl: 12340,
+  totalRoi: 14.3,
+  holdings: [
+    { cryptoId: "bitcoin", name: "Bitcoin", symbol: "BTC", image: "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png", amount: 0.85, entryPrice: 62000, currentPrice: 67450, change24h: 2.34 },
+    { cryptoId: "ethereum", name: "Ethereum", symbol: "ETH", image: "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png", amount: 12.5, entryPrice: 3200, currentPrice: 3450, change24h: 1.56 },
+    { cryptoId: "solana", name: "Solana", symbol: "SOL", image: "https://coin-images.coingecko.com/coins/images/4128/large/solana.png", amount: 50, entryPrice: 155, currentPrice: 172, change24h: -0.82 },
+  ],
+};
+
+export const MOCK_ALLOCATION = [
+  { label: "BTC", value: 40, color: "var(--accent)" },
+  { label: "ETH", value: 25, color: "var(--green)" },
+  { label: "SOL", value: 15, color: "var(--red)" },
+  { label: "XRP", value: 12, color: "var(--muted-foreground)" },
+  { label: "ADA", value: 8, color: "var(--border)" },
+];
+
+export const MOCK_REALTIME = [
+  { label: "Latencia API", value: "230ms", icon: "zap" },
+  { label: "Vol. 24h", value: "$125B", icon: "activity" },
+  { label: "Pares activos", value: "850+", icon: "layers" },
+  { label: "Exchanges", value: "120", icon: "globe" },
+];
