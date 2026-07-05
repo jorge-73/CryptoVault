@@ -3,12 +3,12 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, TrendingUp, AlertTriangle, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useTranslations } from "@/lib/use-translations";
 import { formatPrice } from "@/lib/formatters";
 import { CryptoIcon } from "@/components/ui/crypto-icon";
 import { Badge } from "@/components/ui/badge";
-import { MOCK_BTC_SPARKLINE, MOCK_ALERT, MOCK_TICKER } from "./mock-data";
+import { MOCK_BTC_SPARKLINE, MOCK_TICKER } from "./mock-data";
 
 const sparkline = MOCK_BTC_SPARKLINE;
 const maxVal = Math.max(...sparkline);
@@ -16,14 +16,21 @@ const minVal = Math.min(...sparkline);
 const range = maxVal - minVal;
 const isUp = sparkline[sparkline.length - 1] >= sparkline[0];
 const sparkW = 200;
-const sparkH = 48;
+const sparkH = 80;
 const sparkPoints = sparkline.map((v, i) => {
   const x = (i / (sparkline.length - 1)) * sparkW;
   const y = sparkH - ((v - minVal) / range) * (sparkH * 0.8) - sparkH * 0.1;
   return `${x},${y}`;
 });
 
-const MOCK_WATCHLIST_COINS = MOCK_TICKER.slice(0, 3);
+const shW = 300;
+const shH = 80;
+const showcasePoints = sparkline.map((v, i) => {
+  const x = (i / (sparkline.length - 1)) * shW;
+  const y = shH - ((v - minVal) / range) * (shH * 0.8) - shH * 0.1;
+  return `${x},${y}`;
+});
+const showcasePath = `M${showcasePoints.join(" L")}`;
 
 function DoubleBezelCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
@@ -105,76 +112,63 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.32, 0.72, 0, 1] }}
-            className="lg:col-span-2 space-y-3"
+            className="lg:col-span-2"
           >
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
+              className="group"
             >
-              <DoubleBezelCard>
-                <div className="flex items-center justify-between mb-3">
+              <DoubleBezelCard className="transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-xl">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <CryptoIcon src={MOCK_TICKER[0].image} alt="Bitcoin" symbol="BTC" size={28} />
-                    <span className="text-xs font-medium text-muted-foreground">{t.landing.heroCards.btcTitle("Bitcoin")}</span>
+                    <span className="h-2 w-2 rounded-full bg-green animate-pulse" />
+                    <span className="text-xs font-semibold uppercase tracking-wider">Dashboard</span>
                   </div>
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{t.landing.heroCards.btcPrice}</span>
+                  <span className="text-[10px] text-muted-foreground font-mono">{t.landing.hero.eyebrow.split(" ")[0]}</span>
                 </div>
-                <div className="flex items-end justify-between mb-2">
-                  <span className="text-2xl font-bold tabular-nums font-mono">{formatPrice(67450)}</span>
-                  <Badge value={2.34} period="24h" />
-                </div>
-                <div className="h-12">
-                  <Sparkline />
-                </div>
-              </DoubleBezelCard>
-            </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <DoubleBezelCard>
-                <div className="flex items-start gap-3">
-                  <div className="h-8 w-8 flex-shrink-0 rounded-full bg-amber-500/20 flex items-center justify-center">
-                    <AlertTriangle className="h-4 w-4 text-amber-500" />
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="rounded-xl border border-border/40 bg-muted/20 p-3">
+                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{t.landing.showcase.portfolioValue}</span>
+                    <p className="text-lg font-bold tabular-nums font-mono mt-1">{formatPrice(98450)}</p>
                   </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{t.landing.heroCards.alert}</span>
-                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-                    </div>
-                    <p className="text-sm font-semibold leading-snug">{MOCK_ALERT.message}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{MOCK_ALERT.subtitle}</p>
+                  <div className="rounded-xl border border-border/40 bg-muted/20 p-3">
+                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{t.landing.showcase.todayPnl}</span>
+                    <p className="text-lg font-bold tabular-nums font-mono mt-1 text-green">+{formatPrice(1245)}</p>
                   </div>
                 </div>
-              </DoubleBezelCard>
-            </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-            >
-              <DoubleBezelCard>
-                <div className="flex items-center gap-2 mb-2">
-                  <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
-                  <span className="text-xs font-medium text-muted-foreground">{t.landing.heroCards.watchlistTitle}</span>
-                  <span className="ml-auto text-[10px] text-muted-foreground">{t.landing.heroCards.watchlistCount(3)}</span>
+                <div className="rounded-xl bg-muted/20 p-3 mb-4">
+                  <div className="flex items-center justify-between mb-2 text-xs text-muted-foreground">
+                    <span className="font-medium">BTC/USD</span>
+                    <span className="text-green font-mono tabular-nums">+2.34%</span>
+                  </div>
+                  <div className="h-20">
+                    <svg viewBox={`0 0 ${shW} ${shH}`} className="w-full h-full">
+                      <defs>
+                        <linearGradient id="showcaseGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.15" />
+                          <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <path d={showcasePath} fill="none" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d={`${showcasePath} L${shW},${shH} L0,${shH} Z`} fill="url(#showcaseGrad)" />
+                    </svg>
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  {MOCK_WATCHLIST_COINS.map((coin) => (
-                    <div key={coin.symbol} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <CryptoIcon src={coin.image} alt={coin.name} symbol={coin.symbol} size={20} />
-                        <span className="text-xs font-medium">{coin.name}</span>
-                        <span className="text-[10px] text-muted-foreground uppercase">{coin.symbol}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold tabular-nums font-mono">{formatPrice(coin.price)}</span>
-                        <Badge value={coin.change24h} className="text-[10px]" />
-                      </div>
+
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-muted-foreground uppercase tracking-wider">{t.landing.showcase.watchlist}</span>
+                  <span className="text-[10px] text-muted-foreground">{t.landing.header.market}</span>
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  {MOCK_TICKER.slice(0, 3).map((coin) => (
+                    <div key={coin.symbol} className="flex items-center gap-1.5">
+                      <CryptoIcon src={coin.image} alt={coin.name} symbol={coin.symbol} size={16} />
+                      <span className="text-xs font-semibold tabular-nums font-mono">{formatPrice(coin.price)}</span>
+                      <Badge value={coin.change24h} className="text-[8px]" />
                     </div>
                   ))}
                 </div>
