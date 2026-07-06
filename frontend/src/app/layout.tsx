@@ -26,11 +26,30 @@ export const metadata: Metadata = {
     template: `%s | ${brand}`,
   },
   description: es.meta.description,
+  keywords: ["crypto", "criptomonedas", "bitcoin", "ethereum", "portfolio", "inversiones"],
+  authors: [{ name: brand }],
+  creator: brand,
+  robots: { index: true, follow: true },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/manifest.json",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1121" },
+  ],
   openGraph: {
     title: es.meta.ogTitle(brand),
     description: es.meta.ogDescription,
     type: "website",
     siteName: es.meta.ogSiteName,
+    locale: "es_AR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: es.meta.ogTitle(brand),
+    description: es.meta.ogDescription,
   },
 };
 
