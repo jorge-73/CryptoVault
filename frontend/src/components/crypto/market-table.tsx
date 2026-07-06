@@ -184,7 +184,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                       transition={{ duration: 0.25, delay: i * 0.02 }}
                       className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors"
                     >
-                      <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums w-16">
+                      <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums font-mono w-16">
                         {coin.market_cap_rank ?? t.badge.na}
                       </td>
                       <td className="px-4 py-3">
@@ -214,7 +214,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                           </span>
                         </Link>
                       </td>
-                      <td className="px-4 py-3 text-right text-sm font-medium tabular-nums">
+                      <td className="px-4 py-3 text-right text-sm font-medium tabular-nums font-mono">
                         {formatPrice(coin.current_price)}
                       </td>
                       <td className="px-4 py-3 text-right">
@@ -223,10 +223,10 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                       <td className="px-4 py-3 text-right">
                         <Badge value={coin.price_change_percentage_7d_in_currency} />
                       </td>
-                      <td className="hidden lg:table-cell px-4 py-3 text-right text-sm font-medium tabular-nums">
+                      <td className="hidden lg:table-cell px-4 py-3 text-right text-sm font-medium tabular-nums font-mono">
                         {formatMarketCap(coin.market_cap)}
                       </td>
-                      <td className="hidden lg:table-cell px-4 py-3 text-right text-sm font-medium tabular-nums">
+                      <td className="hidden lg:table-cell px-4 py-3 text-right text-sm font-medium tabular-nums font-mono">
                         {formatMarketCap(coin.total_volume)}
                       </td>
                       {onToggleFavorite && (
@@ -267,7 +267,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                 <div className="group relative rounded-xl border bg-card p-3 transition-all hover:shadow-md hover:border-accent/20">
                   <Link href={`/coin/${coin.id}`} className="block">
                     <div className="flex items-center gap-3">
-                      <span className="text-xs text-muted-foreground tabular-nums w-5 flex-shrink-0">
+                      <span className="text-xs text-muted-foreground tabular-nums font-mono w-5 flex-shrink-0">
                         {coin.market_cap_rank ?? t.badge.na}
                       </span>
                       {coin.image ? (
@@ -296,7 +296,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                           </span>
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-sm font-bold tabular-nums">
+                          <span className="text-sm font-bold tabular-nums font-mono">
                             {formatPrice(coin.current_price)}
                           </span>
                           <Badge value={coin.price_change_percentage_24h} />
@@ -323,11 +323,11 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                     <div className="flex items-center gap-4 mt-2 pl-8">
                       <div className="text-[11px] text-muted-foreground">
                         <span className="uppercase tracking-wider">{t.market.cardCap}</span>
-                        <span className="font-medium tabular-nums">{formatMarketCap(coin.market_cap)}</span>
+                        <span className="font-medium tabular-nums font-mono">{formatMarketCap(coin.market_cap)}</span>
                       </div>
                       <div className="text-[11px] text-muted-foreground">
                         <span className="uppercase tracking-wider">{t.market.cardVol}</span>
-                        <span className="font-medium tabular-nums">{formatMarketCap(coin.total_volume)}</span>
+                        <span className="font-medium tabular-nums font-mono">{formatMarketCap(coin.total_volume)}</span>
                       </div>
                     </div>
                   </Link>

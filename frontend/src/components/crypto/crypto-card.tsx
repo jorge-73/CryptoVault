@@ -79,7 +79,7 @@ export const CryptoCard = memo(function CryptoCard({ coin, isFavorite, onToggleF
 
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-lg font-bold tabular-nums leading-none">
+            <p className="text-lg font-bold tabular-nums font-mono leading-none">
               {formatPrice(coin.current_price)}
             </p>
             <div className="flex items-center gap-1.5 mt-1.5">
@@ -93,13 +93,13 @@ export const CryptoCard = memo(function CryptoCard({ coin, isFavorite, onToggleF
           <div className="text-right space-y-0.5">
             <div>
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t.crypto.cap}</p>
-              <p className="text-xs font-semibold tabular-nums">
+              <p className="text-xs font-semibold tabular-nums font-mono">
                 {formatMarketCap(coin.market_cap)}
               </p>
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{t.crypto.vol24h}</p>
-              <p className="text-xs font-medium tabular-nums text-muted-foreground">
+              <p className="text-xs font-medium tabular-nums font-mono text-muted-foreground">
                 {formatMarketCap(coin.total_volume)}
               </p>
             </div>

@@ -58,14 +58,14 @@ export function CategoryCard({ category }: CategoryCardProps) {
         <div className="mt-auto flex items-center justify-between pt-3 border-t border-border/50">
           <div>
             <span className="text-[11px] text-muted-foreground uppercase tracking-wider">{t.crypto.cap}</span>
-            <p className="text-sm font-semibold tabular-nums">
+            <p className="text-sm font-semibold tabular-nums font-mono">
               {formatMarketCap(category.market_cap)}
             </p>
           </div>
           {category.volume_24h != null && (
             <div className="text-right">
               <span className="text-[11px] text-muted-foreground uppercase tracking-wider">{t.crypto.vol24h}</span>
-              <p className="text-sm font-semibold tabular-nums">
+              <p className="text-sm font-semibold tabular-nums font-mono">
                 {formatMarketCap(category.volume_24h)}
               </p>
             </div>

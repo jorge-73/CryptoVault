@@ -37,7 +37,7 @@ export function TrendingSectors({ sectors }: TrendingSectorsProps) {
                 <span className="text-xs text-muted-foreground">#{i + 1}</span>
                 <span
                   className={cn(
-                    "text-sm font-bold tabular-nums",
+                    "text-sm font-bold tabular-nums font-mono",
                     isPositive ? "text-green" : "text-red"
                   )}
                 >

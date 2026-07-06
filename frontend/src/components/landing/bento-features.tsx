@@ -142,7 +142,7 @@ export function BentoFeatures() {
                     <div key={a.label} className="flex items-center gap-1.5 text-[11px]">
                       <span className="h-2 w-2 rounded-full" style={{ backgroundColor: a.color }} />
                       <span className="text-muted-foreground">{a.label}</span>
-                      <span className="font-semibold font-mono">{a.value}%</span>
+                      <span className="font-semibold font-mono tabular-nums">{a.value}%</span>
                     </div>
                   ))}
                 </div>

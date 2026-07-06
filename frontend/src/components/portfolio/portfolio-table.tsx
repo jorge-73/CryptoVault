@@ -83,7 +83,7 @@ function EditCell({
       onKeyDown={handleKeyDown}
       placeholder={placeholder}
       autoFocus
-      className="w-28 rounded-md border border-accent bg-background px-2 py-1 text-right font-mono text-sm outline-none ring-1 ring-accent/50"
+      className="w-28 rounded-md border border-accent bg-background px-2 py-1 text-right font-mono tabular-nums text-sm outline-none ring-1 ring-accent/50"
     />
   );
 }
@@ -171,7 +171,7 @@ export function PortfolioTable({ holdings, onRemove, onUpdate, removingId, updat
                   ) : (
                     <button
                       onClick={() => startEdit(h.id, "amount")}
-                      className="relative font-mono text-sm group/edit cursor-pointer transition-colors active:scale-95"
+                      className="relative font-mono tabular-nums text-sm group/edit cursor-pointer transition-colors active:scale-95"
                       title="Click to edit"
                     >
                       <span>{h.amount.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 6 })}</span>
@@ -194,7 +194,7 @@ export function PortfolioTable({ holdings, onRemove, onUpdate, removingId, updat
                   ) : (
                     <button
                       onClick={() => startEdit(h.id, "entryPrice")}
-                      className="relative font-mono text-sm group/edit cursor-pointer transition-colors active:scale-95"
+                      className="relative font-mono tabular-nums text-sm group/edit cursor-pointer transition-colors active:scale-95"
                       title="Click to edit"
                     >
                       <span>{formatPrice(h.entryPrice)}</span>
@@ -206,12 +206,12 @@ export function PortfolioTable({ holdings, onRemove, onUpdate, removingId, updat
                   )}
                 </td>
 
-                <td className="text-right px-4 py-3 font-mono text-sm">
+                <td className="text-right px-4 py-3 font-mono tabular-nums text-sm">
                   {h.currentPrice != null ? formatPrice(h.currentPrice) : "—"}
                 </td>
 
                 <td className={cn(
-                  "text-right px-4 py-3 font-mono text-sm font-medium",
+                  "text-right px-4 py-3 font-mono tabular-nums text-sm font-medium",
                   (h.pnl ?? 0) >= 0 ? "text-green" : "text-red"
                 )}>
                   {h.pnl != null ? (h.pnl >= 0 ? "+" : "") + formatPrice(h.pnl) : "—"}
@@ -284,7 +284,7 @@ export function PortfolioTable({ holdings, onRemove, onUpdate, removingId, updat
             <div className="grid grid-cols-2 gap-y-2 gap-x-4 text-sm">
               <div>
                 <span className="text-xs text-muted-foreground">{t.portfolio.table.amount}</span>
-                <div className="font-mono mt-0.5">
+                <div className="font-mono tabular-nums mt-0.5">
                   {isEditing(h.id, "amount") ? (
                     <EditCell
                       value={h.amount}
@@ -307,7 +307,7 @@ export function PortfolioTable({ holdings, onRemove, onUpdate, removingId, updat
               </div>
               <div>
                 <span className="text-xs text-muted-foreground">{t.portfolio.table.entryPrice}</span>
-                <div className="font-mono mt-0.5">
+                <div className="font-mono tabular-nums mt-0.5">
                   {isEditing(h.id, "entryPrice") ? (
                     <EditCell
                       value={h.entryPrice}
@@ -331,11 +331,11 @@ export function PortfolioTable({ holdings, onRemove, onUpdate, removingId, updat
               </div>
               <div>
                 <span className="text-xs text-muted-foreground">{t.portfolio.table.currentPrice}</span>
-                <p className="font-mono mt-0.5">{h.currentPrice != null ? formatPrice(h.currentPrice) : "—"}</p>
+                <p className="font-mono tabular-nums mt-0.5">{h.currentPrice != null ? formatPrice(h.currentPrice) : "—"}</p>
               </div>
               <div>
                 <span className="text-xs text-muted-foreground">{t.portfolio.table.pnl}</span>
-                <p className={cn("font-mono mt-0.5 font-medium", (h.pnl ?? 0) >= 0 ? "text-green" : "text-red")}>
+                <p className={cn("font-mono tabular-nums mt-0.5 font-medium", (h.pnl ?? 0) >= 0 ? "text-green" : "text-red")}>
                   {h.pnl != null ? (h.pnl >= 0 ? "+" : "") + formatPrice(h.pnl) : "—"}
                 </p>
               </div>

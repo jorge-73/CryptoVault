@@ -148,7 +148,7 @@ export function SearchBar() {
                     {coin.symbol}
                   </div>
                 </div>
-                <span className="text-xs font-medium tabular-nums text-muted-foreground">
+                <span className="text-xs font-medium tabular-nums font-mono text-muted-foreground">
                   {formatPrice(coin.current_price)}
                 </span>
               </button>

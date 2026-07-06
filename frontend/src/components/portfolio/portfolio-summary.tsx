@@ -17,7 +17,7 @@ type CardTheme = "accent" | "neutral" | "positive" | "negative";
 const cardStyles = {
   base: "rounded-2xl border p-5 transition-all duration-200 hover:shadow-md flex flex-col justify-between",
   label: "text-xs font-medium tracking-wide text-muted-foreground uppercase",
-  value: "text-xl font-semibold font-mono tracking-tight mt-1.5",
+  value: "text-xl font-semibold font-mono tabular-nums tracking-tight mt-1.5",
   iconWrap: "flex items-center justify-between",
 };
 

@@ -79,12 +79,12 @@ export function MarketIntelligence({ btcDominance, marketCapChange24h, topSector
                 {sector.name}
               </span>
               <div className="flex items-end justify-between mt-1.5">
-                <span className="text-lg font-bold tabular-nums group-hover:text-accent transition-colors">
+                <span className="text-lg font-bold tabular-nums font-mono group-hover:text-accent transition-colors">
                   {sector.market_cap != null ? formatMarketCap(sector.market_cap) : t.badge.na}
                 </span>
                 {change != null && (
                   <span className={cn(
-                    "text-xs font-semibold tabular-nums flex-shrink-0 ml-2",
+                    "text-xs font-semibold tabular-nums font-mono flex-shrink-0 ml-2",
                     isPositive ? "text-green" : "text-red"
                   )}>
                     {formatPercentage(change)}

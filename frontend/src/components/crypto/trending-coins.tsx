@@ -52,7 +52,7 @@ function TrendingCoinCard({ coin, isLoser }: { coin: TrendingCoin; isLoser?: boo
             {coin.symbol}
           </span>
         </div>
-        <p className="text-xs font-medium tabular-nums">
+        <p className="text-xs font-medium tabular-nums font-mono">
           {formatPrice(coin.current_price)}
         </p>
       </div>

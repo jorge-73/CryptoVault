@@ -144,7 +144,7 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                     transition={{ duration: 0.25, delay: i * 0.03 }}
                     className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors"
                   >
-                    <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums">
+                    <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums font-mono">
                       {coin.market_cap_rank ?? t.badge.na}
                     </td>
                     <td className="px-4 py-3">
@@ -174,13 +174,13 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                         </span>
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-right text-sm font-medium tabular-nums">
+                    <td className="px-4 py-3 text-right text-sm font-medium tabular-nums font-mono">
                       {formatPrice(coin.current_price)}
                     </td>
                     <td className="hidden sm:table-cell px-4 py-3 text-right">
                       <Badge value={coin.price_change_percentage_24h} />
                     </td>
-                    <td className="hidden md:table-cell px-4 py-3 text-right text-sm font-medium tabular-nums">
+                    <td className="hidden md:table-cell px-4 py-3 text-right text-sm font-medium tabular-nums font-mono">
                       {formatMarketCap(coin.market_cap)}
                     </td>
                   </motion.tr>
