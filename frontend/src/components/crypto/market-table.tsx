@@ -100,7 +100,12 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
         "px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors select-none",
         align === "right" ? "text-right" : "text-left"
       )}
+      scope="col"
+      tabIndex={0}
+      role="columnheader"
+      aria-sort={sortField === field ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
       onClick={() => toggleSort(field)}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSort(field); } }}
     >
       <div className={cn("flex items-center gap-1", align === "right" && "justify-end")}>
         {label}

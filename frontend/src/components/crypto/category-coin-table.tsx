@@ -96,19 +96,29 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                 <tr className="border-b border-border bg-muted/50">
                   <th
                     className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors w-16"
+                    scope="col"
+                    tabIndex={0}
+                    role="columnheader"
+                    aria-sort="none"
                     onClick={() => toggleSort("market_cap_rank")}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSort("market_cap_rank"); } }}
                   >
                     <div className="flex items-center gap-1">
                       {t.crypto.rank}
                       <SortIcon field="market_cap_rank" />
                     </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider" scope="col">
                     {t.watchlist.sortName}
                   </th>
                   <th
                     className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors"
+                    scope="col"
+                    tabIndex={0}
+                    role="columnheader"
+                    aria-sort="none"
                     onClick={() => toggleSort("current_price")}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSort("current_price"); } }}
                   >
                     <div className="flex items-center justify-end gap-1">
                       {t.market.columns.price}
@@ -117,7 +127,12 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                   </th>
                   <th
                     className="hidden sm:table-cell px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors"
+                    scope="col"
+                    tabIndex={0}
+                    role="columnheader"
+                    aria-sort="none"
                     onClick={() => toggleSort("price_change_percentage_24h")}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSort("price_change_percentage_24h"); } }}
                   >
                     <div className="flex items-center justify-end gap-1">
                       {t.market.columns.change24h}
@@ -126,7 +141,12 @@ export function CategoryCoinTable({ coins }: { coins: Coin[] }) {
                   </th>
                   <th
                     className="hidden md:table-cell px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer hover:text-foreground transition-colors"
+                    scope="col"
+                    tabIndex={0}
+                    role="columnheader"
+                    aria-sort="none"
                     onClick={() => toggleSort("market_cap")}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSort("market_cap"); } }}
                   >
                     <div className="flex items-center justify-end gap-1">
                       {t.market.columns.marketCap}

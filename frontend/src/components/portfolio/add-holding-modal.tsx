@@ -157,14 +157,15 @@ export function AddHoldingModal({ open, onClose, onSubmit }: AddHoldingModalProp
                 placeholder={t.portfolio.modal.searchPlaceholder}
                 className="w-full h-10 rounded-lg border bg-muted/50 pl-9 pr-9 text-sm outline-none placeholder:text-muted-foreground/60 focus:border-accent/50 focus:bg-background focus:ring-2 focus:ring-accent/50 transition-colors"
               />
-              {query && (
-                <button
-                  onClick={() => setQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors active:scale-90 cursor-pointer"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              )}
+{query && (
+  <button
+    onClick={() => setQuery("")}
+    className="absolute right-2 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors active:scale-90 cursor-pointer"
+    aria-label="Limpiar búsqueda"
+  >
+    <X className="h-3.5 w-3.5" />
+  </button>
+)}
             </div>
 
             <div className="max-h-64 overflow-y-auto -mx-2 px-2">
