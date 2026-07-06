@@ -115,7 +115,7 @@ export function HeroSection() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-green animate-pulse" />
-                    <span className="text-xs font-semibold uppercase tracking-wider">Dashboard</span>
+                    <span className="text-xs font-semibold uppercase tracking-wider">{t.nav.dashboard}</span>
                   </div>
                   <span className="text-[10px] text-muted-foreground font-mono">{t.landing.hero.eyebrow.split(" ")[0]}</span>
                 </div>

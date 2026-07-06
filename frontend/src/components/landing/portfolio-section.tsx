@@ -68,7 +68,7 @@ export function PortfolioSection() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-[10px] text-muted-foreground uppercase tracking-wider border-b border-border/30">
-                        <th className="text-left pb-2 font-medium">Activo</th>
+                        <th className="text-left pb-2 font-medium">{t.portfolio.table.coin}</th>
                         <th className="text-right pb-2 font-medium">{t.landing.portfolio.amount}</th>
                         <th className="text-right pb-2 font-medium">{t.landing.portfolio.price}</th>
                         <th className="text-right pb-2 font-medium">{t.landing.portfolio.value}</th>

@@ -8,6 +8,7 @@ import { CryptoIcon } from "@/components/ui/crypto-icon";
 import { Badge } from "@/components/ui/badge";
 import { DoubleBezelCard } from "@/components/ui/double-bezel-card";
 import { Wallet, TrendingUp, BarChart3, Search, ArrowRight, DollarSign, Percent } from "lucide-react";
+import { es } from "@/translations/es";
 import { MOCK_TICKER, MOCK_PORTFOLIO, MOCK_GLOBAL } from "./mock-data";
 
 const views = ["dashboard", "market", "portfolio"] as const;
@@ -51,7 +52,7 @@ function MarketView() {
     <div className="space-y-2">
       <div className="flex items-center gap-2 rounded-lg border border-border/40 bg-muted/20 px-3 py-2 mb-3">
         <Search className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-xs text-muted-foreground">Buscar activo...</span>
+        <span className="text-xs text-muted-foreground">{es.landing.demo.searchPlaceholder}</span>
       </div>
       <table className="w-full text-xs">
         <thead>
@@ -91,14 +92,14 @@ function PortfolioView() {
         <div className="rounded-lg border border-accent/20 bg-accent/5 p-3">
           <div className="flex items-center gap-1.5 mb-1">
             <Wallet className="h-3 w-3 text-accent" />
-            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Valor Total</span>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{es.landing.portfolio.totalValue}</span>
           </div>
           <p className="text-sm font-bold tabular-nums font-mono text-accent">{formatPrice(MOCK_PORTFOLIO.totalValue)}</p>
         </div>
         <div className="rounded-lg border border-green/20 bg-green/5 p-3">
           <div className="flex items-center gap-1.5 mb-1">
             <DollarSign className="h-3 w-3 text-green" />
-            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">P&L</span>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{es.landing.showcase.todayPnl}</span>
           </div>
           <p className="text-sm font-bold tabular-nums font-mono text-green">+{formatPrice(MOCK_PORTFOLIO.totalPnl)}</p>
         </div>

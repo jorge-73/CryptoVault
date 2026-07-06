@@ -198,6 +198,7 @@ export const es = {
     retry: "Reintentar",
     genericTitle: "Algo salió mal",
     genericDescription: "Error inesperado al cargar la página",
+    retryAlt: "Intentar de nuevo",
     categoriesTitle: "Error al cargar categorías",
     categoriesDescription: "No pudimos obtener las categorías. Intenta de nuevo.",
     favoritesTitle: "Error al cargar favoritos",
@@ -237,6 +238,7 @@ export const es = {
       portfolioValue: "Valor Portfolio",
       todayPnl: "P&L Hoy",
       watchlist: "En seguimiento",
+      dashboard: "Dashboard",
     },
     bento: {
       title: "Todo lo que necesitas para gestionar tus criptoactivos",
@@ -272,6 +274,7 @@ export const es = {
       step2Desc: "Tabla profesional con búsqueda, filtros y ordenamiento por cualquier columna.",
       step3: "Controla tu portfolio",
       step3Desc: "Registra tus inversiones, sigue tu P&L y analiza la distribución de activos.",
+      searchPlaceholder: "Buscar activo...",
     },
     cta: {
       title: "Empieza a gestionar tu portfolio crypto hoy",
