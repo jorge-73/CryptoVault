@@ -163,15 +163,15 @@ export function BentoFeatures() {
               </div>
               <div className="space-y-2">
                 {MOCK_TICKER.slice(0, 3).map((c) => (
-                  <div key={c.symbol} className="flex items-center justify-between rounded-lg border border-border/40 bg-muted/20 px-3 py-2">
-                    <div className="flex items-center gap-2">
-                      <CryptoIcon src={c.image} alt={c.name} symbol={c.symbol} size={18} />
-                      <span className="text-xs font-medium">{c.name}</span>
-                      <span className="text-[10px] text-muted-foreground uppercase">{c.symbol}</span>
+                  <div key={c.symbol} className="flex items-center justify-between rounded-lg border border-border/40 bg-muted/20 px-3 py-2 overflow-hidden">
+                    <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+                      <CryptoIcon src={c.image} alt={c.name} symbol={c.symbol} size={18} className="flex-shrink-0" />
+                      <span className="text-xs font-medium truncate">{c.name}</span>
+                      <span className="text-[10px] text-muted-foreground uppercase flex-shrink-0">{c.symbol}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold tabular-nums font-mono">{formatPrice(c.price)}</span>
-                      <Badge value={c.change24h} size="sm" />
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="text-xs font-semibold tabular-nums font-mono truncate max-w-[6rem]">{formatPrice(c.price)}</span>
+                      <Badge value={c.change24h} size="sm" className="flex-shrink-0" />
                     </div>
                   </div>
                 ))}

@@ -154,12 +154,12 @@ export function HeroSection() {
                   <span className="text-muted-foreground uppercase tracking-wider">{t.landing.showcase.watchlist}</span>
                   <span className="text-[10px] text-muted-foreground">{t.landing.header.market}</span>
                 </div>
-                <div className="flex items-center justify-between mt-2">
+                <div className="grid grid-cols-3 gap-1 mt-2">
                   {MOCK_TICKER.slice(0, 3).map((coin) => (
-                    <div key={coin.symbol} className="flex items-center gap-1.5">
-                      <CryptoIcon src={coin.image} alt={coin.name} symbol={coin.symbol} size={16} />
-                      <span className="text-xs font-semibold tabular-nums font-mono">{formatPrice(coin.price)}</span>
-                      <Badge value={coin.change24h} size="xs" />
+                    <div key={coin.symbol} className="flex items-center gap-1 min-w-0 overflow-hidden">
+                      <CryptoIcon src={coin.image} alt={coin.name} symbol={coin.symbol} size={14} />
+                      <span className="text-[11px] font-semibold tabular-nums font-mono truncate">{formatPrice(coin.price)}</span>
+                      <Badge value={coin.change24h} size="xs" className="flex-shrink-0" />
                     </div>
                   ))}
                 </div>
