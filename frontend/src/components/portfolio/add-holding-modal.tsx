@@ -189,7 +189,7 @@ export function AddHoldingModal({ open, onClose, onSubmit }: AddHoldingModalProp
                     <button
                       key={coin.id}
                       onClick={() => handleSelect(coin)}
-                      className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-muted transition-colors active:scale-[0.99] cursor-pointer"
+                      className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-muted transition-colors active:scale-95 cursor-pointer"
                     >
                       <CryptoIcon src={coin.image} alt={coin.name} symbol={coin.symbol} size={24} />
                       <div className="flex-1 min-w-0">
