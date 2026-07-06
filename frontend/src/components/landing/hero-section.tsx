@@ -159,7 +159,7 @@ export function HeroSection() {
                     <div key={coin.symbol} className="flex items-center gap-1.5">
                       <CryptoIcon src={coin.image} alt={coin.name} symbol={coin.symbol} size={16} />
                       <span className="text-xs font-semibold tabular-nums font-mono">{formatPrice(coin.price)}</span>
-                      <Badge value={coin.change24h} className="text-[8px]" />
+                      <Badge value={coin.change24h} size="xs" />
                     </div>
                   ))}
                 </div>

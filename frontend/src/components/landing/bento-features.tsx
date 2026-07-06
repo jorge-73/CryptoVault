@@ -171,7 +171,7 @@ export function BentoFeatures() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold tabular-nums font-mono">{formatPrice(c.price)}</span>
-                      <Badge value={c.change24h} className="text-[10px]" />
+                      <Badge value={c.change24h} size="sm" />
                     </div>
                   </div>
                 ))}

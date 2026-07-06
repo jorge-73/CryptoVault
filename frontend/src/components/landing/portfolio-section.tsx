@@ -2,11 +2,12 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Wallet, TrendingUp, DollarSign, Percent, BarChart3 } from "lucide-react";
+import { ArrowRight, Wallet, TrendingUp, Percent, BarChart3 } from "lucide-react";
 import { useTranslations } from "@/lib/use-translations";
 import { formatPrice, formatPercentage } from "@/lib/formatters";
 import { CryptoIcon } from "@/components/ui/crypto-icon";
 import { Badge } from "@/components/ui/badge";
+import { StatCard } from "@/components/ui/stat-card";
 import { DoubleBezelCard } from "@/components/ui/double-bezel-card";
 import { MOCK_PORTFOLIO } from "./mock-data";
 
@@ -22,43 +23,12 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
 };
 
-type StatKey = "totalValue" | "totalPnl" | "roi" | "assets";
-
-interface Stat {
-  key: string;
-  labelKey: StatKey;
-  value: string;
-  icon: React.ReactNode;
-  theme: "accent" | "positive" | "negative" | "neutral";
-}
-
-const STATS: Stat[] = [
-  { key: "totalValue", labelKey: "totalValue", value: formatPrice(MOCK_PORTFOLIO.totalValue), icon: <Wallet className="h-4 w-4" />, theme: "accent" },
-  { key: "pnl", labelKey: "totalPnl", value: `+${formatPrice(MOCK_PORTFOLIO.totalPnl)}`, icon: <TrendingUp className="h-4 w-4" />, theme: "positive" },
-  { key: "roi", labelKey: "roi", value: formatPercentage(MOCK_PORTFOLIO.totalRoi), icon: <Percent className="h-4 w-4" />, theme: "positive" },
-  { key: "assets", labelKey: "assets", value: `${MOCK_PORTFOLIO.holdings.length}`, icon: <BarChart3 className="h-4 w-4" />, theme: "neutral" },
+const STATS = [
+  { key: "totalValue", value: formatPrice(MOCK_PORTFOLIO.totalValue), label: "Valor Total", icon: <Wallet className="h-4 w-4" />, theme: "accent" as const },
+  { key: "pnl", value: `+${formatPrice(MOCK_PORTFOLIO.totalPnl)}`, label: "Ganancia/Pérdida", icon: <TrendingUp className="h-4 w-4" />, theme: "positive" as const },
+  { key: "roi", value: formatPercentage(MOCK_PORTFOLIO.totalRoi), label: "ROI", icon: <Percent className="h-4 w-4" />, theme: "positive" as const },
+  { key: "assets", value: `${MOCK_PORTFOLIO.holdings.length}`, label: "Activos", icon: <BarChart3 className="h-4 w-4" />, theme: "neutral" as const },
 ];
-
-const themeStyles = {
-  accent: "border-accent/20 bg-accent/5",
-  positive: "border-green/20 bg-green/5",
-  negative: "border-red/20 bg-red/5",
-  neutral: "border-border/40 bg-muted/20",
-} as const;
-
-const themeText = {
-  accent: "text-accent",
-  positive: "text-green",
-  negative: "text-red",
-  neutral: "text-muted-foreground",
-} as const;
-
-const LABEL_MAP: Record<StatKey, string> = {
-  totalValue: "Valor Total",
-  totalPnl: "Ganancia/Pérdida",
-  roi: "ROI",
-  assets: "Activos",
-};
 
 export function PortfolioSection() {
   const t = useTranslations();
@@ -86,15 +56,7 @@ export function PortfolioSection() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
             {STATS.map((s) => (
               <motion.div key={s.key} variants={itemVariants}>
-                <div className={`rounded-xl border ${themeStyles[s.theme]} p-4`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className={themeText[s.theme]}>{s.icon}</span>
-                    <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                      {LABEL_MAP[s.labelKey]}
-                    </span>
-                  </div>
-                  <p className={`text-xl font-bold tabular-nums font-mono ${themeText[s.theme]}`}>{s.value}</p>
-                </div>
+                <StatCard label={s.label} value={s.value} icon={s.icon} theme={s.theme} />
               </motion.div>
             ))}
           </div>
@@ -127,7 +89,7 @@ export function PortfolioSection() {
                           <td className="py-2.5 text-right text-xs font-mono tabular-nums">{formatPrice(h.currentPrice)}</td>
                           <td className="py-2.5 text-right text-xs font-mono tabular-nums">{formatPrice(h.amount * h.currentPrice)}</td>
                           <td className="py-2.5 text-right">
-                            <Badge value={h.change24h} period="24h" className="text-[10px]" />
+                            <Badge value={h.change24h} period="24h" size="sm" />
                           </td>
                         </tr>
                       ))}

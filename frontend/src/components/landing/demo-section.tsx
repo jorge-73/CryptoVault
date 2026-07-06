@@ -38,7 +38,7 @@ function DashboardView() {
             <CryptoIcon src={c.image} alt={c.name} symbol={c.symbol} size={20} />
             <p className="text-[10px] font-semibold mt-1">{c.symbol}</p>
             <p className="text-[10px] font-mono tabular-nums">{formatPrice(c.price)}</p>
-            <Badge value={c.change24h} className="text-[8px] mt-0.5" />
+            <Badge value={c.change24h} size="xs" className="mt-0.5" />
           </div>
         ))}
       </div>
@@ -74,7 +74,7 @@ function MarketView() {
                 </div>
               </td>
               <td className="py-2 text-right font-mono tabular-nums">{formatPrice(c.price)}</td>
-              <td className="py-2 text-right"><Badge value={c.change24h} className="text-[8px]" /></td>
+              <td className="py-2 text-right"><Badge value={c.change24h} size="xs" /></td>
               <td className="py-2 text-right font-mono tabular-nums hidden sm:table-cell">{formatMarketCap(c.price * 1e9)}</td>
             </tr>
           ))}
@@ -115,7 +115,7 @@ function PortfolioView() {
             </div>
             <div className="text-right">
               <p className="text-xs font-mono tabular-nums">{formatPrice(h.amount * h.currentPrice)}</p>
-              <Badge value={h.change24h} className="text-[8px]" />
+              <Badge value={h.change24h} size="xs" />
             </div>
           </div>
         ))}

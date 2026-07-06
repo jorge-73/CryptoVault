@@ -61,7 +61,7 @@ export function CoinDetailHeader({
             <span className="text-3xl sm:text-4xl font-bold tabular-nums">
               {formatPrice(coin.current_price ?? 0)}
             </span>
-            <Badge value={coin.price_change_percentage_24h ?? 0} className="text-sm px-2 py-0.5" />
+            <Badge value={coin.price_change_percentage_24h ?? 0} size="lg" />
           </div>
         </div>
 

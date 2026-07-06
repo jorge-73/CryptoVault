@@ -200,7 +200,7 @@ export function AddHoldingModal({ open, onClose, onSubmit }: AddHoldingModalProp
                         <div className="font-semibold tabular-nums font-mono text-sm">
                           {formatPrice(coin.current_price)}
                         </div>
-                        <Badge value={coin.price_change_percentage_24h} className="text-[10px]" />
+                        <Badge value={coin.price_change_percentage_24h} size="sm" />
                       </div>
                     </button>
                   ))}

@@ -33,7 +33,7 @@ export function CategoryDetailHeader({ category, coinCount }: CategoryDetailHead
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
           <h1 className="text-2xl sm:text-3xl font-bold">{category.name}</h1>
-          <Badge value={category.market_cap_change_24h} className="text-sm px-2 py-0.5" />
+          <Badge value={category.market_cap_change_24h} size="lg" />
         </div>
         {description && (
           <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">

@@ -11,3 +11,4 @@ export { Button } from "./button";
 export { Card } from "./card";
 export { DoubleBezelCard } from "./double-bezel-card";
 export { Tooltip } from "./tooltip";
+export { PriceDisplay } from "./price-display";
