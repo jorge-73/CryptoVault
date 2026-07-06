@@ -8,6 +8,7 @@ import { useTranslations } from "@/lib/use-translations";
 import { formatPrice } from "@/lib/formatters";
 import { CryptoIcon } from "@/components/ui/crypto-icon";
 import { Badge } from "@/components/ui/badge";
+import { DoubleBezelCard } from "@/components/ui/double-bezel-card";
 import { MOCK_BTC_SPARKLINE, MOCK_TICKER } from "./mock-data";
 
 const sparkline = MOCK_BTC_SPARKLINE;
@@ -31,16 +32,6 @@ const showcasePoints = sparkline.map((v, i) => {
   return `${x},${y}`;
 });
 const showcasePath = `M${showcasePoints.join(" L")}`;
-
-function DoubleBezelCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`rounded-2xl border border-border/50 bg-card/50 p-1.5 backdrop-blur-sm ${className}`}>
-      <div className="rounded-[calc(1.5rem-0.375rem)] bg-card p-4 border border-border/30">
-        {children}
-      </div>
-    </div>
-  );
-}
 
 function Sparkline() {
   return (
@@ -120,7 +111,7 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="group"
             >
-              <DoubleBezelCard className="transition-all duration-500 group-hover:-translate-y-1 group-hover:shadow-xl">
+              <DoubleBezelCard hover padded="sm" className="group-hover:-translate-y-1 group-hover:shadow-xl">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-green animate-pulse" />

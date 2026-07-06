@@ -6,6 +6,7 @@ import { useTranslations } from "@/lib/use-translations";
 import { formatPrice, formatMarketCap } from "@/lib/formatters";
 import { CryptoIcon } from "@/components/ui/crypto-icon";
 import { Badge } from "@/components/ui/badge";
+import { DoubleBezelCard } from "@/components/ui/double-bezel-card";
 import { Wallet, TrendingUp, BarChart3, Search, ArrowRight, DollarSign, Percent } from "lucide-react";
 import { MOCK_TICKER, MOCK_PORTFOLIO, MOCK_GLOBAL } from "./mock-data";
 
@@ -160,12 +161,12 @@ export function DemoSection() {
         </motion.div>
 
         <div className="max-w-2xl mx-auto">
-          <div
-            className="rounded-2xl border border-border/40 bg-card/30 p-1.5 backdrop-blur-sm transition-all duration-500"
+          <DoubleBezelCard
+            padded="lg"
+            className="transition-all duration-500"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            <div className="rounded-[calc(1.5rem-0.375rem)] bg-card p-6 border border-border/20">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-green animate-pulse" />
@@ -204,8 +205,7 @@ export function DemoSection() {
                   />
                 ))}
               </div>
-            </div>
-          </div>
+            </DoubleBezelCard>
 
           <p className="text-center text-xs text-muted-foreground mt-4">
             {t.landing.demo[`${step}Desc` as keyof typeof t.landing.demo]}

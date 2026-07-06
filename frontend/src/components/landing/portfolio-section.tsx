@@ -7,6 +7,7 @@ import { useTranslations } from "@/lib/use-translations";
 import { formatPrice, formatPercentage } from "@/lib/formatters";
 import { CryptoIcon } from "@/components/ui/crypto-icon";
 import { Badge } from "@/components/ui/badge";
+import { DoubleBezelCard } from "@/components/ui/double-bezel-card";
 import { MOCK_PORTFOLIO } from "./mock-data";
 
 const containerVariants = {
@@ -99,14 +100,13 @@ export function PortfolioSection() {
           </div>
 
           <motion.div variants={itemVariants}>
-            <div className="rounded-2xl border border-border/40 bg-card/30 p-1.5 backdrop-blur-sm">
-              <div className="rounded-[calc(1.5rem-0.375rem)] bg-card p-5 border border-border/20">
-                <h3 className="text-sm font-semibold mb-4">{t.landing.portfolio.holdings}</h3>
+            <DoubleBezelCard>
+              <h3 className="text-sm font-semibold mb-4">{t.landing.portfolio.holdings}</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-[10px] text-muted-foreground uppercase tracking-wider border-b border-border/30">
-                        <th className="text-left pb-2 font-medium">{t.landing.portfolio.holdings.slice(0, -1)}</th>
+                        <th className="text-left pb-2 font-medium">Activo</th>
                         <th className="text-right pb-2 font-medium">{t.landing.portfolio.amount}</th>
                         <th className="text-right pb-2 font-medium">{t.landing.portfolio.price}</th>
                         <th className="text-right pb-2 font-medium">{t.landing.portfolio.value}</th>
@@ -133,15 +133,14 @@ export function PortfolioSection() {
                       ))}
                     </tbody>
                   </table>
-                </div>
               </div>
-            </div>
+            </DoubleBezelCard>
           </motion.div>
 
           <motion.div variants={itemVariants} className="text-center mt-8">
             <Link
               href="/portfolio"
-              className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-all active:scale-[0.98]"
             >
               {t.landing.portfolio.go}
               <ArrowRight className="h-4 w-4" />

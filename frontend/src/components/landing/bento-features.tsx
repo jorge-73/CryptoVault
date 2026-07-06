@@ -6,6 +6,7 @@ import { useTranslations } from "@/lib/use-translations";
 import { formatPrice } from "@/lib/formatters";
 import { CryptoIcon } from "@/components/ui/crypto-icon";
 import { Badge } from "@/components/ui/badge";
+import { DoubleBezelCard } from "@/components/ui/double-bezel-card";
 import { MOCK_TICKER, MOCK_ALLOCATION, MOCK_REALTIME } from "./mock-data";
 
 const containerVariants = {
@@ -54,16 +55,6 @@ const realtimeIcons: Record<string, React.ReactNode> = {
   globe: <Globe className="h-3.5 w-3.5" />,
 };
 
-function DoubleBezelCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`rounded-2xl border border-border/40 bg-card/30 p-1.5 backdrop-blur-sm transition-all duration-500 hover:shadow-lg hover:border-accent/20 hover:-translate-y-0.5 ${className}`}>
-      <div className="rounded-[calc(1.5rem-0.375rem)] bg-card p-5 border border-border/20 h-full">
-        {children}
-      </div>
-    </div>
-  );
-}
-
 export function BentoFeatures() {
   const t = useTranslations();
 
@@ -88,7 +79,7 @@ export function BentoFeatures() {
           className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
           <motion.div variants={itemVariants} className="sm:col-span-2 lg:col-span-2 lg:row-span-2">
-            <DoubleBezelCard className="h-full">
+            <DoubleBezelCard hover className="h-full">
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-8 w-8 rounded-lg bg-accent/10 flex items-center justify-center">
                   <BarChart3 className="h-4 w-4 text-accent" />
@@ -118,7 +109,7 @@ export function BentoFeatures() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="sm:col-span-1 lg:col-span-1">
-            <DoubleBezelCard className="h-full">
+            <DoubleBezelCard hover className="h-full">
               <div className="flex items-center gap-2 mb-3">
                 <div className="h-8 w-8 rounded-lg bg-accent/10 flex items-center justify-center">
                   <TrendingUp className="h-4 w-4 text-accent" />
@@ -160,7 +151,7 @@ export function BentoFeatures() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="sm:col-span-1 lg:col-span-1">
-            <DoubleBezelCard className="h-full">
+            <DoubleBezelCard hover className="h-full">
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-8 w-8 rounded-lg bg-accent/10 flex items-center justify-center">
                   <Star className="h-4 w-4 text-accent" />
@@ -189,7 +180,7 @@ export function BentoFeatures() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="sm:col-span-2 lg:col-span-2">
-            <DoubleBezelCard className="h-full">
+            <DoubleBezelCard hover className="h-full">
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-8 w-8 rounded-lg bg-accent/10 flex items-center justify-center">
                   <Activity className="h-4 w-4 text-accent" />
