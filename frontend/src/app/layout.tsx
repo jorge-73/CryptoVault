@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AuthProvider } from "@/providers/auth-provider";
@@ -20,6 +20,13 @@ const jetbrainsMono = JetBrains_Mono({
 
 const brand = es.nav.brand;
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b1121" },
+  ],
+};
+
 export const metadata: Metadata = {
   title: {
     default: es.meta.title(brand),
@@ -35,10 +42,6 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/manifest.json",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b1121" },
-  ],
   openGraph: {
     title: es.meta.ogTitle(brand),
     description: es.meta.ogDescription,
