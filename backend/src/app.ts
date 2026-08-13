@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { env } from './config/env.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -13,6 +15,8 @@ import { authLimiter, cryptoLimiter } from './middlewares/rateLimiter.js';
 const app = express();
 
 app.use(helmet());
+app.use(compression());
+app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());

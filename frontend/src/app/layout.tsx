@@ -38,8 +38,11 @@ export const metadata: Metadata = {
   creator: brand,
   robots: { index: true, follow: true },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", type: "image/x-icon" },
+    ],
+    apple: "/apple-touch-icon.svg",
   },
   manifest: "/manifest.json",
   openGraph: {

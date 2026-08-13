@@ -3,18 +3,26 @@ import { authService } from '../services/auth.js';
 import { signAccessToken } from '../utils/jwt.js';
 import { env } from '../config/env.js';
 
+const isProduction = env.NODE_ENV === 'production';
+
 const ACCESS_COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  secure: isProduction,
+  sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
   maxAge: 15 * 60 * 1000,
 };
 
 const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  secure: isProduction,
+  sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
   maxAge: 7 * 24 * 60 * 60 * 1000,
+};
+
+const CLEAR_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
 };
 
 export const authController = {
@@ -50,8 +58,8 @@ export const authController = {
   },
 
   async logout(_req: Request, res: Response) {
-    res.clearCookie('access_token', { httpOnly: true, secure: env.NODE_ENV === 'production', sameSite: 'lax' });
-    res.clearCookie('refresh_token', { httpOnly: true, secure: env.NODE_ENV === 'production', sameSite: 'lax' });
+    res.clearCookie('access_token', CLEAR_COOKIE_OPTIONS);
+    res.clearCookie('refresh_token', CLEAR_COOKIE_OPTIONS);
     res.json({ message: 'Logged out successfully' });
   },
 
