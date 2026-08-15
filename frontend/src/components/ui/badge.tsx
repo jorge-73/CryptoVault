@@ -3,12 +3,14 @@ import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { es } from "@/translations/es";
 
 type BadgeSize = "xs" | "sm" | "md" | "lg";
+type BadgeVariant = "plain" | "pill";
 
 interface BadgeProps {
   value: number | null | undefined;
   className?: string;
   period?: string;
   size?: BadgeSize;
+  variant?: BadgeVariant;
 }
 
 const sizeStyles: Record<BadgeSize, string> = {
@@ -18,6 +20,13 @@ const sizeStyles: Record<BadgeSize, string> = {
   lg: "text-sm px-2 py-0.5",
 };
 
+const pillStyles: Record<BadgeSize, string> = {
+  xs: "rounded-md",
+  sm: "rounded-md",
+  md: "rounded-md",
+  lg: "rounded-md",
+};
+
 const iconSizes: Record<BadgeSize, string> = {
   xs: "h-2 w-2",
   sm: "h-2.5 w-2.5",
@@ -25,10 +34,15 @@ const iconSizes: Record<BadgeSize, string> = {
   lg: "h-3.5 w-3.5",
 };
 
-export function Badge({ value, className, period, size = "md" }: BadgeProps) {
+export function Badge({ value, className, period, size = "md", variant = "plain" }: BadgeProps) {
+  const base = cn(
+    "inline-flex items-center gap-1 font-mono tabular-nums font-medium",
+    variant === "pill" ? cn("rounded-md", sizeStyles[size]) : ""
+  );
+
   if (value == null) {
     return (
-      <span className={cn("inline-flex items-center gap-1 rounded-md bg-muted font-medium text-muted-foreground", sizeStyles[size], className)}>
+      <span className={cn(base, "text-muted-foreground", className)}>
         {period && <span className="opacity-60">{period}</span>}
         <Minus className={iconSizes[size]} />
         {es.badge.na}
@@ -42,11 +56,14 @@ export function Badge({ value, className, period, size = "md" }: BadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-md font-medium",
-        isPositive
-          ? "bg-green/10 text-green"
-          : "bg-red/10 text-red",
-        sizeStyles[size],
+        base,
+        variant === "pill"
+          ? isPositive
+            ? "bg-green/10 text-green"
+            : "bg-red/10 text-red"
+          : isPositive
+            ? "text-green"
+            : "text-red",
         className
       )}
     >

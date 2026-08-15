@@ -164,8 +164,8 @@ export default function CategoriesPage() {
                       className={cn(
                         "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-95 cursor-pointer",
                         sortKey === "market_cap"
-                          ? "bg-accent/10 text-accent"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                          ? "bg-surface border border-border text-foreground"
+                          : "text-muted-foreground hover:text-foreground hover:bg-surface"
                       )}
                     >
                       <ArrowUpDown className="h-3 w-3" />
@@ -176,8 +176,8 @@ export default function CategoriesPage() {
                       className={cn(
                         "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-95 cursor-pointer",
                         sortKey === "market_cap_change_24h"
-                          ? "bg-accent/10 text-accent"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                          ? "bg-surface border border-border text-foreground"
+                          : "text-muted-foreground hover:text-foreground hover:bg-surface"
                       )}
                     >
                       <ArrowUpDown className="h-3 w-3" />

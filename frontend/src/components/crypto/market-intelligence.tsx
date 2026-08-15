@@ -33,7 +33,7 @@ export function MarketIntelligence({ btcDominance, marketCapChange24h, topSector
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border bg-card p-4 transition-all hover:shadow-md hover:border-accent/20">
+        <div className="rounded-xl border bg-card p-4 transition-colors hover:border-accent/30">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {t.dashboard.btcDominance}
@@ -73,7 +73,7 @@ export function MarketIntelligence({ btcDominance, marketCapChange24h, topSector
             <Link
               key={sector.id}
               href={`/categories/${sector.id}`}
-              className="rounded-xl border bg-card p-4 transition-all hover:shadow-md hover:border-accent/20 hover:-translate-y-0.5 group"
+              className="rounded-xl border bg-card p-4 transition-colors hover:border-accent/30 hover:bg-surface group"
             >
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 {sector.name}

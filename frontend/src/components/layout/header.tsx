@@ -23,8 +23,8 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm" suppressHydrationWarning>
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6" suppressHydrationWarning>
+    <header className="sticky top-0 z-50 w-full border-b bg-card" suppressHydrationWarning>
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6" suppressHydrationWarning>
         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
           <span className="text-accent">◆</span>
           <span>{t.nav.brand}</span>
@@ -39,10 +39,10 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                  "flex items-center gap-2 h-14 px-3 text-sm font-medium transition-colors border-b-2 -mb-px",
                   active
-                    ? "bg-accent/10 text-accent"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    ? "border-accent text-foreground"
+                    : "border-transparent text-secondary hover:text-foreground"
                 )}
                 aria-current={active ? "page" : undefined}
               >
@@ -77,7 +77,7 @@ export function Header() {
           ) : (
             <Link
               href="/auth/login"
-              className="inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors"
+              className="inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors"
             >
               {t.nav.login}
             </Link>
@@ -100,7 +100,7 @@ export function Header() {
                 "flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg text-xs font-medium transition-colors",
                 active
                   ? "text-accent"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-secondary hover:text-foreground"
               )}
               aria-current={active ? "page" : undefined}
             >

@@ -119,7 +119,7 @@ export function PortfolioTable({ holdings, onRemove, onUpdate, removingId, updat
   return (
     <>
       {/* Desktop table */}
-      <div className="hidden md:block overflow-x-auto rounded-2xl border border-border" suppressHydrationWarning>
+      <div className="hidden md:block overflow-x-auto rounded-xl border border-border" suppressHydrationWarning>
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
@@ -249,7 +249,7 @@ export function PortfolioTable({ holdings, onRemove, onUpdate, removingId, updat
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: i * 0.02 }}
-            className="rounded-2xl border border-border bg-card/50 p-4"
+            className="rounded-xl border border-border bg-card p-4"
           >
             <div className="flex items-center justify-between mb-3">
               <Link

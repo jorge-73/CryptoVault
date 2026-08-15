@@ -29,7 +29,7 @@ export const CryptoCard = memo(function CryptoCard({ coin, isFavorite, onToggleF
   const t = useTranslations();
 
   return (
-    <div className="group relative rounded-xl border bg-card p-4 transition-all hover:shadow-lg hover:border-accent/30 hover:-translate-y-0.5">
+    <div className="group relative rounded-xl border bg-card p-4 transition-colors hover:border-accent/30 hover:bg-surface">
       {onToggleFavorite && (
         <button
           onClick={(e) => {
@@ -39,8 +39,8 @@ export const CryptoCard = memo(function CryptoCard({ coin, isFavorite, onToggleF
           className={cn(
             "absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-md transition-colors active:scale-90 cursor-pointer z-10",
             isFavorite
-              ? "text-yellow-500 hover:text-yellow-600"
-              : "text-muted-foreground/40 hover:text-yellow-500"
+              ? "text-yellow hover:text-yellow/80"
+              : "text-muted-foreground/40 hover:text-yellow"
           )}
           aria-label={isFavorite ? t.coinDetail.favoriteRemove(coin.name) : t.coinDetail.favoriteAdd(coin.name)}
         >

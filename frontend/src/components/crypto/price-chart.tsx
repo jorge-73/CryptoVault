@@ -90,8 +90,8 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
               onClick={() => setDays(opt.value)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors active:scale-95 ${
                 days === opt.value
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-accent/50"
+                  ? "bg-surface border border-border text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-surface"
               }`}
             >
               {opt.label}
@@ -138,8 +138,8 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
               labelFormatter={(label: any) => t.chart.tooltipDate(label)}
               contentStyle={{
                 borderRadius: "12px",
-                border: "1px solid hsl(var(--border))",
-                background: "hsl(var(--card))",
+                border: "1px solid var(--border)",
+                background: "var(--card)",
               }}
             />
             <Area

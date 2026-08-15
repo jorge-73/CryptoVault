@@ -31,7 +31,7 @@ export function TrendingSectors({ sectors }: TrendingSectorsProps) {
             <Link
               key={sector.id}
               href={`/categories/${sector.id}`}
-              className="snap-start flex-shrink-0 w-56 rounded-xl border bg-card p-4 transition-all hover:shadow-lg hover:border-accent/30 hover:-translate-y-0.5 group"
+              className="snap-start flex-shrink-0 w-56 rounded-xl border bg-card p-4 transition-colors hover:border-accent/30 hover:bg-surface group"
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-muted-foreground">#{i + 1}</span>

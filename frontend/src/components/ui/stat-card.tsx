@@ -16,11 +16,11 @@ interface StatCardProps {
 }
 
 const themeStyles: Record<StatCardTheme, string> = {
-  default: "border bg-card hover:border-accent/20",
-  accent: "border-accent/20 bg-accent/5",
+  default: "border bg-card hover:border-accent/30",
+  accent: "border-accent/30 bg-surface",
   positive: "border-green/20 bg-green/5",
   negative: "border-red/20 bg-red/5",
-  neutral: "border-border/40 bg-muted/20",
+  neutral: "border-border bg-muted/20",
 };
 
 const sizeStyles: Record<StatCardSize, string> = {
@@ -47,8 +47,7 @@ export const StatCard = memo(function StatCard({
   return (
     <div
       className={cn(
-        "flex flex-col gap-1.5 rounded-xl transition-all",
-        theme === "default" && "hover:shadow-md",
+        "flex flex-col gap-1.5 rounded-xl transition-colors",
         themeStyles[theme],
         sizeStyles[size],
         className,

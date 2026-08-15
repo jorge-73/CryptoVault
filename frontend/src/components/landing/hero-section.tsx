@@ -83,7 +83,7 @@ export function HeroSection() {
             <div className="flex flex-wrap gap-3 mt-8">
               <Link
                 href="/dashboard"
-                className="group inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-all duration-300 active:scale-[0.98]"
+                className="group inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors duration-300 active:scale-[0.98]"
               >
                 {t.landing.hero.cta}
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/10 dark:bg-white/10 transition-transform group-hover:translate-x-0.5">
@@ -92,7 +92,7 @@ export function HeroSection() {
               </Link>
               <Link
                 href="/market"
-                className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg border px-6 py-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               >
                 {t.landing.hero.explore}
               </Link>
@@ -111,7 +111,7 @@ export function HeroSection() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="group"
             >
-              <DoubleBezelCard hover padded="sm" className="group-hover:-translate-y-1 group-hover:shadow-xl">
+              <DoubleBezelCard hover padded="sm" className="group-hover:-translate-y-1">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-green animate-pulse" />

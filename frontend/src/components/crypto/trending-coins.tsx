@@ -25,7 +25,7 @@ function TrendingCoinCard({ coin, isLoser }: { coin: TrendingCoin; isLoser?: boo
   return (
     <Link
       href={`/coin/${coin.id}`}
-      className="flex items-center gap-3 rounded-xl border bg-card p-3 transition-all hover:shadow-md hover:border-accent/20 hover:-translate-y-0.5 group"
+      className="flex items-center gap-3 rounded-xl border bg-card p-3 transition-colors hover:border-accent/30 hover:bg-surface group"
     >
       <div className="relative h-8 w-8 flex-shrink-0">
         {coin.image ? (

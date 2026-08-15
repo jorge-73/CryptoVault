@@ -15,7 +15,7 @@ interface PortfolioSummaryProps {
 type CardTheme = "accent" | "neutral" | "positive" | "negative";
 
 const cardStyles = {
-  base: "rounded-2xl border p-5 transition-all duration-200 hover:shadow-md flex flex-col justify-between",
+  base: "rounded-xl border p-5 transition-colors hover:border-accent/30 flex flex-col justify-between",
   label: "text-xs font-medium tracking-wide text-muted-foreground uppercase",
   value: "text-xl font-semibold font-mono tabular-nums tracking-tight mt-1.5",
   iconWrap: "flex items-center justify-between",
@@ -26,7 +26,7 @@ function cardClass(theme: CardTheme): string {
     case "accent": return "border-accent/30 bg-accent/5";
     case "positive": return "border-green/20 bg-green/5";
     case "negative": return "border-red/20 bg-red/5";
-    default: return "border-border bg-card/50";
+    default: return "border-border bg-card";
   }
 }
 

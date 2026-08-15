@@ -71,8 +71,8 @@ export function CoinDetailHeader({
             className={cn(
               "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border transition-colors hover:scale-105 active:scale-95",
               isFavorite
-                ? "border-yellow-500/30 text-yellow-500 hover:bg-yellow-500/10"
-                : "border-border text-muted-foreground hover:text-yellow-500 hover:border-yellow-500/30"
+                ? "border-yellow/30 text-yellow hover:bg-yellow/10"
+                : "border-border text-muted-foreground hover:text-yellow hover:border-yellow/30"
             )}
             aria-label={
               isFavorite

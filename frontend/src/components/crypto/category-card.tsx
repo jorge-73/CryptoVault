@@ -18,7 +18,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
 
   return (
     <Link href={`/categories/${category.id}`}>
-      <article className="group rounded-xl border bg-card p-5 transition-all hover:shadow-lg hover:border-accent/30 hover:-translate-y-0.5 h-full flex flex-col">
+      <article className="group rounded-xl border bg-card p-5 transition-colors hover:border-accent/30 hover:bg-surface h-full flex flex-col">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3 min-w-0">
             {heroCoin?.image ? (

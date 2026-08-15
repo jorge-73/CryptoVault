@@ -17,7 +17,7 @@ import dynamic from "next/dynamic";
 
 const PortfolioChart = dynamic(
   () => import("@/components/portfolio/portfolio-chart").then((m) => ({ default: m.PortfolioChart })),
-  { ssr: false, loading: () => <Skeleton className="h-64 rounded-2xl" /> }
+  { ssr: false, loading: () => <Skeleton className="h-64 rounded-xl" /> }
 );
 
 interface HoldingRow {
@@ -163,10 +163,10 @@ export default function PortfolioPage() {
         <Skeleton className="h-5 w-72" />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-2xl" />
+            <Skeleton key={i} className="h-24 rounded-xl" />
           ))}
         </div>
-        <Skeleton className="h-64 rounded-2xl" />
+        <Skeleton className="h-64 rounded-xl" />
       </div>
     );
   }
@@ -201,7 +201,7 @@ export default function PortfolioPage() {
             )}
             <button
               onClick={() => setModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors active:scale-95 cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               {t.portfolio.table.addHolding}

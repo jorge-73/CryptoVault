@@ -142,8 +142,8 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
               className={cn(
                 "px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors active:scale-95 cursor-pointer",
                 topFilter === opt.value
-                  ? "bg-accent/10 text-accent"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  ? "bg-surface border border-border text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-surface"
               )}
             >
               {opt.label}
@@ -187,7 +187,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.25, delay: i * 0.02 }}
-                      className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors"
+                      className="border-b border-border/50 last:border-0 hover:bg-surface/60 transition-colors"
                     >
                       <td className="px-4 py-3 text-xs text-muted-foreground tabular-nums font-mono w-16">
                         {coin.market_cap_rank ?? t.badge.na}
@@ -244,8 +244,8 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                             className={cn(
                               "flex h-7 w-7 items-center justify-center rounded-md transition-colors mx-auto active:scale-90 cursor-pointer",
                               isFavorite?.(coin.id)
-                                ? "text-yellow-500 hover:text-yellow-600"
-                                : "text-muted-foreground/40 hover:text-yellow-500"
+                                ? "text-yellow hover:text-yellow/80"
+                                : "text-muted-foreground/40 hover:text-yellow"
                             )}
                             aria-label={isFavorite?.(coin.id) ? t.coinDetail.favoriteRemove(coin.name) : t.coinDetail.favoriteAdd(coin.name)}
                           >
@@ -269,7 +269,7 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: i * 0.03 }}
               >
-                <div className="group relative rounded-xl border bg-card p-3 transition-all hover:shadow-md hover:border-accent/20">
+                <div className="group relative rounded-xl border bg-card p-3 transition-colors hover:border-accent/30 hover:bg-surface">
                   <Link href={`/coin/${coin.id}`} className="block">
                     <div className="flex items-center gap-3">
                       <span className="text-xs text-muted-foreground tabular-nums font-mono w-5 flex-shrink-0">
@@ -316,8 +316,8 @@ export function MarketTable({ coins, isFavorite, onToggleFavorite, loading, erro
                           className={cn(
                             "flex h-7 w-7 items-center justify-center rounded-md transition-colors flex-shrink-0 active:scale-90 cursor-pointer",
                             isFavorite?.(coin.id)
-                              ? "text-yellow-500 hover:text-yellow-600"
-                              : "text-muted-foreground/40 hover:text-yellow-500"
+                              ? "text-yellow hover:text-yellow/80"
+                              : "text-muted-foreground/40 hover:text-yellow"
                           )}
                           aria-label={isFavorite?.(coin.id) ? t.coinDetail.favoriteRemove(coin.name) : t.coinDetail.favoriteAdd(coin.name)}
                         >

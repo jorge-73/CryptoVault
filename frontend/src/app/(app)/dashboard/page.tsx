@@ -158,7 +158,7 @@ export default function DashboardPage() {
                   action={
                     <button
                       onClick={fetchData}
-                      className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors active:scale-95 cursor-pointer"
+                      className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors active:scale-95 cursor-pointer"
                     >
                       {t.error.retry}
                     </button>

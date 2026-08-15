@@ -4,8 +4,8 @@
   "description": "Plataforma de análisis de criptomonedas en tiempo real",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#f8fafc",
+  "background_color": "#181a20",
+  "theme_color": "#181a20",
   "icons": [
     {
       "src": "/favicon.svg",

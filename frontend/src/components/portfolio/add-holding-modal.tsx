@@ -131,7 +131,7 @@ export function AddHoldingModal({ open, onClose, onSubmit }: AddHoldingModalProp
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="relative w-full max-w-md rounded-2xl border border-border bg-background p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-xl border border-border bg-background p-6"
         onClick={(e) => e.stopPropagation()}
         suppressHydrationWarning
       >
@@ -222,8 +222,8 @@ export function AddHoldingModal({ open, onClose, onSubmit }: AddHoldingModalProp
               {t.portfolio.modal.back}
             </button>
 
-            <div className="rounded-2xl border border-border/40 bg-card/30 p-1.5 backdrop-blur-sm">
-              <div className="rounded-[calc(1.5rem-0.375rem)] bg-card p-4 border border-border/20">
+            <div className="rounded-xl border border-border bg-card p-1.5">
+              <div className="rounded-lg bg-surface p-4 border border-border/40">
                 <div className="flex items-center gap-3 mb-3">
                   <CryptoIcon src={selected.image} alt={selected.name} symbol={selected.symbol} size={40} />
                   <div>
@@ -301,7 +301,7 @@ export function AddHoldingModal({ open, onClose, onSubmit }: AddHoldingModalProp
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors active:scale-95 disabled:opacity-50 cursor-pointer"
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors active:scale-95 disabled:opacity-50 cursor-pointer"
               >
                 {submitting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

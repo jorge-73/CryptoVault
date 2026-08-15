@@ -110,7 +110,7 @@ export function SearchBar() {
       {open && (
         <div
           ref={dropdownRef}
-          className="absolute top-full mt-1.5 left-0 w-72 rounded-xl border bg-popover shadow-lg overflow-hidden z-50"
+          className="absolute top-full mt-1.5 left-0 w-72 rounded-xl border bg-popover overflow-hidden z-50"
           role="listbox"
         >
           {results.length === 0 ? (

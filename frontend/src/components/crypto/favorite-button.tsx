@@ -57,8 +57,8 @@ export function FavoriteButton({
       className={cn(
         "flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg transition-colors active:scale-90 cursor-pointer",
         isFavorite
-          ? "text-yellow-500 hover:text-yellow-600"
-          : "text-muted-foreground hover:text-yellow-500"
+          ? "text-yellow hover:text-yellow/80"
+          : "text-muted-foreground hover:text-yellow"
       )}
       aria-label={
         isFavorite

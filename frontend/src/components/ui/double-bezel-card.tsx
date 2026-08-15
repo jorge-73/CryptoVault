@@ -22,16 +22,16 @@ export function DoubleBezelCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border/40 bg-card/30 p-1.5 backdrop-blur-sm",
+        "rounded-xl border border-border bg-card p-1.5",
         hover &&
-          "transition-all duration-500 hover:shadow-lg hover:border-accent/20 hover:-translate-y-0.5",
+          "transition-all duration-300 hover:border-accent/30 hover:-translate-y-0.5",
         className,
       )}
       {...props}
     >
       <div
         className={cn(
-          "rounded-[calc(1.5rem-0.375rem)] bg-card border border-border/20 h-full",
+          "rounded-lg bg-surface border border-border/40 h-full",
           paddingMap[padded],
         )}
       >

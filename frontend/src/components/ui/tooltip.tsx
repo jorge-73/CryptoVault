@@ -35,7 +35,7 @@ export function Tooltip({ content, children, className }: TooltipProps) {
         <div
           role="tooltip"
           className={cn(
-            "absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 rounded-md bg-foreground text-background text-xs font-medium whitespace-nowrap z-50 shadow-lg",
+            "absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 rounded-md bg-foreground text-background text-xs font-medium whitespace-nowrap z-50 border border-border",
             "pointer-events-none",
             className,
           )}

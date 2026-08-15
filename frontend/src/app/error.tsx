@@ -18,7 +18,7 @@ export default function Error({
         </p>
         <button
           onClick={reset}
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors"
         >
           {es.error.retryAlt}
         </button>

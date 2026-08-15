@@ -118,7 +118,7 @@ export default function ProfilePage() {
             action={
               <button
                 onClick={() => router.push("/market")}
-                className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 transition-colors"
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90 transition-colors"
               >
                 {t.watchlist.exploreButton}
               </button>
@@ -138,8 +138,8 @@ export default function ProfilePage() {
                     onClick={() => toggleSort(opt.key)}
                     className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap active:scale-95 cursor-pointer ${
                       active
-                        ? "bg-accent/10 text-accent"
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        ? "bg-surface border border-border text-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-surface"
                     }`}
                   >
                     {opt.label}
