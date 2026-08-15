@@ -11,12 +11,21 @@ class ApiError extends Error {
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE}${endpoint}`;
+  const method = options?.method ?? "GET";
 
-  const res = await fetch(url, {
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
+  const fetchOnce = () =>
+    fetch(url, {
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+
+  let res = await fetchOnce();
+
+  if (res.status === 503 && method === "GET") {
+    await new Promise((r) => setTimeout(r, 1000));
+    res = await fetchOnce();
+  }
 
   if (res.status === 401 && !endpoint.includes("/auth/refresh") && !endpoint.includes("/auth/me")) {
     const refreshRes = await fetch(`${API_BASE}/auth/refresh`, {
