@@ -44,6 +44,13 @@ export const StatCard = memo(function StatCard({
 }: StatCardProps) {
   const isPositive = trend != null && trend >= 0;
 
+  const valueClass =
+    value.length > 17
+      ? "text-sm sm:text-base"
+      : value.length > 12
+        ? "text-base sm:text-lg"
+        : valueSizeStyles[size];
+
   return (
     <div
       className={cn(
@@ -60,7 +67,7 @@ export const StatCard = memo(function StatCard({
         {icon && <span className="text-muted-foreground">{icon}</span>}
       </div>
 
-      <span className={cn("font-bold tabular-nums font-mono", valueSizeStyles[size])}>{value}</span>
+      <span className={cn("font-bold tabular-nums font-mono min-w-0 [overflow-wrap:anywhere]", valueClass)}>{value}</span>
 
       {trend != null && (
         <div className="flex items-center gap-1">

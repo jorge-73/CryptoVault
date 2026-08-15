@@ -52,13 +52,13 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
   const chartData = useMemo(
     () =>
       data.map((p) => ({
-        date: new Date(p.timestamp).toLocaleDateString(),
+        timestamp: p.timestamp,
         price: p.price,
       })),
     [data]
   );
 
-  const formatXAxis = (value: string) => {
+  const formatXAxis = (value: number) => {
     const d = new Date(value);
     if (days <= 1) {
       return d.toLocaleTimeString("es", { hour: "2-digit", minute: "2-digit" });
@@ -118,7 +118,9 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
               </linearGradient>
             </defs>
             <XAxis
-              dataKey="date"
+              dataKey="timestamp"
+              type="number"
+              domain={["auto", "auto"]}
               tick={{ fontSize: 12 }}
               tickLine={false}
               axisLine={false}
@@ -135,7 +137,11 @@ export function PriceChart({ coinId, coinName }: PriceChartProps) {
             />
             <Tooltip
               formatter={(value: any) => [formatPrice(value), t.chart.tooltipPrice]}
-              labelFormatter={(label: any) => t.chart.tooltipDate(label)}
+              labelFormatter={(label: any) =>
+                t.chart.tooltipDate(
+                  new Date(label).toLocaleString("es", { dateStyle: "medium", timeStyle: "short" })
+                )
+              }
               contentStyle={{
                 borderRadius: "12px",
                 border: "1px solid var(--border)",
